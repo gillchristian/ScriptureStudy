@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.hide-verses .versenum,
+.hide-verses .chapternum {
+  display: none;
+}
+
+.hide-footnotes .footnote,
+.hide-footnotes .footnotes {
+  display: none;
+}

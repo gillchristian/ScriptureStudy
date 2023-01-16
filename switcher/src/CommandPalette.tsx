@@ -1,13 +1,7 @@
 import {Fragment, useEffect, useMemo, useState} from "react"
 import {Combobox, Dialog, Transition} from "@headlessui/react"
 import {MagnifyingGlassIcon} from "@heroicons/react/20/solid"
-import {
-  DocumentPlusIcon,
-  FolderPlusIcon,
-  BookOpenIcon,
-  HashtagIcon,
-  TagIcon
-} from "@heroicons/react/24/outline"
+import {NewspaperIcon, BookOpenIcon, TagIcon} from "@heroicons/react/24/outline"
 import {atom, useAtom} from "jotai"
 import {matchSorter} from "match-sorter"
 import {atomWithStorage} from "jotai/utils"
@@ -20,38 +14,33 @@ export type Chapter = {
   version: string
 }
 
+type ActionEnum = "toggle_verses" | "toggle_footnotes"
+
 type Action = {
   tag: "action"
+  action: ActionEnum
   name: string
-  icon: typeof DocumentPlusIcon
+  icon: typeof TagIcon
   shortcut: string
-  url: string
 }
 
-const quickActions: Action[] = [
-  {
-    tag: "action",
-    name: "Add new file...",
-    icon: DocumentPlusIcon,
-    shortcut: "N",
-    url: "#"
-  },
-  {
-    tag: "action",
-    name: "Add new folder...",
-    icon: FolderPlusIcon,
-    shortcut: "F",
-    url: "#"
-  },
-  {
-    tag: "action",
-    name: "Add hashtag...",
-    icon: HashtagIcon,
-    shortcut: "H",
-    url: "#"
-  },
-  {tag: "action", name: "Add label...", icon: TagIcon, shortcut: "L", url: "#"}
-]
+const ToggleVersesAction: Action = {
+  tag: "action",
+  action: "toggle_verses",
+  name: "Toggle verse numbers ...",
+  icon: TagIcon,
+  shortcut: "V"
+}
+
+const ToggleFootnotesAction: Action = {
+  tag: "action",
+  action: "toggle_footnotes",
+  name: "Toggle footnotes ...",
+  icon: NewspaperIcon,
+  shortcut: "F"
+}
+
+const quickActions: Action[] = [ToggleVersesAction, ToggleFootnotesAction]
 
 type Command = Chapter | Action
 
@@ -62,13 +51,24 @@ function classNames(...classes: (string | boolean | null | undefined)[]) {
 const CommandPaletteAtom = atom<boolean>(false)
 
 const VISITED_RECENTLY_KEY = "ScriptureStudy__visited_recently"
-
 const VisitedRecentlyAtom = atomWithStorage<Chapter[]>(VISITED_RECENTLY_KEY, [])
+
+type Config = {
+  verses?: boolean
+  footnotes?: boolean
+}
+
+const CONFIG_KEY = "ScriptureStudy__config"
+const ConfigAtom = atomWithStorage<Config>(CONFIG_KEY, {
+  verses: true,
+  footnotes: true
+})
 
 export const CommandPalette = () => {
   const [query, setQuery] = useState("")
   const [open, setOpen] = useAtom(CommandPaletteAtom)
   const [recent, setRecent] = useAtom(VisitedRecentlyAtom)
+  const [config, setConfig] = useAtom(ConfigAtom)
 
   const filteredChapters = useMemo(
     () =>
@@ -78,18 +78,63 @@ export const CommandPalette = () => {
     [query]
   )
 
+  useEffect(() => {
+    if (config.verses === false) {
+      document.body.classList.add("hide-verses")
+    }
+
+    if (config.footnotes === false) {
+      document.body.classList.add("hide-footnotes")
+    }
+  }, [])
+
+  const toggleVerses = () => {
+    setConfig((c) => ({...c, verses: !c.verses}))
+
+    document.body.classList.toggle("hide-verses")
+  }
+
+  const toggleFootnotes = () => {
+    setConfig((c) => ({...c, footnotes: !c.footnotes}))
+
+    document.body.classList.toggle("hide-footnotes")
+  }
+
   useEffect(
     () => {
       const handler = (e: KeyboardEvent) => {
         const isCtrl = e.ctrlKey
         const isCmd = e.metaKey
-        const isIKey = e.key === "/" || e.key === "k" || e.key === "p"
+        const isOpenCommandPatellte =
+          e.key === "/" || e.key === "k" || e.key === "p"
 
-        if (isIKey && (isCtrl || isCmd)) {
+        if (isOpenCommandPatellte && (isCtrl || isCmd)) {
           e.preventDefault()
           e.stopPropagation()
 
           setOpen(true)
+        }
+
+        const isToggleVerses =
+          e.key === ToggleVersesAction.shortcut.toLowerCase()
+
+        if (isToggleVerses && (isCtrl || isCmd)) {
+          e.preventDefault()
+          e.stopPropagation()
+
+          toggleVerses()
+          setOpen(false)
+        }
+
+        const isToggleFootnotes =
+          e.key === ToggleFootnotesAction.shortcut.toLowerCase()
+
+        if (isToggleFootnotes && (isCtrl || isCmd)) {
+          e.preventDefault()
+          e.stopPropagation()
+
+          toggleFootnotes()
+          setOpen(false)
         }
       }
 
@@ -102,8 +147,6 @@ export const CommandPalette = () => {
     []
   )
 
-  const chaptersToRender = query === "" ? recent : filteredChapters
-
   const onOpen = (item: Command) => {
     if (item.tag === "chapter") {
       window.location.assign(
@@ -112,6 +155,15 @@ export const CommandPalette = () => {
 
       setRecent((recent) => [item, ...recent.slice(0, 4)])
     }
+
+    if (item.tag === "action" && item.action === "toggle_verses") {
+      toggleVerses()
+    }
+
+    if (item.tag === "action" && item.action === "toggle_footnotes") {
+      toggleFootnotes()
+    }
+
     setOpen(false)
   }
 
@@ -162,55 +214,52 @@ export const CommandPalette = () => {
                 {(query === "" || filteredChapters.length > 0) && (
                   <Combobox.Options
                     static
-                    className="max-h-80 scroll-py-2 divide-y divide-gray-500 divide-opacity-20 overflow-y-auto"
+                    className="max-h-[28rem] scroll-py-2 divide-y divide-gray-500 divide-opacity-20 overflow-y-auto"
                   >
-                    {
-                      // TODO: add actions like toggle verse numbers
-                      false && (
-                        <li className="p-2">
-                          {query === "" && (
-                            <h2 className="mt-4 mb-2 px-3 text-xs font-semibold text-gray-200">
-                              Actions
-                            </h2>
-                          )}
-                          <ul className="text-sm text-gray-400">
-                            {quickActions.map((action) => (
-                              <Combobox.Option
-                                key={action.shortcut}
-                                value={action}
-                                className={({active}) =>
-                                  classNames(
-                                    "flex cursor-default select-none items-center rounded-md px-3 py-2",
-                                    active && "bg-gray-800 text-white"
-                                  )
-                                }
-                              >
-                                {({active}) => (
-                                  <>
-                                    <action.icon
-                                      className={classNames(
-                                        "h-6 w-6 flex-none",
-                                        active ? "text-white" : "text-gray-500"
-                                      )}
-                                      aria-hidden="true"
-                                    />
-                                    <span className="ml-3 flex-auto truncate">
-                                      {action.name}
-                                    </span>
-                                    <span className="ml-3 flex-none text-xs font-semibold text-gray-400">
-                                      <kbd className="font-sans">⌘</kbd>
-                                      <kbd className="font-sans">
-                                        {action.shortcut}
-                                      </kbd>
-                                    </span>
-                                  </>
-                                )}
-                              </Combobox.Option>
-                            ))}
-                          </ul>
-                        </li>
-                      )
-                    }
+                    {query === "" && (
+                      <li className="p-2">
+                        {query === "" && (
+                          <h2 className="mt-4 mb-2 px-3 text-xs font-semibold text-gray-200">
+                            Actions
+                          </h2>
+                        )}
+                        <ul className="text-sm text-gray-400">
+                          {quickActions.map((action) => (
+                            <Combobox.Option
+                              key={action.shortcut}
+                              value={action}
+                              className={({active}) =>
+                                classNames(
+                                  "flex cursor-default select-none items-center rounded-md px-3 py-2",
+                                  active && "bg-gray-800 text-white"
+                                )
+                              }
+                            >
+                              {({active}) => (
+                                <>
+                                  <action.icon
+                                    className={classNames(
+                                      "h-6 w-6 flex-none",
+                                      active ? "text-white" : "text-gray-500"
+                                    )}
+                                    aria-hidden="true"
+                                  />
+                                  <span className="ml-3 flex-auto truncate">
+                                    {action.name}
+                                  </span>
+                                  <span className="ml-3 flex-none text-xs font-semibold text-gray-400">
+                                    <kbd className="font-sans">⌘</kbd>
+                                    <kbd className="font-sans">
+                                      {action.shortcut}
+                                    </kbd>
+                                  </span>
+                                </>
+                              )}
+                            </Combobox.Option>
+                          ))}
+                        </ul>
+                      </li>
+                    )}
                     <li className="p-2">
                       {query === "" && (
                         <h2 className="mt-4 mb-2 px-3 text-xs font-semibold text-gray-200">
@@ -218,38 +267,19 @@ export const CommandPalette = () => {
                         </h2>
                       )}
                       <ul className="text-sm text-gray-400">
-                        {chaptersToRender.map((chapter) => (
-                          <Combobox.Option
-                            key={chapter.chapter}
-                            value={chapter}
-                            className={({active}) =>
-                              classNames(
-                                "flex cursor-default select-none items-center rounded-md px-3 py-2",
-                                active && "bg-gray-800 text-white"
-                              )
-                            }
-                          >
-                            {({active}) => (
-                              <>
-                                <BookOpenIcon
-                                  className={classNames(
-                                    "h-6 w-6 flex-none",
-                                    active ? "text-white" : "text-gray-500"
-                                  )}
-                                  aria-hidden="true"
-                                />
-                                <span className="ml-3 flex-auto truncate">
-                                  {chapter.version} | {chapter.chapter}
-                                </span>
-                                {active && (
-                                  <span className="ml-3 flex-none text-gray-400">
-                                    Jump to...
-                                  </span>
-                                )}
-                              </>
-                            )}
-                          </Combobox.Option>
-                        ))}
+                        {query === ""
+                          ? recent.map((chapter) => (
+                              <Chapter
+                                key={`recent-${chapter.chapter}`}
+                                chapter={chapter}
+                              />
+                            ))
+                          : filteredChapters.map((chapter) => (
+                              <Chapter
+                                key={`search-${chapter.chapter}`}
+                                chapter={chapter}
+                              />
+                            ))}
                       </ul>
                     </li>
                   </Combobox.Options>
@@ -275,3 +305,34 @@ export const CommandPalette = () => {
     </Transition.Root>
   )
 }
+
+const Chapter = ({chapter}: {chapter: Chapter}) => (
+  <Combobox.Option
+    key={chapter.chapter}
+    value={chapter}
+    className={({active}) =>
+      classNames(
+        "flex cursor-default select-none items-center rounded-md px-3 py-2",
+        active && "bg-gray-800 text-white"
+      )
+    }
+  >
+    {({active}) => (
+      <>
+        <BookOpenIcon
+          className={classNames(
+            "h-6 w-6 flex-none",
+            active ? "text-white" : "text-gray-500"
+          )}
+          aria-hidden="true"
+        />
+        <span className="ml-3 flex-auto truncate">
+          {chapter.version} | {chapter.chapter}
+        </span>
+        {active && (
+          <span className="ml-3 flex-none text-gray-400">Jump to...</span>
+        )}
+      </>
+    )}
+  </Combobox.Option>
+)
