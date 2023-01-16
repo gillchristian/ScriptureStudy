@@ -4,12 +4,13 @@ import {MagnifyingGlassIcon} from "@heroicons/react/20/solid"
 import {
   DocumentPlusIcon,
   FolderPlusIcon,
-  FolderIcon,
+  BookOpenIcon,
   HashtagIcon,
   TagIcon
 } from "@heroicons/react/24/outline"
 import {atom, useAtom} from "jotai"
 import {matchSorter} from "match-sorter"
+import {atomWithStorage} from "jotai/utils"
 
 import {options as chapters} from "./options"
 
@@ -18,8 +19,6 @@ export type Chapter = {
   chapter: string
   version: string
 }
-
-const recent: Chapter[] = [chapters[0]]
 
 type Action = {
   tag: "action"
@@ -62,9 +61,14 @@ function classNames(...classes: (string | boolean | null | undefined)[]) {
 
 const CommandPaletteAtom = atom<boolean>(false)
 
+const VISITED_RECENTLY_KEY = "ScriptureStudy__visited_recently"
+
+const VisitedRecentlyAtom = atomWithStorage<Chapter[]>(VISITED_RECENTLY_KEY, [])
+
 export const CommandPalette = () => {
   const [query, setQuery] = useState("")
   const [open, setOpen] = useAtom(CommandPaletteAtom)
+  const [recent, setRecent] = useAtom(VisitedRecentlyAtom)
 
   const filteredChapters = useMemo(
     () =>
@@ -100,6 +104,17 @@ export const CommandPalette = () => {
 
   const chaptersToRender = query === "" ? recent : filteredChapters
 
+  const onOpen = (item: Command) => {
+    if (item.tag === "chapter") {
+      window.location.assign(
+        `/${item.version}/${item.chapter.replace(/ /g, "-").toLowerCase()}.html`
+      )
+
+      setRecent((recent) => [item, ...recent.slice(0, 4)])
+    }
+    setOpen(false)
+  }
+
   return (
     <Transition.Root
       show={open}
@@ -131,18 +146,7 @@ export const CommandPalette = () => {
             leaveTo="opacity-0 scale-95"
           >
             <Dialog.Panel className="mx-auto max-w-2xl transform divide-y divide-gray-500 divide-opacity-20 overflow-hidden rounded-xl bg-gray-900 shadow-2xl transition-all">
-              <Combobox
-                onChange={(item: Command) => {
-                  if (item.tag === "chapter") {
-                    window.location.assign(
-                      `/${item.version}/${item.chapter
-                        .replace(/ /g, "-")
-                        .toLowerCase()}.html`
-                    )
-                  }
-                  setOpen(false)
-                }}
-              >
+              <Combobox onChange={onOpen}>
                 <div className="relative">
                   <MagnifyingGlassIcon
                     className="pointer-events-none absolute top-3.5 left-4 h-5 w-5 text-gray-500"
@@ -210,47 +214,42 @@ export const CommandPalette = () => {
                     <li className="p-2">
                       {query === "" && (
                         <h2 className="mt-4 mb-2 px-3 text-xs font-semibold text-gray-200">
-                          Chapters
+                          Recent reads
                         </h2>
                       )}
                       <ul className="text-sm text-gray-400">
-                        {chaptersToRender.map(
-                          (chapter) => (
-                            console.log(chapter),
-                            (
-                              <Combobox.Option
-                                key={chapter.chapter}
-                                value={chapter}
-                                className={({active}) =>
-                                  classNames(
-                                    "flex cursor-default select-none items-center rounded-md px-3 py-2",
-                                    active && "bg-gray-800 text-white"
-                                  )
-                                }
-                              >
-                                {({active}) => (
-                                  <>
-                                    <FolderIcon
-                                      className={classNames(
-                                        "h-6 w-6 flex-none",
-                                        active ? "text-white" : "text-gray-500"
-                                      )}
-                                      aria-hidden="true"
-                                    />
-                                    <span className="ml-3 flex-auto truncate">
-                                      {chapter.chapter}
-                                    </span>
-                                    {active && (
-                                      <span className="ml-3 flex-none text-gray-400">
-                                        Jump to...
-                                      </span>
-                                    )}
-                                  </>
+                        {chaptersToRender.map((chapter) => (
+                          <Combobox.Option
+                            key={chapter.chapter}
+                            value={chapter}
+                            className={({active}) =>
+                              classNames(
+                                "flex cursor-default select-none items-center rounded-md px-3 py-2",
+                                active && "bg-gray-800 text-white"
+                              )
+                            }
+                          >
+                            {({active}) => (
+                              <>
+                                <BookOpenIcon
+                                  className={classNames(
+                                    "h-6 w-6 flex-none",
+                                    active ? "text-white" : "text-gray-500"
+                                  )}
+                                  aria-hidden="true"
+                                />
+                                <span className="ml-3 flex-auto truncate">
+                                  {chapter.version} | {chapter.chapter}
+                                </span>
+                                {active && (
+                                  <span className="ml-3 flex-none text-gray-400">
+                                    Jump to...
+                                  </span>
                                 )}
-                              </Combobox.Option>
-                            )
-                          )
-                        )}
+                              </>
+                            )}
+                          </Combobox.Option>
+                        ))}
                       </ul>
                     </li>
                   </Combobox.Options>
@@ -258,7 +257,7 @@ export const CommandPalette = () => {
 
                 {query !== "" && filteredChapters.length === 0 && (
                   <div className="py-14 px-6 text-center sm:px-14">
-                    <FolderIcon
+                    <BookOpenIcon
                       className="mx-auto h-6 w-6 text-gray-500"
                       aria-hidden="true"
                     />

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+./bin/extract "$1" \
+  | html2json \
+  | jq '.children[0]' \
+  > $(echo "$1" | sed "s|html|json|g")

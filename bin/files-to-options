@@ -1,0 +1,27 @@
+#!/usr/bin/env node
+
+const fs = require('fs/promises');
+
+const parseName = l => {
+  const [version, chapter] = l.split('/')
+
+  const chapter_ = chapter
+    .split('-')
+    .map(chunk => `${chunk.charAt(0).toUpperCase()}${chunk.substr(1)}`)
+    .join(' ')
+
+  return { tag: 'chapter', chapter: chapter_, version }
+}
+
+fs.readFile('./input.txt', 'utf-8')
+  .then(content => content.trim())
+  .then(content => content.split('\n'))
+  .then(lines => 
+    lines
+      .map(l => l.replace('bibles/', '').replace('.html', ''))
+      .sort()
+      .map(parseName)
+  )
+  .then(options =>
+    console.log(JSON.stringify(options, null, 2))
+  )

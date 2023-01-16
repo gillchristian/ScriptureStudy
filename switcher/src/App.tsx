@@ -1,8 +1,12 @@
-import { CommandPalette } from "./CommandPalette"
+import {BackHome} from "./BackHome"
+import {CommandPalette} from "./CommandPalette"
 
 function App() {
   return (
-    <CommandPalette />
+    <>
+      <CommandPalette />
+      <BackHome />
+    </>
   )
 }
 

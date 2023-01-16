@@ -17853,4 +17853,13 @@ export const options_: Chapter[] = [
   }
 ]
 
-export const options = options_.filter((c) => c.version === "NET")
+const VERSIONS = ["NET", "NLT", "MSG"]
+
+const [currentVersion_] = window.location.pathname
+  .split("/")
+  .filter(Boolean)
+  .filter((p) => VERSIONS.includes(p))
+
+const currentVersion = currentVersion_ ?? "NET"
+
+export const options = options_.filter((c) => c.version === currentVersion)
