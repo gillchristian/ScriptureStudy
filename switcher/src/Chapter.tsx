@@ -5,7 +5,7 @@ import {useEffect, useState} from "react"
 import {Element, Html} from "./Html"
 import {Eq} from "./Eq"
 import {VERSIONS} from "./options"
-import { CONFIG } from "./config"
+import {CONFIG} from "./config"
 
 type ChapterOpt = {
   version: string

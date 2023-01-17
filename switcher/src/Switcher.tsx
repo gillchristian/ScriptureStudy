@@ -27,7 +27,7 @@ export function Switcher() {
           }
         }}
       />
-      <Controls />
+      <Controls mode="controls_only" />
     </>
   )
 }

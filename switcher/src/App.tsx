@@ -32,7 +32,7 @@ export function App() {
           }
         }}
       />
-      <Controls />
+      <Controls mode="app" />
     </>
   )
 }
