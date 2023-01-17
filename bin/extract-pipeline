@@ -1,5 +1,9 @@
 #!/bin/bash
 
+GITROOT=$(git rev-parse --show-toplevel)
+
+cd "$GITROOT"
+
 ./bin/extract "$1" \
   | html2json \
   | jq '.children[0]' \

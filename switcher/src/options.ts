@@ -1,3 +1,4 @@
+import {fromPath} from "./Chapter"
 import {Chapter} from "./CommandPalette"
 
 export const options_: Chapter[] = [
@@ -17853,13 +17854,8 @@ export const options_: Chapter[] = [
   }
 ]
 
-const VERSIONS = ["NET", "NLT", "MSG"]
+export const VERSIONS = ["NET", "NLT", "MSG"]
 
-const [currentVersion_] = window.location.pathname
-  .split("/")
-  .filter(Boolean)
-  .filter((p) => VERSIONS.includes(p))
-
-const currentVersion = currentVersion_ ?? "NET"
+const {version: currentVersion} = fromPath()
 
 export const options = options_.filter((c) => c.version === currentVersion)

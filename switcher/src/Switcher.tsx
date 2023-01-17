@@ -1,21 +1,16 @@
-import {useAtom} from "jotai"
-
 import {Controls} from "./Controls"
 import {CommandPalette} from "./CommandPalette"
-import {Chapter, ChapterAtom} from "./Chapter"
 
-export function App() {
-  const [_chapter, setChapter] = useAtom(ChapterAtom)
+const onChapterSelect = (version: string, chapter: string) =>
+  window.location.assign(
+    `/${version}/${chapter.replace(/ /g, "-").toLowerCase()}.html`
+  )
 
-  const onChapterSelect = (version: string, chapter: string) => {
-    setChapter({version, chapter: chapter.replace(/ /g, "-").toLowerCase()})
-  }
-
+export function Switcher() {
   return (
     <>
-      <Chapter />
       <CommandPalette
-        mode="app"
+        mode="controls_only"
         onChapterSelect={onChapterSelect}
         onToggleFootnotes={(on) => {
           if (on) {

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+GITROOT=$(git rev-parse --show-toplevel)
+
+cd "$GITROOT/switcher" # TODO: rename this directory
+
+yarn build
+
+cp $(fd ".js$" build) ../bibles/main.js
+cp $(fd ".css$" build) ../bibles/main.css

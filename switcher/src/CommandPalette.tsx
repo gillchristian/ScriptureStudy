@@ -7,6 +7,7 @@ import {matchSorter} from "match-sorter"
 import {atomWithStorage} from "jotai/utils"
 
 import {options as chapters} from "./options"
+import {ChapterAtom, eqChapter, fromPath} from "./Chapter"
 
 export type Chapter = {
   tag: "chapter"
@@ -48,7 +49,7 @@ function classNames(...classes: (string | boolean | null | undefined)[]) {
   return classes.filter(Boolean).join(" ")
 }
 
-const CommandPaletteAtom = atom<boolean>(false)
+export const CommandPaletteAtom = atom<boolean>(false)
 
 const VISITED_RECENTLY_KEY = "ScriptureStudy__visited_recently"
 const VisitedRecentlyAtom = atomWithStorage<Chapter[]>(VISITED_RECENTLY_KEY, [])
@@ -64,11 +65,24 @@ const ConfigAtom = atomWithStorage<Config>(CONFIG_KEY, {
   footnotes: true
 })
 
-export const CommandPalette = () => {
+type Props = {
+  mode: "app" | "controls_only"
+  onToggleVerses: (on: boolean) => void
+  onToggleFootnotes: (on: boolean) => void
+  onChapterSelect: (version: string, chapter: string) => void
+}
+
+export const CommandPalette = ({
+  mode,
+  onToggleVerses,
+  onToggleFootnotes,
+  onChapterSelect
+}: Props) => {
   const [query, setQuery] = useState("")
   const [open, setOpen] = useAtom(CommandPaletteAtom)
   const [recent, setRecent] = useAtom(VisitedRecentlyAtom)
   const [config, setConfig] = useAtom(ConfigAtom)
+  const [selectedChapter, _setSelected] = useAtom(ChapterAtom)
 
   const filteredChapters = useMemo(
     () =>
@@ -79,25 +93,19 @@ export const CommandPalette = () => {
   )
 
   useEffect(() => {
-    if (config.verses === false) {
-      document.body.classList.add("hide-verses")
-    }
+    onToggleVerses(config.verses === false ? false : true)
+  }, [config.verses])
 
-    if (config.footnotes === false) {
-      document.body.classList.add("hide-footnotes")
-    }
-  }, [])
+  useEffect(() => {
+    onToggleFootnotes(config.footnotes === false ? false : true)
+  }, [config.footnotes])
 
   const toggleVerses = () => {
     setConfig((c) => ({...c, verses: !c.verses}))
-
-    document.body.classList.toggle("hide-verses")
   }
 
   const toggleFootnotes = () => {
     setConfig((c) => ({...c, footnotes: !c.footnotes}))
-
-    document.body.classList.toggle("hide-footnotes")
   }
 
   useEffect(
@@ -149,11 +157,12 @@ export const CommandPalette = () => {
 
   const onOpen = (item: Command) => {
     if (item.tag === "chapter") {
-      window.location.assign(
-        `/${item.version}/${item.chapter.replace(/ /g, "-").toLowerCase()}.html`
-      )
+      onChapterSelect(item.version, item.chapter)
 
-      setRecent((recent) => [item, ...recent.slice(0, 4)])
+      setRecent((recent) => [
+        item,
+        ...recent.filter((c) => !eqChapter.equal(c, item)).slice(0, 4)
+      ])
     }
 
     if (item.tag === "action" && item.action === "toggle_verses") {
@@ -166,6 +175,11 @@ export const CommandPalette = () => {
 
     setOpen(false)
   }
+
+  const recent_ =
+    mode === "app"
+      ? recent.filter((c) => !eqChapter.equal(c, selectedChapter))
+      : recent.filter((c) => !eqChapter.equal(c, fromPath()))
 
   return (
     <Transition.Root
@@ -260,28 +274,34 @@ export const CommandPalette = () => {
                         </ul>
                       </li>
                     )}
-                    <li className="p-2">
-                      {query === "" && (
+                    {query === "" && recent_.length > 0 && (
+                      <li className="p-2">
                         <h2 className="mt-4 mb-2 px-3 text-xs font-semibold text-gray-200">
                           Recent reads
                         </h2>
-                      )}
-                      <ul className="text-sm text-gray-400">
-                        {query === ""
-                          ? recent.map((chapter) => (
-                              <Chapter
-                                key={`recent-${chapter.chapter}`}
-                                chapter={chapter}
-                              />
-                            ))
-                          : filteredChapters.map((chapter) => (
-                              <Chapter
-                                key={`search-${chapter.chapter}`}
-                                chapter={chapter}
-                              />
-                            ))}
-                      </ul>
-                    </li>
+
+                        <ul className="text-sm text-gray-400">
+                          {recent_.map((chapter) => (
+                            <Chapter
+                              key={`recent-${chapter.version}-${chapter.chapter}`}
+                              chapter={chapter}
+                            />
+                          ))}
+                        </ul>
+                      </li>
+                    )}
+                    {query !== "" && filteredChapters.length > 0 && (
+                      <li className="p-2">
+                        <ul className="text-sm text-gray-400">
+                          {filteredChapters.map((chapter) => (
+                            <Chapter
+                              key={`search-${chapter.version}-${chapter.chapter}`}
+                              chapter={chapter}
+                            />
+                          ))}
+                        </ul>
+                      </li>
+                    )}
                   </Combobox.Options>
                 )}
 

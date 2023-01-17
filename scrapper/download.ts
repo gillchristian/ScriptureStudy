@@ -10,12 +10,24 @@ const SELECTORS = {
   content: ".passage-text"
 }
 
-const wrapWithTemplate = (title: string, content: string) =>
+const wrapWithTemplate = ({
+  version,
+  title,
+  content
+}: {
+  version: string
+  title: string
+  content: string
+}) =>
   `
+  <html lang="en">
     <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
       <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
       <script defer="defer" src="/main.js"></script>
       <link href="/main.css" rel="stylesheet" />
+      <title>${version} | ${title}</title>
     </head>
     <body class="p-4 bg-stone-100">
       <div id="switcher"></div>
@@ -27,14 +39,23 @@ const wrapWithTemplate = (title: string, content: string) =>
           </div>
         </div>
       </div>
-    </body>`.trim()
+    </body>
+  </html>`.trim()
 
 const SHOULD_WRAP_WITH_TEMPLATE = true
 
 const format = (content: string) =>
   prettier.format(content, {parser: "html"}).trim()
 
-const extract = (title: string, doc: string): Chapter | undefined => {
+const extract = ({
+  version,
+  title,
+  doc
+}: {
+  version: string
+  title: string
+  doc: string
+}): Chapter | undefined => {
   const $ = cheerio.load(doc)
 
   const content = $(SELECTORS.content).html()
@@ -44,7 +65,7 @@ const extract = (title: string, doc: string): Chapter | undefined => {
   return content
     ? {
         content: SHOULD_WRAP_WITH_TEMPLATE
-          ? format(wrapWithTemplate(title, content))
+          ? format(wrapWithTemplate({version, title, content}))
           : format(content),
         prev,
         next
@@ -63,7 +84,7 @@ const loadChapter = (chapter: string, version: string): P =>
     .then((res) =>
       res.ok ? res.text() : Promise.reject(new Error("Failed to fetch"))
     )
-    .then((body) => extract(chapter, body))
+    .then((doc) => extract({version, title: chapter, doc}))
 
 const saveChapter = (html: string, chapter: string, version: string) =>
   fs
