@@ -61,7 +61,7 @@ export const Chapter = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center mx-auto w-full items-center">
+      <div className="flex justify-center mx-auto w-full min-h-screen bg-stone-100">
         <div className="prose">Loading ...</div>
       </div>
     )
@@ -69,7 +69,7 @@ export const Chapter = () => {
 
   if (html) {
     return (
-      <div className="flex justify-center mx-auto w-full min-h-screen items-center p-4 bg-stone-100">
+      <div className="flex justify-center mx-auto w-full min-h-screen p-4 bg-stone-100">
         <div className="prose">
           <h2>
             {version} {"|"}{" "}
@@ -85,7 +85,7 @@ export const Chapter = () => {
   }
 
   return (
-    <div className="flex justify-center mx-auto w-full items-center">
+    <div className="flex justify-center mx-auto w-full min-h-screen bg-stone-100">
       <div className="prose">{error ?? "Unkown error"}</div>
     </div>
   )
