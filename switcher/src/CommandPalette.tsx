@@ -51,7 +51,7 @@ function classNames(...classes: (string | boolean | null | undefined)[]) {
 
 export const CommandPaletteAtom = atom<boolean>(false)
 
-const VISITED_RECENTLY_KEY = "ScriptureStudy__visited_recently"
+const VISITED_RECENTLY_KEY = "ScriptureStudy__visited_recently_v2"
 const VisitedRecentlyAtom = atomWithStorage<Chapter[]>(VISITED_RECENTLY_KEY, [])
 
 type Config = {

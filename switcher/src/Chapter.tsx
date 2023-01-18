@@ -20,7 +20,7 @@ export const eqChapter: Eq<ChapterOpt> = {
       : false
 }
 
-const defaultChapter: ChapterOpt = {version: "NLT", chapter: "genesis-1"}
+const defaultChapter: ChapterOpt = {version: "NET", chapter: "genesis-1"}
 
 export const fromPath = (): ChapterOpt => {
   const [version, chapter] = window.location.pathname.split("/").filter(Boolean)
@@ -32,8 +32,8 @@ export const fromPath = (): ChapterOpt => {
   return {version, chapter: chapter.replace(".html", "")}
 }
 
-const CHAPTER_ATOM_KEY = "ScriptureStudy__selected_chapter"
 // TODO: keep this in the url instead
+const CHAPTER_ATOM_KEY = "ScriptureStudy__selected_chapter_v2"
 export const ChapterAtom = atomWithStorage(CHAPTER_ATOM_KEY, defaultChapter)
 
 export const Chapter = () => {
@@ -61,16 +61,16 @@ export const Chapter = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center mx-auto w-full min-h-screen bg-stone-100">
-        <div className="prose">Loading ...</div>
+      <div className="mx-auto flex min-h-screen w-full justify-center">
+        <div className="prose dark:prose-invert">Loading ...</div>
       </div>
     )
   }
 
   if (html) {
     return (
-      <div className="flex justify-center mx-auto w-full min-h-screen p-4 bg-stone-100">
-        <div className="prose">
+      <div className="mx-auto flex min-h-screen w-full justify-center p-4">
+        <div className="prose dark:prose-invert">
           <h2>
             {version} {"|"}{" "}
             {chapter
@@ -85,8 +85,8 @@ export const Chapter = () => {
   }
 
   return (
-    <div className="flex justify-center mx-auto w-full min-h-screen bg-stone-100">
-      <div className="prose">{error ?? "Unkown error"}</div>
+    <div className="mx-auto flex min-h-screen w-full justify-center">
+      <div className="prose dark:prose-invert">{error ?? "Unkown error"}</div>
     </div>
   )
 }
