@@ -20,7 +20,10 @@ export const eqChapter: Eq<ChapterOpt> = {
       : false
 }
 
-const defaultChapter: ChapterOpt = {version: "NET", chapter: "genesis-1"}
+const defaultChapter: ChapterOpt = {
+  version: CONFIG.DEFAULT_VERSION,
+  chapter: "genesis-1"
+}
 
 export const fromPath = (): ChapterOpt => {
   const [version, chapter] = window.location.pathname.split("/").filter(Boolean)

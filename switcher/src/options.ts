@@ -1,5 +1,6 @@
 import {fromPath} from "./Chapter"
 import {Chapter} from "./CommandPalette"
+import {CONFIG} from "./config"
 
 export const options_: Chapter[] = [
   {
@@ -11904,7 +11905,7 @@ export const options_: Chapter[] = [
   }
 ]
 
-export const VERSIONS = ["NET", "WEB"]
+export const VERSIONS = CONFIG.AVAILABLE_VERSIONS
 
 const {version: currentVersion} = fromPath()
 
