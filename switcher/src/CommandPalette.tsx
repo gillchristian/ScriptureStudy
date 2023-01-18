@@ -1,13 +1,19 @@
 import {Fragment, useEffect, useMemo, useState} from "react"
 import {Combobox, Dialog, Transition} from "@headlessui/react"
 import {MagnifyingGlassIcon} from "@heroicons/react/20/solid"
-import {NewspaperIcon, BookOpenIcon, TagIcon} from "@heroicons/react/24/outline"
+import {
+  NewspaperIcon,
+  BookOpenIcon,
+  TagIcon,
+  ArrowPathRoundedSquareIcon
+} from "@heroicons/react/24/outline"
 import {atom, useAtom} from "jotai"
 import {matchSorter} from "match-sorter"
 import {atomWithStorage} from "jotai/utils"
 
 import {options as chapters} from "./options"
 import {ChapterAtom, eqChapter, fromPath} from "./Chapter"
+import {CONFIG} from "./config"
 
 export type Chapter = {
   tag: "chapter"
@@ -15,35 +21,64 @@ export type Chapter = {
   version: string
 }
 
-type ActionEnum = "toggle_verses" | "toggle_footnotes"
+type ShortcutEnum = "toggle_verses" | "toggle_footnotes"
 
-type Action = {
-  tag: "action"
-  action: ActionEnum
+type Shortcut = {
+  tag: "shortcut"
+  action: ShortcutEnum
   name: string
   icon: typeof TagIcon
   shortcut: string
 }
 
-const ToggleVersesAction: Action = {
-  tag: "action",
+const ToggleVersesAction: Shortcut = {
+  tag: "shortcut",
   action: "toggle_verses",
   name: "Toggle verse numbers ...",
   icon: TagIcon,
   shortcut: "V"
 }
 
-const ToggleFootnotesAction: Action = {
-  tag: "action",
+const ToggleFootnotesAction: Shortcut = {
+  tag: "shortcut",
   action: "toggle_footnotes",
   name: "Toggle footnotes ...",
   icon: NewspaperIcon,
   shortcut: "F"
 }
 
-const quickActions: Action[] = [ToggleVersesAction, ToggleFootnotesAction]
+type ActionEnum = "switch_version"
 
-type Command = Chapter | Action
+type Action = {
+  tag: "action"
+  action: ActionEnum
+  name: string
+  icon: typeof TagIcon
+}
+
+const SwitchVersion: Action = {
+  tag: "action",
+  action: "switch_version",
+  name: "Switch version ...",
+  icon: ArrowPathRoundedSquareIcon
+}
+
+const quickActions: (Shortcut | Action)[] =
+  CONFIG.AVAILABLE_VERSIONS.length > 1
+    ? [SwitchVersion, ToggleVersesAction, ToggleFootnotesAction]
+    : [ToggleVersesAction, ToggleFootnotesAction]
+
+type Version = {
+  tag: "version"
+  version: string
+}
+
+const versions: Version[] = CONFIG.AVAILABLE_VERSIONS.map((version) => ({
+  tag: "version",
+  version
+}))
+
+type Command = Chapter | Shortcut | Action | Version
 
 function classNames(...classes: (string | boolean | null | undefined)[]) {
   return classes.filter(Boolean).join(" ")
@@ -66,14 +101,16 @@ const ConfigAtom = atomWithStorage<Config>(CONFIG_KEY, {
 })
 
 type Props = {
-  mode: "app" | "controls_only"
+  appMode: "app" | "controls_only"
   onToggleVerses: (on: boolean) => void
   onToggleFootnotes: (on: boolean) => void
   onChapterSelect: (version: string, chapter: string) => void
 }
 
+type Mode = "commands" | "version_switcher"
+
 export const CommandPalette = ({
-  mode,
+  appMode,
   onToggleVerses,
   onToggleFootnotes,
   onChapterSelect
@@ -82,13 +119,22 @@ export const CommandPalette = ({
   const [open, setOpen] = useAtom(CommandPaletteAtom)
   const [recent, setRecent] = useAtom(VisitedRecentlyAtom)
   const [config, setConfig] = useAtom(ConfigAtom)
-  const [selectedChapter, _setSelected] = useAtom(ChapterAtom)
+  const [selectedChapter, setSelectedChapter] = useAtom(ChapterAtom)
+  const [mode, setMode] = useState<Mode>("commands")
 
   const filteredChapters = useMemo(
     () =>
-      query === ""
+      query === "" || mode === "version_switcher"
         ? []
         : matchSorter(chapters, query, {keys: ["chapter"]}).slice(0, 5),
+    [query]
+  )
+
+  const filteredVersions = useMemo(
+    () =>
+      query === "" || mode === "commands"
+        ? versions
+        : matchSorter(versions, query, {keys: ["version"]}).slice(0, 5),
     [query]
   )
 
@@ -155,31 +201,55 @@ export const CommandPalette = ({
     []
   )
 
+  const insertMostRecent = (chapter: Chapter) =>
+    setRecent((recent) => [
+      chapter,
+      ...recent.filter((c) => !eqChapter.equal(c, chapter)).slice(0, 4)
+    ])
+
   const onOpen = (item: Command) => {
     if (item.tag === "chapter") {
       onChapterSelect(item.version, item.chapter)
-
-      setRecent((recent) => [
-        item,
-        ...recent.filter((c) => !eqChapter.equal(c, item)).slice(0, 4)
-      ])
+      insertMostRecent(item)
     }
 
-    if (item.tag === "action" && item.action === "toggle_verses") {
+    if (item.tag === "action" && item.action === "switch_version") {
+      setQuery("")
+      setMode("version_switcher")
+      return
+    }
+
+    if (item.tag === "shortcut" && item.action === "toggle_verses") {
       toggleVerses()
     }
 
-    if (item.tag === "action" && item.action === "toggle_footnotes") {
+    if (item.tag === "shortcut" && item.action === "toggle_footnotes") {
       toggleFootnotes()
+    }
+
+    if (item.tag === "version") {
+      const next: Chapter = {
+        tag: "chapter",
+        ...selectedChapter,
+        version: item.version
+      }
+      setSelectedChapter(next)
+      insertMostRecent(next)
+      setMode("commands")
     }
 
     setOpen(false)
   }
 
   const recent_ =
-    mode === "app"
+    appMode === "app"
       ? recent.filter((c) => !eqChapter.equal(c, selectedChapter))
       : recent.filter((c) => !eqChapter.equal(c, fromPath()))
+
+  const onClose = () => {
+    setMode("commands")
+    setOpen(false)
+  }
 
   return (
     <Transition.Root
@@ -188,7 +258,7 @@ export const CommandPalette = ({
       afterLeave={() => setQuery("")}
       appear
     >
-      <Dialog as="div" className="relative z-10" onClose={setOpen}>
+      <Dialog as="div" className="relative z-10" onClose={onClose}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -225,98 +295,135 @@ export const CommandPalette = ({
                   />
                 </div>
 
-                {(query === "" || filteredChapters.length > 0) && (
+                {mode === "version_switcher" && (
                   <Combobox.Options
                     static
                     className="max-h-[28rem] scroll-py-2 divide-y divide-gray-500 divide-opacity-20 overflow-y-auto"
                   >
-                    {query === "" && (
-                      <li className="p-2">
-                        {query === "" && (
-                          <h2 className="mt-4 mb-2 px-3 text-xs font-semibold text-gray-200">
-                            Actions
-                          </h2>
-                        )}
-                        <ul className="text-sm text-gray-400">
-                          {quickActions.map((action) => (
-                            <Combobox.Option
-                              key={action.shortcut}
-                              value={action}
-                              className={({active}) =>
-                                classNames(
-                                  "flex cursor-default select-none items-center rounded-md px-3 py-2",
-                                  active && "bg-gray-800 text-white"
-                                )
-                              }
-                            >
-                              {({active}) => (
-                                <>
-                                  <action.icon
-                                    className={classNames(
-                                      "h-6 w-6 flex-none",
-                                      active ? "text-white" : "text-gray-500"
-                                    )}
-                                    aria-hidden="true"
-                                  />
-                                  <span className="ml-3 flex-auto truncate">
-                                    {action.name}
-                                  </span>
-                                  <span className="ml-3 flex-none text-xs font-semibold text-gray-400">
-                                    <kbd className="font-sans">⌘</kbd>
-                                    <kbd className="font-sans">
-                                      {action.shortcut}
-                                    </kbd>
-                                  </span>
-                                </>
-                              )}
-                            </Combobox.Option>
-                          ))}
-                        </ul>
-                      </li>
-                    )}
-                    {query === "" && recent_.length > 0 && (
-                      <li className="p-2">
-                        <h2 className="mt-4 mb-2 px-3 text-xs font-semibold text-gray-200">
-                          Recent reads
-                        </h2>
+                    <li className="p-2">
+                      <h2 className="mt-4 mb-2 px-3 text-xs font-semibold text-gray-200">
+                        Versions
+                      </h2>
+                    </li>
 
-                        <ul className="text-sm text-gray-400">
-                          {recent_.map((chapter) => (
-                            <Chapter
-                              key={`recent-${chapter.version}-${chapter.chapter}`}
-                              chapter={chapter}
-                            />
-                          ))}
-                        </ul>
-                      </li>
-                    )}
-                    {query !== "" && filteredChapters.length > 0 && (
-                      <li className="p-2">
-                        <ul className="text-sm text-gray-400">
-                          {filteredChapters.map((chapter) => (
-                            <Chapter
-                              key={`search-${chapter.version}-${chapter.chapter}`}
-                              chapter={chapter}
-                            />
-                          ))}
-                        </ul>
-                      </li>
-                    )}
+                    <ul className="text-sm text-gray-400">
+                      {filteredVersions.map((version) => (
+                        <Combobox.Option
+                          key={version.version}
+                          value={version}
+                          className={({active}) =>
+                            classNames(
+                              "flex cursor-default select-none items-center rounded-md px-3 py-2",
+                              active && "bg-gray-800 text-white"
+                            )
+                          }
+                        >
+                          <span className="ml-3 flex-auto truncate">
+                            {version.version}
+                          </span>
+                        </Combobox.Option>
+                      ))}
+                    </ul>
                   </Combobox.Options>
                 )}
 
-                {query !== "" && filteredChapters.length === 0 && (
-                  <div className="py-14 px-6 text-center sm:px-14">
-                    <BookOpenIcon
-                      className="mx-auto h-6 w-6 text-gray-500"
-                      aria-hidden="true"
-                    />
-                    <p className="mt-4 text-sm text-gray-200">
-                      We couldn't find any chapters with that term. Please try
-                      again.
-                    </p>
-                  </div>
-                )}
+                {mode === "commands" &&
+                  (query === "" || filteredChapters.length > 0) && (
+                    <Combobox.Options
+                      static
+                      className="max-h-[28rem] scroll-py-2 divide-y divide-gray-500 divide-opacity-20 overflow-y-auto"
+                    >
+                      {query === "" && (
+                        <li className="p-2">
+                          {query === "" && (
+                            <h2 className="mt-4 mb-2 px-3 text-xs font-semibold text-gray-200">
+                              Actions
+                            </h2>
+                          )}
+                          <ul className="text-sm text-gray-400">
+                            {quickActions.map((action) => (
+                              <Combobox.Option
+                                key={action.action}
+                                value={action}
+                                className={({active}) =>
+                                  classNames(
+                                    "flex cursor-default select-none items-center rounded-md px-3 py-2",
+                                    active && "bg-gray-800 text-white"
+                                  )
+                                }
+                              >
+                                {({active}) => (
+                                  <>
+                                    <action.icon
+                                      className={classNames(
+                                        "h-6 w-6 flex-none",
+                                        active ? "text-white" : "text-gray-500"
+                                      )}
+                                      aria-hidden="true"
+                                    />
+                                    <span className="ml-3 flex-auto truncate">
+                                      {action.name}
+                                    </span>
+                                    {action.tag === "shortcut" && (
+                                      <span className="ml-3 flex-none text-xs font-semibold text-gray-400">
+                                        <kbd className="font-sans">⌘</kbd>
+                                        <kbd className="font-sans">
+                                          {action.shortcut}
+                                        </kbd>
+                                      </span>
+                                    )}
+                                  </>
+                                )}
+                              </Combobox.Option>
+                            ))}
+                          </ul>
+                        </li>
+                      )}
+                      {query === "" && recent_.length > 0 && (
+                        <li className="p-2">
+                          <h2 className="mt-4 mb-2 px-3 text-xs font-semibold text-gray-200">
+                            Recent reads
+                          </h2>
+
+                          <ul className="text-sm text-gray-400">
+                            {recent_.map((chapter) => (
+                              <Chapter
+                                key={`recent-${chapter.version}-${chapter.chapter}`}
+                                chapter={chapter}
+                              />
+                            ))}
+                          </ul>
+                        </li>
+                      )}
+                      {query !== "" && filteredChapters.length > 0 && (
+                        <li className="p-2">
+                          <ul className="text-sm text-gray-400">
+                            {filteredChapters.map((chapter) => (
+                              <Chapter
+                                key={`search-${chapter.version}-${chapter.chapter}`}
+                                chapter={chapter}
+                              />
+                            ))}
+                          </ul>
+                        </li>
+                      )}
+                    </Combobox.Options>
+                  )}
+
+                {mode === "commands" &&
+                  query !== "" &&
+                  filteredChapters.length === 0 && (
+                    <div className="py-14 px-6 text-center sm:px-14">
+                      <BookOpenIcon
+                        className="mx-auto h-6 w-6 text-gray-500"
+                        aria-hidden="true"
+                      />
+                      <p className="mt-4 text-sm text-gray-200">
+                        We couldn't find any chapters with that term. Please try
+                        again.
+                      </p>
+                    </div>
+                  )}
               </Combobox>
             </Dialog.Panel>
           </Transition.Child>

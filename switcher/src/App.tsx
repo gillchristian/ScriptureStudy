@@ -15,7 +15,7 @@ export function App() {
     <>
       <Chapter />
       <CommandPalette
-        mode="app"
+        appMode="app"
         onChapterSelect={onChapterSelect}
         onToggleFootnotes={(on) => {
           if (on) {

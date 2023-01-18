@@ -10,7 +10,6 @@
 
 ### App
 
-- [ ] Version switcher
 - [ ] Rename directory => Switch to Next.js
 - [ ] Fix space between the chapter a footnote "mark" and the vible verse
   (it is properly respected in the normal rendering). This also happens in
@@ -20,6 +19,8 @@
 - [ ] Search to support version query
 - [ ] Keep the selected chapter in the URL instead of memory => Switch to Next.js
 - [ ] Allow to configure the background color?
+- [ ] Unify the `Chapter` type (some places is `genesis-1` and some others `Genesis 1`)
+- [x] Version switcher
 - [x] Default version should be the selected one
 - [x] Link app in Vercel with repo
 - [x] Dark mode => for some reason Tailwind Dark Mode doesn't work (both `system` and `class`) => Also check their example for supporting both

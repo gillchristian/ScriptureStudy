@@ -10,7 +10,7 @@ export function Switcher() {
   return (
     <>
       <CommandPalette
-        mode="controls_only"
+        appMode="controls_only"
         onChapterSelect={onChapterSelect}
         onToggleFootnotes={(on) => {
           if (on) {
