@@ -57,7 +57,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "html-to-json"
+name = "html2json"
 version = "0.1.0"
 dependencies = [
  "html_parser",
