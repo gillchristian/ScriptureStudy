@@ -26,6 +26,8 @@ export function Switcher() {
             document.body.classList.add("hide-verses")
           }
         }}
+        onPrevChapter={() => {}}
+        onNextChapter={() => {}}
       />
       <Controls mode="controls_only" />
     </>

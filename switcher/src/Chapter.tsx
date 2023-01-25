@@ -48,7 +48,11 @@ export const Chapter = () => {
   useEffect(() => {
     setLoading(true)
 
-    fetch(`${CONFIG.API_URL}/${version}/${chapter}.json`)
+    fetch(
+      `${CONFIG.API_URL}/${version}/${chapter
+        .replace(/ /g, "-")
+        .toLowerCase()}.json`
+    )
       .then((res) =>
         res.ok ? res.json() : Promise.reject(new Error("Failed to fetch"))
       )
