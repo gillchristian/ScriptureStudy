@@ -151,7 +151,11 @@ export const CommandPalette = ({reference: selectedChapter, books, chapters}: Pr
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    console.log("Mount")
+    console.log("Mount ...")
+
+    return () => {
+      console.log("Unmount ...")
+    }
   }, [])
 
   useEffect(() => {
@@ -247,76 +251,73 @@ export const CommandPalette = ({reference: selectedChapter, books, chapters}: Pr
     }
   }
 
-  useEffect(
-    () => {
-      // TODO: some of these should only run when menu is closed
-      const handler = (e: KeyboardEvent) => {
-        const isOpen = openRef.current
+  useEffect(() => {
+    // TODO: some of these should only run when menu is closed
+    const handler = (e: KeyboardEvent) => {
+      const isOpen = openRef.current
 
-        const isCtrl = e.ctrlKey
-        const isCmd = e.metaKey
+      const isCtrl = e.ctrlKey
+      const isCmd = e.metaKey
 
-        const isModifier = isCmd || isCtrl
+      const isModifier = isCmd || isCtrl
 
-        const isOpenCommandPatellte = e.key === "/" || e.key === "k" || e.key === "p"
-        if (!isOpen && isOpenCommandPatellte && isModifier) {
-          e.preventDefault()
-          e.stopPropagation()
+      const isOpenCommandPatellte = e.key === "/" || e.key === "k" || e.key === "p"
+      if (!isOpen && isOpenCommandPatellte && isModifier) {
+        e.preventDefault()
+        e.stopPropagation()
 
-          setOpen(true)
-          return
-        }
-
-        // Shortcuts only work when closed
-        if (isOpen) {
-          return
-        }
-
-        const isToggleVerses = e.key === ToggleVersesAction.shortcut.toLowerCase()
-        if (isToggleVerses && isModifier) {
-          e.preventDefault()
-          e.stopPropagation()
-
-          toggleVerses()
-          setOpen(false)
-        }
-
-        const isToggleFootnotes = e.key === ToggleFootnotesAction.shortcut.toLowerCase()
-        if (isToggleFootnotes && isModifier) {
-          e.preventDefault()
-          e.stopPropagation()
-
-          toggleFootnotes()
-          setOpen(false)
-        }
-
-        const isNextChapter = e.key === NextChapterAction.shortcut.toLowerCase()
-
-        if (!isModifier && isNextChapter) {
-          e.preventDefault()
-          e.stopPropagation()
-
-          onNextChapter()
-        }
-
-        const isPrevChapter = e.key === PrevChapterAction.shortcut.toLowerCase()
-
-        if (!isModifier && isPrevChapter) {
-          e.preventDefault()
-          e.stopPropagation()
-
-          onPrevChapter()
-        }
+        setOpen(true)
+        return
       }
 
-      document.addEventListener("keydown", handler)
-
-      return () => {
-        document.removeEventListener("keydown", handler)
+      // Shortcuts only work when closed
+      if (isOpen) {
+        return
       }
-    }, // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  )
+
+      const isToggleVerses = e.key === ToggleVersesAction.shortcut.toLowerCase()
+      if (isToggleVerses && isModifier) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        toggleVerses()
+        setOpen(false)
+      }
+
+      const isToggleFootnotes = e.key === ToggleFootnotesAction.shortcut.toLowerCase()
+      if (isToggleFootnotes && isModifier) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        toggleFootnotes()
+        setOpen(false)
+      }
+
+      const isNextChapter = e.key === NextChapterAction.shortcut.toLowerCase()
+
+      if (!isModifier && isNextChapter) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        onNextChapter()
+      }
+
+      const isPrevChapter = e.key === PrevChapterAction.shortcut.toLowerCase()
+
+      if (!isModifier && isPrevChapter) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        onPrevChapter()
+      }
+    }
+
+    document.addEventListener("keydown", handler)
+
+    return () => {
+      document.removeEventListener("keydown", handler)
+    }
+  }, [])
 
   const onOpen = (item: Command) => {
     if (item.tag === "chapter") {
