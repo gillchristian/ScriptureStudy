@@ -1,6 +1,9 @@
-import {Chapter} from "@/components/Chapter"
-import {CONFIG} from "@/config"
+import {ReactNode} from "react"
+
+import {Controls} from "@/components/Controls"
+import {CommandPalette} from "@/components/CommandPalette"
 import {Books, NamedReference, toChapters} from "@/models/reference"
+import {CONFIG} from "@/config"
 
 type Params = {
   version: string
@@ -8,10 +11,13 @@ type Params = {
   chapter: string
 }
 
-type Props = {params: Params}
+type Props = {
+  params: Params
+  children: ReactNode
+}
 
-export default async function App({params}: Props) {
-  const {books} = await getData(params.version)
+export default async function ChapterLayout({children, params}: Props) {
+  const {books, chapters} = await getData(params.version)
 
   const chapter_ = parseInt(params.chapter, 10)
   const chapter = Number.isNaN(chapter_) ? 1 : chapter_
@@ -19,10 +25,9 @@ export default async function App({params}: Props) {
 
   return (
     <>
-      {
-        // @ts-expect-error
-        <Chapter books={books} reference={reference} />
-      }
+      {children}
+      <CommandPalette reference={reference} books={books} chapters={chapters} />
+      <Controls mode="app" />
     </>
   )
 }

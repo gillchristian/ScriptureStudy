@@ -151,6 +151,10 @@ export const CommandPalette = ({reference: selectedChapter, books, chapters}: Pr
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
+    console.log("Mount")
+  }, [])
+
+  useEffect(() => {
     openRef.current = open
   }, [open])
 
