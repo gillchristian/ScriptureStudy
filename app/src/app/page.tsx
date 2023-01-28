@@ -11,20 +11,24 @@ export default async function Home() {
     <div className="flex h-screen w-screen justify-center p-4 pt-4 sm:pt-10">
       <div className="container space-y-8">
         <div>
-          <p className="m-2 border-b-2 border-gray-200 font-bold text-gray-600">Old Testament</p>
+          <p className="my-2 border-b-2 border-gray-200 font-bold text-gray-600 dark:text-gray-400">
+            Old Testament
+          </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {books.inOrder.slice(0, 39).map((book) => (
-              <Link className="m-2 text-blue-600" href={`/${version}/${book}/1`} key={book}>
+              <Link className="my-2 text-blue-600" href={`/${version}/${book}/1`} key={book}>
                 {books.names[book]}
               </Link>
             ))}
           </div>
         </div>
         <div className="container">
-          <p className="m-2 border-b-2 border-gray-200 font-bold text-gray-600">New Testament</p>
+          <p className="my-2 border-b-2 border-gray-200 font-bold text-gray-600 dark:text-gray-400">
+            New Testament
+          </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {books.inOrder.slice(39).map((book) => (
-              <Link className="m-2 text-blue-600" href={`/${version}/${book}/1`} key={book}>
+              <Link className="my-2 text-blue-600" href={`/${version}/${book}/1`} key={book}>
                 {books.names[book]}
               </Link>
             ))}

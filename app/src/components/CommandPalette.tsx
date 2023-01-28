@@ -1,5 +1,6 @@
 "use client"
 
+import {useRouter, useSelectedLayoutSegments} from "next/navigation"
 import {Fragment, useEffect, useMemo, useRef, useState} from "react"
 import {Combobox, Dialog, Transition} from "@headlessui/react"
 import {MagnifyingGlassIcon} from "@heroicons/react/20/solid"
@@ -10,17 +11,47 @@ import {
   TagIcon,
   ArrowPathRoundedSquareIcon,
   ArrowLeftIcon,
-  ArrowRightIcon
+  ArrowRightIcon,
+  ArchiveBoxIcon
 } from "@heroicons/react/24/outline"
 import {atom, useAtom} from "jotai"
-import {matchSorter} from "match-sorter"
 import {atomWithStorage} from "jotai/utils"
+import {matchSorter} from "match-sorter"
 
 import {CONFIG} from "@/config"
 import {Books, eqReference, NamedReference, Reference} from "@/models/reference"
-import {useRouter} from "next/navigation"
+import {VisitedRecentlyAtom} from "@/models/atoms"
 
-type ShortcutEnum = "toggle_verses" | "toggle_footnotes" | "next_chapter" | "prev_chapter"
+type Route = {tag: "history"} | {tag: "home"} | {tag: "not_found"} | ({tag: "chapter"} & Reference)
+type RouteTag = Route["tag"]
+
+const useRoute = (): Route => {
+  const [a, b, c] = useSelectedLayoutSegments()
+
+  if (!a) {
+    return {tag: "home"}
+  }
+
+  if (a === "history") {
+    return {tag: "history"}
+  }
+
+  if (!b || !c) {
+    return {tag: "not_found"}
+  }
+
+  const chapter_ = parseInt(c, 10)
+  const chapter = Number.isNaN(chapter_) ? 1 : chapter_
+
+  return {tag: "chapter", version: a, book: b, chapter}
+}
+
+type ShortcutEnum =
+  | "toggle_verses"
+  | "toggle_footnotes"
+  | "next_chapter"
+  | "prev_chapter"
+  | "got_to_history"
 
 type Shortcut = {
   tag: "shortcut"
@@ -29,6 +60,7 @@ type Shortcut = {
   icon: typeof TagIcon
   shortcut: string
   withCtrl: boolean
+  showOn: "all" | RouteTag[]
 }
 
 const ToggleVersesAction: Shortcut = {
@@ -37,7 +69,8 @@ const ToggleVersesAction: Shortcut = {
   name: "Toggle verse numbers ...",
   icon: TagIcon,
   shortcut: "V",
-  withCtrl: true
+  withCtrl: true,
+  showOn: ["chapter"]
 }
 
 const ToggleFootnotesAction: Shortcut = {
@@ -46,7 +79,8 @@ const ToggleFootnotesAction: Shortcut = {
   name: "Toggle footnotes ...",
   icon: NewspaperIcon,
   shortcut: "F",
-  withCtrl: true
+  withCtrl: true,
+  showOn: ["chapter"]
 }
 
 const PrevChapterAction: Shortcut = {
@@ -55,7 +89,8 @@ const PrevChapterAction: Shortcut = {
   name: "Previous chapter",
   icon: ArrowLeftIcon,
   shortcut: "h",
-  withCtrl: false
+  withCtrl: false,
+  showOn: ["chapter"]
 }
 
 const NextChapterAction: Shortcut = {
@@ -64,7 +99,18 @@ const NextChapterAction: Shortcut = {
   name: "Next chapter",
   icon: ArrowRightIcon,
   shortcut: "l",
-  withCtrl: false
+  withCtrl: false,
+  showOn: ["chapter"]
+}
+
+const GoToHistoryAction: Shortcut = {
+  tag: "shortcut",
+  action: "got_to_history",
+  name: "Ho to history",
+  icon: ArchiveBoxIcon,
+  shortcut: "h",
+  withCtrl: true,
+  showOn: ["chapter", "home", "not_found"]
 }
 
 type ActionEnum = "switch_version" | "search_commands"
@@ -74,32 +120,42 @@ type Action = {
   action: ActionEnum
   name: string
   icon: typeof TagIcon
+  showOn: "all" | RouteTag[]
 }
 
 const SearchCommands: Action = {
   tag: "action",
   action: "search_commands",
   name: "Search commands",
-  icon: CommandLineIcon
+  icon: CommandLineIcon,
+  showOn: "all"
 }
 
 const SwitchVersion: Action = {
   tag: "action",
   action: "switch_version",
   name: "Switch version ...",
-  icon: ArrowPathRoundedSquareIcon
+  icon: ArrowPathRoundedSquareIcon,
+  showOn: ["chapter"]
 }
 
 const quickActions: (Shortcut | Action)[] =
   CONFIG.AVAILABLE_VERSIONS.length > 1
     ? [
         SwitchVersion,
+        GoToHistoryAction,
         ToggleVersesAction,
+        ToggleFootnotesAction,
         PrevChapterAction,
-        NextChapterAction,
-        ToggleFootnotesAction
+        NextChapterAction
       ]
-    : [ToggleVersesAction, ToggleFootnotesAction, PrevChapterAction, NextChapterAction]
+    : [
+        GoToHistoryAction,
+        ToggleVersesAction,
+        ToggleFootnotesAction,
+        PrevChapterAction,
+        NextChapterAction
+      ]
 
 type Version = {
   tag: "version"
@@ -119,9 +175,6 @@ function classNames(...classes: (string | boolean | null | undefined)[]) {
 
 export const CommandPaletteAtom = atom<boolean>(false)
 
-const VISITED_RECENTLY_KEY = "ScriptureStudy__visited_recently_v3"
-const VisitedRecentlyAtom = atomWithStorage<NamedReference[]>(VISITED_RECENTLY_KEY, [])
-
 type Config = {
   verses?: boolean
   footnotes?: boolean
@@ -134,14 +187,17 @@ const ConfigAtom = atomWithStorage<Config>(CONFIG_KEY, {
 })
 
 type Props = {
-  reference: Reference
   books: Books
   chapters: NamedReference[]
 }
 
 type Mode = "search" | "commands" | "version_switcher"
 
-export const CommandPalette = ({reference: selectedChapter, books, chapters}: Props) => {
+export const CommandPalette = ({books, chapters}: Props) => {
+  const route = useRoute()
+
+  const selectedChapter: Reference | undefined = route.tag === "chapter" ? route : undefined
+
   const [query_, setQuery] = useState("")
   const [open, setOpen] = useAtom(CommandPaletteAtom)
   const [recent, setRecent] = useAtom(VisitedRecentlyAtom)
@@ -192,10 +248,12 @@ export const CommandPalette = ({reference: selectedChapter, books, chapters}: Pr
 
   const filteredCommands = useMemo(
     () =>
-      mode === "commands" && query !== ""
+      (mode === "commands" && query !== ""
         ? matchSorter(quickActions, query, {keys: ["name"]}).slice(0, 5)
-        : [],
-    [query, mode]
+        : quickActions
+      ).filter((a) => (a.showOn === "all" ? true : a.showOn.includes(route.tag))),
+
+    [query, mode, selectedChapter?.version, selectedChapter?.book, selectedChapter?.chapter]
   )
 
   useEffect(() => {
@@ -216,17 +274,24 @@ export const CommandPalette = ({reference: selectedChapter, books, chapters}: Pr
     router.push(`/${version}/${book}/${chapter}`)
   }
 
+  const goToHistory = () => {
+    router.push(`/history`)
+  }
+
   const toggleFootnotes = () => {
     setConfig((c) => ({...c, footnotes: !c.footnotes}))
   }
 
   const insertMostRecent = (chapter: NamedReference) =>
     setRecent((recent) => [
-      chapter,
-      ...recent.filter((c) => !eqReference.equal(c, chapter)).slice(0, 1000)
+      {time: Date.now(), reference: chapter},
+      ...recent.filter((c) => !eqReference.equal(c.reference, chapter)).slice(0, 1000)
     ])
 
   const onNextChapter = () => {
+    if (!selectedChapter) {
+      return
+    }
     const next = findNext(selectedChapter, books)
 
     if (next) {
@@ -239,6 +304,9 @@ export const CommandPalette = ({reference: selectedChapter, books, chapters}: Pr
     }
   }
   const onPrevChapter = () => {
+    if (!selectedChapter) {
+      return
+    }
     const prev = findPrev(selectedChapter, books)
 
     if (prev) {
@@ -254,15 +322,13 @@ export const CommandPalette = ({reference: selectedChapter, books, chapters}: Pr
   useEffect(() => {
     // TODO: some of these should only run when menu is closed
     const handler = (e: KeyboardEvent) => {
-      const isOpen = openRef.current
-
       const isCtrl = e.ctrlKey
       const isCmd = e.metaKey
 
       const isModifier = isCmd || isCtrl
 
       const isOpenCommandPatellte = e.key === "/" || e.key === "k" || e.key === "p"
-      if (!isOpen && isOpenCommandPatellte && isModifier) {
+      if (!open && isOpenCommandPatellte && isModifier) {
         e.preventDefault()
         e.stopPropagation()
 
@@ -271,7 +337,7 @@ export const CommandPalette = ({reference: selectedChapter, books, chapters}: Pr
       }
 
       // Shortcuts only work when closed
-      if (isOpen) {
+      if (open) {
         return
       }
 
@@ -310,6 +376,15 @@ export const CommandPalette = ({reference: selectedChapter, books, chapters}: Pr
 
         onPrevChapter()
       }
+
+      const isOpenHistory = e.key === GoToHistoryAction.shortcut.toLowerCase()
+
+      if (isModifier && isOpenHistory) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        goToHistory()
+      }
     }
 
     document.addEventListener("keydown", handler)
@@ -317,7 +392,7 @@ export const CommandPalette = ({reference: selectedChapter, books, chapters}: Pr
     return () => {
       document.removeEventListener("keydown", handler)
     }
-  }, [])
+  }, [open, , selectedChapter?.version, selectedChapter?.book, selectedChapter?.chapter])
 
   const onOpen = (item: Command) => {
     if (item.tag === "chapter") {
@@ -354,7 +429,7 @@ export const CommandPalette = ({reference: selectedChapter, books, chapters}: Pr
       onNextChapter()
     }
 
-    if (item.tag === "version") {
+    if (item.tag === "version" && selectedChapter) {
       const next: NamedReference = {
         tag: "chapter",
         ...selectedChapter,
@@ -366,11 +441,18 @@ export const CommandPalette = ({reference: selectedChapter, books, chapters}: Pr
       setMode("commands")
     }
 
+    if (item.tag === "shortcut" && item.action === "got_to_history") {
+      goToHistory()
+    }
+
     setOpen(false)
   }
 
   const recent_ = useMemo(
-    () => recent.filter((c) => !eqReference.equal(c, selectedChapter)).slice(0, 5),
+    () =>
+      recent
+        .filter((c) => (selectedChapter ? !eqReference.equal(c.reference, selectedChapter) : true))
+        .slice(0, 5),
     [recent, selectedChapter]
   )
 
@@ -439,7 +521,7 @@ export const CommandPalette = ({reference: selectedChapter, books, chapters}: Pr
                     </li>
 
                     <ul className="text-sm text-gray-400">
-                      {(query === "" ? quickActions : filteredCommands).map((action) => (
+                      {filteredCommands.map((action) => (
                         <Combobox.Option
                           key={action.action}
                           value={action}
@@ -517,7 +599,6 @@ export const CommandPalette = ({reference: selectedChapter, books, chapters}: Pr
                   >
                     {
                       // Empty query
-
                       query === "" && (
                         <li className="p-2">
                           <ul className="text-sm text-gray-400">
@@ -546,39 +627,6 @@ export const CommandPalette = ({reference: selectedChapter, books, chapters}: Pr
                                 )}
                               </Combobox.Option>
                             ))}
-
-                            {false &&
-                              quickActions.map((action) => (
-                                <Combobox.Option
-                                  key={action.action}
-                                  value={action}
-                                  className={({active}) =>
-                                    classNames(
-                                      "flex cursor-default select-none items-center rounded-md px-3 py-2",
-                                      active && "bg-gray-800 text-white"
-                                    )
-                                  }
-                                >
-                                  {({active}) => (
-                                    <>
-                                      <action.icon
-                                        className={classNames(
-                                          "h-6 w-6 flex-none",
-                                          active ? "text-white" : "text-gray-500"
-                                        )}
-                                        aria-hidden="true"
-                                      />
-                                      <span className="ml-3 flex-auto truncate">{action.name}</span>
-                                      {action.tag === "shortcut" && (
-                                        <span className="ml-3 flex-none text-xs font-semibold text-gray-400">
-                                          <kbd className="font-sans">⌘</kbd>
-                                          <kbd className="font-sans">{action.shortcut}</kbd>
-                                        </span>
-                                      )}
-                                    </>
-                                  )}
-                                </Combobox.Option>
-                              ))}
                           </ul>
                         </li>
                       )
@@ -590,7 +638,7 @@ export const CommandPalette = ({reference: selectedChapter, books, chapters}: Pr
                         </h2>
 
                         <ul className="text-sm text-gray-400">
-                          {recent_.map((chapter) => (
+                          {recent_.map(({reference: chapter}) => (
                             <Chapter
                               key={`recent-${chapter.version}-${chapter.chapter}`}
                               chapter={chapter}
