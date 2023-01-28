@@ -1,3 +1,5 @@
 bibles/
 bibles_/
 !bin/
+.vercel
+node_modules/
