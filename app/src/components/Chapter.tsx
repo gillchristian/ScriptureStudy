@@ -2,6 +2,7 @@ import {CONFIG} from "@/config"
 import {Books, Reference} from "@/models/reference"
 
 import {Element, Html} from "./Html"
+import {RecordVisitedChapter} from "./RecordVisitedChaper"
 
 type Props = {books: Books; reference: Reference}
 
@@ -19,16 +20,24 @@ export const Chapter = async ({books, reference}: Props) => {
   }
 
   return (
-    <div className="mx-auto flex min-h-screen w-full justify-center p-4">
-      <div className="prose dark:prose-invert">
-        <h2>
-          {reference.version}
-          {" | "}
-          {books.names[reference.book]} {reference.chapter}
-        </h2>
-        <Html node={html} />
+    <>
+      <RecordVisitedChapter
+        books={books}
+        version={reference.version}
+        book={reference.book}
+        chapter={reference.chapter}
+      />
+      <div className="mx-auto flex min-h-screen w-full justify-center p-4">
+        <div className="prose dark:prose-invert">
+          <h2>
+            {reference.version}
+            {" | "}
+            {books.names[reference.book]} {reference.chapter}
+          </h2>
+          <Html node={html} />
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 

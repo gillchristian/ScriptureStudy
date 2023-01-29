@@ -200,7 +200,7 @@ export const CommandPalette = ({books, chapters}: Props) => {
 
   const [query_, setQuery] = useState("")
   const [open, setOpen] = useAtom(CommandPaletteAtom)
-  const [recent, setRecent] = useAtom(VisitedRecentlyAtom)
+  const [recent, _setRecent] = useAtom(VisitedRecentlyAtom)
   const [config, setConfig] = useAtom(ConfigAtom)
   const [mode, setMode] = useState<Mode>("search")
   const openRef = useRef(open)
@@ -282,12 +282,6 @@ export const CommandPalette = ({books, chapters}: Props) => {
     setConfig((c) => ({...c, footnotes: !c.footnotes}))
   }
 
-  const insertMostRecent = (chapter: NamedReference) =>
-    setRecent((recent) => [
-      {time: Date.now(), reference: chapter},
-      ...recent.filter((c) => !eqReference.equal(c.reference, chapter)).slice(0, 1000)
-    ])
-
   const onNextChapter = () => {
     if (!selectedChapter) {
       return
@@ -296,11 +290,6 @@ export const CommandPalette = ({books, chapters}: Props) => {
 
     if (next) {
       onChapterSelect(next)
-      insertMostRecent({
-        ...selectedChapter,
-        tag: "chapter",
-        name: `${books.names[selectedChapter.book]} ${selectedChapter.chapter}`
-      })
     }
   }
   const onPrevChapter = () => {
@@ -311,11 +300,6 @@ export const CommandPalette = ({books, chapters}: Props) => {
 
     if (prev) {
       onChapterSelect(prev)
-      insertMostRecent({
-        ...selectedChapter,
-        tag: "chapter",
-        name: `${books.names[selectedChapter.book]} ${selectedChapter.chapter}`
-      })
     }
   }
 
@@ -397,7 +381,6 @@ export const CommandPalette = ({books, chapters}: Props) => {
   const onOpen = (item: Command) => {
     if (item.tag === "chapter") {
       onChapterSelect(item)
-      insertMostRecent(item)
     }
 
     if (item.tag === "action" && item.action === "switch_version") {
@@ -437,7 +420,6 @@ export const CommandPalette = ({books, chapters}: Props) => {
         version: item.version
       }
       onChapterSelect(next)
-      insertMostRecent(next)
       setMode("commands")
     }
 
