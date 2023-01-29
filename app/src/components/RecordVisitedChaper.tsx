@@ -21,7 +21,7 @@ export const RecordVisitedChapter = ({books, version, book, chapter}: Props) => 
       const name = `${books.names[book]} ${chapter}`
 
       insertMostRecent({tag: "chapter", name, version, book, chapter})
-    }, 5000)
+    }, 10000)
 
     return () => {
       clearInterval(i)
