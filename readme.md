@@ -2,6 +2,20 @@
 
 A set of tools to study the Bible.
 
+## ⚠️ Disclaimer
+
+This is not affiliated to, [BibleGateway](https://www.biblegateway.com).
+
+By default, the version is set to the  When using this tool you **must honour
+the copyright** of different translations of the Bible (see
+[BibleGateway's overview](https://www.biblegateway.com/versions/)). Using the
+scripts with some version is clearly breaking the copyright, that is not the
+intended use of the code in this repository.
+
+[WEB Bible](https://worldenglish.bible/) is open. The
+[NET translation](https://netbible.com/copyright/), has very generous copyright
+and should be permissible for personal study as well.
+
 ## Download 
 
 To download the Bible from [BibleGateway](https://www.biblegateway.com/) run the
