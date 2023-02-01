@@ -2267,8 +2267,8 @@ export class TldrawApp extends StateManager<TDSnapshot> {
       })
       .map(deepCopy)
 
-    const assets = [
-      ...new Set(
+    const assets = Array.from(
+      new Set(
         shapes
           .map((shape) => {
             if (!shape.assetId) return
@@ -2277,7 +2277,7 @@ export class TldrawApp extends StateManager<TDSnapshot> {
           .filter(Boolean)
           .map(deepCopy)
       )
-    ] as TDAsset[]
+    ) as TDAsset[]
 
     return {shapes, bindings, assets}
   }

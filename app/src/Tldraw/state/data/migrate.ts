@@ -5,6 +5,7 @@ export function migrate(state: TDSnapshot, newVersion: number): TDSnapshot {
   const {version = 0} = document
 
   if (!("assets" in document)) {
+    // @ts-expect-error
     document.assets = {}
   }
 
