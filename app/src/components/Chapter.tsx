@@ -28,7 +28,7 @@ export const Chapter = async ({books, reference}: Props) => {
         chapter={reference.chapter}
       />
       <div className="mx-auto flex min-h-screen w-full justify-center p-4">
-        <div className="prose dark:prose-invert">
+        <div className="prose pb-40 dark:prose-invert">
           <h2>
             {reference.version}
             {" | "}
