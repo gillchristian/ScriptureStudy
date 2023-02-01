@@ -12,7 +12,8 @@ import {
   ArrowPathRoundedSquareIcon,
   ArrowLeftIcon,
   ArrowRightIcon,
-  ArchiveBoxIcon
+  ArchiveBoxIcon,
+  PencilSquareIcon
 } from "@heroicons/react/24/outline"
 import {atom, useAtom} from "jotai"
 import {atomWithStorage} from "jotai/utils"
@@ -21,6 +22,8 @@ import {matchSorter} from "match-sorter"
 import {CONFIG} from "@/config"
 import {Books, eqReference, NamedReference, Reference} from "@/models/reference"
 import {VisitedRecentlyAtom} from "@/models/atoms"
+import {NotesAtom} from "./Controls"
+import {not} from "@/lib/fp"
 
 type Route = {tag: "history"} | {tag: "home"} | {tag: "not_found"} | ({tag: "chapter"} & Reference)
 type RouteTag = Route["tag"]
@@ -47,6 +50,7 @@ const useRoute = (): Route => {
 }
 
 type ShortcutEnum =
+  | "toggle_notes"
   | "toggle_verses"
   | "toggle_footnotes"
   | "next_chapter"
@@ -63,12 +67,22 @@ type Shortcut = {
   showOn: "all" | RouteTag[]
 }
 
+const ToggleNotesAction: Shortcut = {
+  tag: "shortcut",
+  action: "toggle_notes",
+  name: "Toggle notes ...",
+  icon: PencilSquareIcon,
+  shortcut: "d",
+  withCtrl: true,
+  showOn: ["chapter"]
+}
+
 const ToggleVersesAction: Shortcut = {
   tag: "shortcut",
   action: "toggle_verses",
   name: "Toggle verse numbers ...",
   icon: TagIcon,
-  shortcut: "V",
+  shortcut: "v",
   withCtrl: true,
   showOn: ["chapter"]
 }
@@ -78,7 +92,7 @@ const ToggleFootnotesAction: Shortcut = {
   action: "toggle_footnotes",
   name: "Toggle footnotes ...",
   icon: NewspaperIcon,
-  shortcut: "F",
+  shortcut: "f",
   withCtrl: true,
   showOn: ["chapter"]
 }
@@ -144,6 +158,7 @@ const quickActions: (Shortcut | Action)[] =
     ? [
         SwitchVersion,
         GoToHistoryAction,
+        ToggleNotesAction,
         ToggleVersesAction,
         ToggleFootnotesAction,
         PrevChapterAction,
@@ -151,6 +166,7 @@ const quickActions: (Shortcut | Action)[] =
       ]
     : [
         GoToHistoryAction,
+        ToggleNotesAction,
         ToggleVersesAction,
         ToggleFootnotesAction,
         PrevChapterAction,
@@ -200,19 +216,12 @@ export const CommandPalette = ({books, chapters}: Props) => {
 
   const [query_, setQuery] = useState("")
   const [open, setOpen] = useAtom(CommandPaletteAtom)
+  const [showNotes, setShowNotes] = useAtom(NotesAtom)
   const [recent, _setRecent] = useAtom(VisitedRecentlyAtom)
   const [config, setConfig] = useAtom(ConfigAtom)
   const [mode, setMode] = useState<Mode>("search")
   const openRef = useRef(open)
   const inputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    console.log("Mount ...")
-
-    return () => {
-      console.log("Unmount ...")
-    }
-  }, [])
 
   useEffect(() => {
     openRef.current = open
@@ -304,7 +313,6 @@ export const CommandPalette = ({books, chapters}: Props) => {
   }
 
   useEffect(() => {
-    // TODO: some of these should only run when menu is closed
     const handler = (e: KeyboardEvent) => {
       const isCtrl = e.ctrlKey
       const isCmd = e.metaKey
@@ -325,13 +333,22 @@ export const CommandPalette = ({books, chapters}: Props) => {
         return
       }
 
+      const isToggleNotes = e.key === ToggleNotesAction.shortcut.toLowerCase()
+      if (isModifier && isToggleNotes) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        setShowNotes(not)
+        return
+      }
+
       const isToggleVerses = e.key === ToggleVersesAction.shortcut.toLowerCase()
       if (isToggleVerses && isModifier) {
         e.preventDefault()
         e.stopPropagation()
 
         toggleVerses()
-        setOpen(false)
+        return
       }
 
       const isToggleFootnotes = e.key === ToggleFootnotesAction.shortcut.toLowerCase()
@@ -340,25 +357,7 @@ export const CommandPalette = ({books, chapters}: Props) => {
         e.stopPropagation()
 
         toggleFootnotes()
-        setOpen(false)
-      }
-
-      const isNextChapter = e.key === NextChapterAction.shortcut.toLowerCase()
-
-      if (!isModifier && isNextChapter) {
-        e.preventDefault()
-        e.stopPropagation()
-
-        onNextChapter()
-      }
-
-      const isPrevChapter = e.key === PrevChapterAction.shortcut.toLowerCase()
-
-      if (!isModifier && isPrevChapter) {
-        e.preventDefault()
-        e.stopPropagation()
-
-        onPrevChapter()
+        return
       }
 
       const isOpenHistory = e.key === GoToHistoryAction.shortcut.toLowerCase()
@@ -369,6 +368,30 @@ export const CommandPalette = ({books, chapters}: Props) => {
 
         goToHistory()
       }
+
+      // Shortcuts with no modifier should not trigger when notes are open
+      if (isModifier || showNotes) {
+        return
+      }
+
+      const isNextChapter = e.key === NextChapterAction.shortcut.toLowerCase()
+      if (isNextChapter) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        onNextChapter()
+        return
+      }
+
+      const isPrevChapter = e.key === PrevChapterAction.shortcut.toLowerCase()
+
+      if (isPrevChapter) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        onPrevChapter()
+        return
+      }
     }
 
     document.addEventListener("keydown", handler)
@@ -376,7 +399,7 @@ export const CommandPalette = ({books, chapters}: Props) => {
     return () => {
       document.removeEventListener("keydown", handler)
     }
-  }, [open, , selectedChapter?.version, selectedChapter?.book, selectedChapter?.chapter])
+  }, [open, showNotes, selectedChapter?.version, selectedChapter?.book, selectedChapter?.chapter])
 
   const onOpen = (item: Command) => {
     if (item.tag === "chapter") {
@@ -394,6 +417,10 @@ export const CommandPalette = ({books, chapters}: Props) => {
       setMode("commands")
       inputRef.current?.focus()
       return
+    }
+
+    if (item.tag === "shortcut" && item.action === "toggle_notes") {
+      setShowNotes(not)
     }
 
     if (item.tag === "shortcut" && item.action === "toggle_verses") {

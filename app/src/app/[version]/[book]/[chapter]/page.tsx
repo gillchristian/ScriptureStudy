@@ -1,4 +1,5 @@
 import {Chapter} from "@/components/Chapter"
+import {Notes} from "@/components/Notes"
 import {CONFIG} from "@/config"
 import {Books, NamedReference, toChapters} from "@/models/reference"
 
@@ -10,7 +11,7 @@ type Params = {
 
 type Props = {params: Params}
 
-export default async function App({params}: Props) {
+export default async function ChapterPage({params}: Props) {
   const {books} = await getData(params.version)
 
   const chapter_ = parseInt(params.chapter, 10)
@@ -18,12 +19,14 @@ export default async function App({params}: Props) {
   const reference = {version: params.version, book: params.book, chapter}
 
   return (
-    <>
+    // TODO: how to make this the size of the chapter?
+    <div className="relative">
       {
         // @ts-expect-error
         <Chapter books={books} reference={reference} />
       }
-    </>
+      <Notes reference={reference} />
+    </div>
   )
 }
 
