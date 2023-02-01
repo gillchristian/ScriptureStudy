@@ -1,22 +1,22 @@
 "use client"
 
-import { useAtom } from "jotai"
+import {useAtom} from "jotai"
 import dynamic from "next/dynamic"
-import { useCallback, useEffect, useRef, useState } from "react"
+import {useCallback, useEffect, useRef, useState} from "react"
 
-import type { TDDocument, TDSnapshot } from "@/Tldraw"
-import { Reference } from "@/models/reference"
+import type {TDDocument, TDSnapshot} from "@/Tldraw"
+import {Reference} from "@/models/reference"
 
-import { NotesAtom } from "./Controls"
+import {NotesAtom} from "./Controls"
 
-const Tldraw = dynamic(() => import("@/Tldraw").then((m) => m.Tldraw), { ssr: false })
+const Tldraw = dynamic(() => import("@/Tldraw").then((m) => m.Tldraw), {ssr: false})
 
-type Props = { reference: Reference }
+type Props = {reference: Reference}
 
 const mkUrl = (reference: Reference) =>
   `/api/gillchristian/${reference.version}/${reference.book}/${reference.chapter}`
 
-export const Notes = ({ reference }: Props) => {
+export const Notes = ({reference}: Props) => {
   const [fetched, setFetched] = useState(false)
   const [showNotes, _setShowNotes] = useAtom(NotesAtom)
   const [doc, setDoc] = useState<TDDocument | undefined>(undefined)
@@ -24,35 +24,32 @@ export const Notes = ({ reference }: Props) => {
   const prevRef = useRef<TDDocument>()
 
   useEffect(() => {
-      fetch(mkUrl(reference), { method: 'GET' })
-        .then(res => res.ok ? res.json() : Promise.reject(new Error('Failed to fetch')))
-        .then(persisted => {
-          setDoc(persisted)
-          prevRef.current = persisted
-          docRef.current = persisted
-        })
-        .catch(() => console.error('Could not fetch'))
-        .then(() => setFetched(true))
+    fetch(mkUrl(reference), {method: "GET"})
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error("Failed to fetch"))))
+      .then((persisted) => {
+        setDoc(persisted)
+        prevRef.current = persisted
+        docRef.current = persisted
+      })
+      .catch(() => console.error("Could not fetch"))
+      .then(() => setFetched(true))
   }, [])
 
   useEffect(() => {
     const interval = setInterval(() => {
       if (docRef.current === prevRef.current) {
-        console.log('Has not changed')
+        console.log("Has not changed")
         return
       }
       const body = JSON.stringify(docRef.current)
       const prev = docRef.current
 
-      fetch(
-        mkUrl(reference),
-        { method: 'POST', headers: { 'Content-Type': 'application/json' }, body }
-      )
-        .then(res => res.ok ? undefined : Promise.reject(new Error('Failed to fetch')))
+      fetch(mkUrl(reference), {method: "POST", headers: {"Content-Type": "application/json"}, body})
+        .then((res) => (res.ok ? undefined : Promise.reject(new Error("Failed to fetch"))))
         .then(() => {
-           prevRef.current = prev
+          prevRef.current = prev
         })
-        .catch(() => console.error('Could not save'))
+        .catch(() => console.error("Could not save"))
     }, 1000)
 
     return () => {
