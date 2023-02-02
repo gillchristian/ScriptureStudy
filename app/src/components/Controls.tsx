@@ -7,6 +7,7 @@ import {usePathname} from "next/navigation"
 
 import {clsxm} from "@/lib/clsxm"
 import {not} from "@/lib/fp"
+import {useIsMobile} from "@/lib/useIsMobile"
 
 import {CommandPaletteAtom} from "./CommandPalette"
 
@@ -16,6 +17,7 @@ export const Controls = () => {
   const [_open, setOpen] = useAtom(CommandPaletteAtom)
   const [showNotes, setShowNotes] = useAtom(NotesAtom)
   const pathname = usePathname()
+  const isMobile = useIsMobile()
 
   return (
     <div
@@ -31,12 +33,16 @@ export const Controls = () => {
         <CommandLineIcon className="h-6 w-6 text-gray-700 dark:text-stone-100" />
       </button>
 
-      <button
-        onClick={() => setShowNotes(not)}
-        className="rounded-md p-1 hover:bg-gray-200 dark:hover:bg-gray-500"
-      >
-        <PencilSquareIcon className="h-6 w-6 text-gray-700 dark:text-stone-100" />
-      </button>
+      {!isMobile && (
+        // TODO: only show in chapters. This can be done by lifting the route
+        // stuff from the CommandPalette component to the layout
+        <button
+          onClick={() => setShowNotes(not)}
+          className="rounded-md p-1 hover:bg-gray-200 dark:hover:bg-gray-500"
+        >
+          <PencilSquareIcon className="h-6 w-6 text-gray-700 dark:text-stone-100" />
+        </button>
+      )}
 
       {pathname !== "/" && (
         <Link
