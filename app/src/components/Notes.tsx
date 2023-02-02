@@ -8,15 +8,22 @@ import type {TDDocument, TDSnapshot} from "@/Tldraw"
 import {Reference} from "@/models/reference"
 
 import {NotesAtom} from "./Controls"
-
-const Tldraw = dynamic(() => import("@/Tldraw").then((m) => m.Tldraw), {ssr: false})
+import {useIsMobile} from "@/lib/useIsMobile"
 
 type Props = {reference: Reference}
 
-const mkUrl = (reference: Reference) =>
-  `/api/gillchristian/${reference.version}/${reference.book}/${reference.chapter}`
-
 export const Notes = ({reference}: Props) => {
+  const isMobile = useIsMobile()
+
+  return isMobile ? null : <Notes_ reference={reference} />
+}
+
+const Tldraw = dynamic(() => import("@/Tldraw").then((m) => m.Tldraw), {ssr: false})
+
+const mkUrl = (reference: Reference) =>
+  `/api/_/${reference.version}/${reference.book}/${reference.chapter}`
+
+const Notes_ = ({reference}: Props) => {
   const [fetched, setFetched] = useState(false)
   const [showNotes, _setShowNotes] = useAtom(NotesAtom)
   const [doc, setDoc] = useState<TDDocument | undefined>(undefined)
