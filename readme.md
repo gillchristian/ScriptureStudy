@@ -4,17 +4,20 @@ A set of tools to study the Bible.
 
 ## ⚠️ Disclaimer
 
-This is not affiliated to, [BibleGateway](https://www.biblegateway.com).
+This is not affiliated to [BibleGateway](https://www.biblegateway.com) in any
+way.
 
-By default, the version is set to the  When using this tool you **must honour
-the copyright** of different translations of the Bible (see
+When using this tool you **must honour the copyright** of different translations
+of the Bible (see
 [BibleGateway's overview](https://www.biblegateway.com/versions/)). Using the
-scripts with some version is clearly breaking the copyright, that is not the
+scripts with some versions is clearly breaking the copyright, that is not the
 intended use of the code in this repository.
 
-[WEB Bible](https://worldenglish.bible/) is open. The
-[NET translation](https://netbible.com/copyright/), has very generous copyright
-and should be permissible for personal study as well.
+WEB and NET are used by default:
+
+- The [WEB Bible](https://worldenglish.bible/) is open.
+- The [NET translation](https://netbible.com/copyright/), has very generous
+  copyright and should be permissible for personal study as well.
 
 ## Download 
 
@@ -49,35 +52,40 @@ $ cd ..
 $ ./bin/extract-all
 ```
 
+## Build the index
+
+The app also requires an index. The `make-index` script fetches all the chapter
+titles in order and builds an index of the Bible.
+
+```bash
+$ ./bin/make-index
+$ cp index.json bibles/index.json
+```
+
 ## Run the app
 
-To run the first generate the JSON for at least one Bible. The default ones are
-NET and WEB (which have permisive copyrights), if you choose different ones make
-sure to set the environment variables:
+To run the app first generate the JSON for at least one Bible. The default ones
+are NET and WEB (which have permisive copyrights), if you choose different ones
+make sure to set the environment variables:
 
 ```bash
-export REACT_APP_DEFAULT_VERSION='NET'
-export REACT_APP_AVAILABLE_VERSIONS='NET,WEB'
+export NEXT_PUBLIC_DEFAULT_VERSION='NET'
+export NEXT_PUBLIC_AVAILABLE_VERSIONS='NET,WEB'
+export NEXT_PUBLIC_API_URL='http://localhost:8080'
 ```
 
-Then [serve](https://www.npmjs.com/package/serve) the `bibles` directory fromt
-the previous steps (Download and Convert to Json).
+Then [serve](https://www.npmjs.com/package/serve) the `bibles` directory from
+the previous steps ([Download](#download), [Convert to Json](#convert-to-json),
+and [Build the index](#build-the-index)).
 
 ```bash
-$ serve --cors bibles
-```
-
-By default the app fetches the JSON from `http://localhost:3000`. You can set a
-different one:
-
-```bash
-export REACT_APP_API_URL="http://localhost:9999"
+$ serve --cors bibles -l 8080
 ```
 
 And finally run the app:
 
 ```bash
-$ cd switcher
+$ cd app
 $ yarn install
-$ PORT=8080 yarn start
+$ yarn dev
 ```

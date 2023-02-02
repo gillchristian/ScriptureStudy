@@ -1,11 +1,11 @@
 import Link from "next/link"
 
 import {CONFIG} from "@/config"
-import {Books, NamedReference, toChapters} from "@/models/reference"
+import {getIndex} from "@/lib/bibleIndex"
 
 export default async function Home() {
   const version = CONFIG.DEFAULT_VERSION
-  const {books, chapters: _} = await getData(version)
+  const {books, chapters: _} = await getIndex(version)
 
   return (
     <div className="flex h-screen w-screen justify-center p-4 pt-4 sm:pt-10">
@@ -45,14 +45,4 @@ export default async function Home() {
       </div>
     </div>
   )
-}
-
-const getData = async (version: string): Promise<{books: Books; chapters: NamedReference[]}> => {
-  const url = `${CONFIG.API_URL}/chapters.json`
-
-  const books: Books = await fetch(url).then((res) =>
-    res.ok ? res.json() : Promise.reject(new Error("No chapters"))
-  )
-
-  return {books, chapters: toChapters(version, books)}
 }

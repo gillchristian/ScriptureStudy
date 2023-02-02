@@ -2,11 +2,10 @@ import "./globals.css"
 
 import {Controls} from "@/components/Controls"
 import {CommandPalette} from "@/components/CommandPalette"
-import {Books, NamedReference, toChapters} from "@/models/reference"
-import {CONFIG} from "@/config"
+import {getIndex} from "@/lib/bibleIndex"
 
 export default async function RootLayout({children}: {children: React.ReactNode}) {
-  const {books, chapters} = await getData("NET")
+  const {books, chapters} = await getIndex("NET")
 
   return (
     <html lang="en">
@@ -19,14 +18,4 @@ export default async function RootLayout({children}: {children: React.ReactNode}
       </body>
     </html>
   )
-}
-
-const getData = async (version: string): Promise<{books: Books; chapters: NamedReference[]}> => {
-  const url = `${CONFIG.API_URL}/chapters.json`
-
-  const books: Books = await fetch(url).then((res) =>
-    res.ok ? res.json() : Promise.reject(new Error("No chapters"))
-  )
-
-  return {books, chapters: toChapters(version, books)}
 }

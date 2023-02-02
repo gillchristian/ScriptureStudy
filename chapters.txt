@@ -1,1190 +1,1189 @@
-1-chronicles-1
-1-chronicles-10
-1-chronicles-11
-1-chronicles-12
-1-chronicles-13
-1-chronicles-14
-1-chronicles-15
-1-chronicles-16
-1-chronicles-17
-1-chronicles-18
-1-chronicles-19
-1-chronicles-2
-1-chronicles-20
-1-chronicles-21
-1-chronicles-22
-1-chronicles-23
-1-chronicles-24
-1-chronicles-25
-1-chronicles-26
-1-chronicles-27
-1-chronicles-28
-1-chronicles-29
-1-chronicles-3
-1-chronicles-4
-1-chronicles-5
-1-chronicles-6
-1-chronicles-7
-1-chronicles-8
-1-chronicles-9
-1-corinthians-1
-1-corinthians-10
-1-corinthians-11
-1-corinthians-12
-1-corinthians-13
-1-corinthians-14
-1-corinthians-15
-1-corinthians-16
-1-corinthians-2
-1-corinthians-3
-1-corinthians-4
-1-corinthians-5
-1-corinthians-6
-1-corinthians-7
-1-corinthians-8
-1-corinthians-9
-1-john-1
-1-john-2
-1-john-3
-1-john-4
-1-john-5
-1-kings-1
-1-kings-10
-1-kings-11
-1-kings-12
-1-kings-13
-1-kings-14
-1-kings-15
-1-kings-16
-1-kings-17
-1-kings-18
-1-kings-19
-1-kings-2
-1-kings-20
-1-kings-21
-1-kings-22
-1-kings-3
-1-kings-4
-1-kings-5
-1-kings-6
-1-kings-7
-1-kings-8
-1-kings-9
-1-peter-1
-1-peter-2
-1-peter-3
-1-peter-4
-1-peter-5
-1-samuel-1
-1-samuel-10
-1-samuel-11
-1-samuel-12
-1-samuel-13
-1-samuel-14
-1-samuel-15
-1-samuel-16
-1-samuel-17
-1-samuel-18
-1-samuel-19
-1-samuel-2
-1-samuel-20
-1-samuel-21
-1-samuel-22
-1-samuel-23
-1-samuel-24
-1-samuel-25
-1-samuel-26
-1-samuel-27
-1-samuel-28
-1-samuel-29
-1-samuel-3
-1-samuel-30
-1-samuel-31
-1-samuel-4
-1-samuel-5
-1-samuel-6
-1-samuel-7
-1-samuel-8
-1-samuel-9
-1-thessalonians-1
-1-thessalonians-2
-1-thessalonians-3
-1-thessalonians-4
-1-thessalonians-5
-1-timothy-1
-1-timothy-2
-1-timothy-3
-1-timothy-4
-1-timothy-5
-1-timothy-6
-2-chronicles-1
-2-chronicles-10
-2-chronicles-11
-2-chronicles-12
-2-chronicles-13
-2-chronicles-14
-2-chronicles-15
-2-chronicles-16
-2-chronicles-17
-2-chronicles-18
-2-chronicles-19
-2-chronicles-2
-2-chronicles-20
-2-chronicles-21
-2-chronicles-22
-2-chronicles-23
-2-chronicles-24
-2-chronicles-25
-2-chronicles-26
-2-chronicles-27
-2-chronicles-28
-2-chronicles-29
-2-chronicles-3
-2-chronicles-30
-2-chronicles-31
-2-chronicles-32
-2-chronicles-33
-2-chronicles-34
-2-chronicles-35
-2-chronicles-36
-2-chronicles-4
-2-chronicles-5
-2-chronicles-6
-2-chronicles-7
-2-chronicles-8
-2-chronicles-9
-2-corinthians-1
-2-corinthians-10
-2-corinthians-11
-2-corinthians-12
-2-corinthians-13
-2-corinthians-2
-2-corinthians-3
-2-corinthians-4
-2-corinthians-5
-2-corinthians-6
-2-corinthians-7
-2-corinthians-8
-2-corinthians-9
-2-john-1
-2-kings-1
-2-kings-10
-2-kings-11
-2-kings-12
-2-kings-13
-2-kings-14
-2-kings-15
-2-kings-16
-2-kings-17
-2-kings-18
-2-kings-19
-2-kings-2
-2-kings-20
-2-kings-21
-2-kings-22
-2-kings-23
-2-kings-24
-2-kings-25
-2-kings-3
-2-kings-4
-2-kings-5
-2-kings-6
-2-kings-7
-2-kings-8
-2-kings-9
-2-peter-1
-2-peter-2
-2-peter-3
-2-samuel-1
-2-samuel-10
-2-samuel-11
-2-samuel-12
-2-samuel-13
-2-samuel-14
-2-samuel-15
-2-samuel-16
-2-samuel-17
-2-samuel-18
-2-samuel-19
-2-samuel-2
-2-samuel-20
-2-samuel-21
-2-samuel-22
-2-samuel-23
-2-samuel-24
-2-samuel-3
-2-samuel-4
-2-samuel-5
-2-samuel-6
-2-samuel-7
-2-samuel-8
-2-samuel-9
-2-thessalonians-1
-2-thessalonians-2
-2-thessalonians-3
-2-timothy-1
-2-timothy-2
-2-timothy-3
-2-timothy-4
-3-john-1
-acts-1
-acts-10
-acts-11
-acts-12
-acts-13
-acts-14
-acts-15
-acts-16
-acts-17
-acts-18
-acts-19
-acts-2
-acts-20
-acts-21
-acts-22
-acts-23
-acts-24
-acts-25
-acts-26
-acts-27
-acts-28
-acts-3
-acts-4
-acts-5
-acts-6
-acts-7
-acts-8
-acts-9
-amos-1
-amos-2
-amos-3
-amos-4
-amos-5
-amos-6
-amos-7
-amos-8
-amos-9
-colossians-1
-colossians-2
-colossians-3
-colossians-4
-daniel-1
-daniel-10
-daniel-11
-daniel-12
-daniel-2
-daniel-3
-daniel-4
-daniel-5
-daniel-6
-daniel-7
-daniel-8
-daniel-9
-deuteronomy-1
-deuteronomy-10
-deuteronomy-11
-deuteronomy-12
-deuteronomy-13
-deuteronomy-14
-deuteronomy-15
-deuteronomy-16
-deuteronomy-17
-deuteronomy-18
-deuteronomy-19
-deuteronomy-2
-deuteronomy-20
-deuteronomy-21
-deuteronomy-22
-deuteronomy-23
-deuteronomy-24
-deuteronomy-25
-deuteronomy-26
-deuteronomy-27
-deuteronomy-28
-deuteronomy-29
-deuteronomy-3
-deuteronomy-30
-deuteronomy-31
-deuteronomy-32
-deuteronomy-33
-deuteronomy-34
-deuteronomy-4
-deuteronomy-5
-deuteronomy-6
-deuteronomy-7
-deuteronomy-8
-deuteronomy-9
-ecclesiastes-1
-ecclesiastes-10
-ecclesiastes-11
-ecclesiastes-12
-ecclesiastes-2
-ecclesiastes-3
-ecclesiastes-4
-ecclesiastes-5
-ecclesiastes-6
-ecclesiastes-7
-ecclesiastes-8
-ecclesiastes-9
-ephesians-1
-ephesians-2
-ephesians-3
-ephesians-4
-ephesians-5
-ephesians-6
-esther-1
-esther-10
-esther-2
-esther-3
-esther-4
-esther-5
-esther-6
-esther-7
-esther-8
-esther-9
-exodus-1
-exodus-10
-exodus-11
-exodus-12
-exodus-13
-exodus-14
-exodus-15
-exodus-16
-exodus-17
-exodus-18
-exodus-19
-exodus-2
-exodus-20
-exodus-21
-exodus-22
-exodus-23
-exodus-24
-exodus-25
-exodus-26
-exodus-27
-exodus-28
-exodus-29
-exodus-3
-exodus-30
-exodus-31
-exodus-32
-exodus-33
-exodus-34
-exodus-35
-exodus-36
-exodus-37
-exodus-38
-exodus-39
-exodus-4
-exodus-40
-exodus-5
-exodus-6
-exodus-7
-exodus-8
-exodus-9
-ezekiel-1
-ezekiel-10
-ezekiel-11
-ezekiel-12
-ezekiel-13
-ezekiel-14
-ezekiel-15
-ezekiel-16
-ezekiel-17
-ezekiel-18
-ezekiel-19
-ezekiel-2
-ezekiel-20
-ezekiel-21
-ezekiel-22
-ezekiel-23
-ezekiel-24
-ezekiel-25
-ezekiel-26
-ezekiel-27
-ezekiel-28
-ezekiel-29
-ezekiel-3
-ezekiel-30
-ezekiel-31
-ezekiel-32
-ezekiel-33
-ezekiel-34
-ezekiel-35
-ezekiel-36
-ezekiel-37
-ezekiel-38
-ezekiel-39
-ezekiel-4
-ezekiel-40
-ezekiel-41
-ezekiel-42
-ezekiel-43
-ezekiel-44
-ezekiel-45
-ezekiel-46
-ezekiel-47
-ezekiel-48
-ezekiel-5
-ezekiel-6
-ezekiel-7
-ezekiel-8
-ezekiel-9
-ezra-1
-ezra-10
-ezra-2
-ezra-3
-ezra-4
-ezra-5
-ezra-6
-ezra-7
-ezra-8
-ezra-9
-galatians-1
-galatians-2
-galatians-3
-galatians-4
-galatians-5
-galatians-6
-genesis-1
-genesis-10
-genesis-11
-genesis-12
-genesis-13
-genesis-14
-genesis-15
-genesis-16
-genesis-17
-genesis-18
-genesis-19
-genesis-2
-genesis-20
-genesis-21
-genesis-22
-genesis-23
-genesis-24
-genesis-25
-genesis-26
-genesis-27
-genesis-28
-genesis-29
-genesis-3
-genesis-30
-genesis-31
-genesis-32
-genesis-33
-genesis-34
-genesis-35
-genesis-36
-genesis-37
-genesis-38
-genesis-39
-genesis-4
-genesis-40
-genesis-41
-genesis-42
-genesis-43
-genesis-44
-genesis-45
-genesis-46
-genesis-47
-genesis-48
-genesis-49
-genesis-5
-genesis-50
-genesis-6
-genesis-7
-genesis-8
-genesis-9
-habakkuk-1
-habakkuk-2
-habakkuk-3
-haggai-1
-haggai-2
-hebrews-1
-hebrews-10
-hebrews-11
-hebrews-12
-hebrews-13
-hebrews-2
-hebrews-3
-hebrews-4
-hebrews-5
-hebrews-6
-hebrews-7
-hebrews-8
-hebrews-9
-hosea-1
-hosea-10
-hosea-11
-hosea-12
-hosea-13
-hosea-14
-hosea-2
-hosea-3
-hosea-4
-hosea-5
-hosea-6
-hosea-7
-hosea-8
-hosea-9
-isaiah-1
-isaiah-10
-isaiah-11
-isaiah-12
-isaiah-13
-isaiah-14
-isaiah-15
-isaiah-16
-isaiah-17
-isaiah-18
-isaiah-19
-isaiah-2
-isaiah-20
-isaiah-21
-isaiah-22
-isaiah-23
-isaiah-24
-isaiah-25
-isaiah-26
-isaiah-27
-isaiah-28
-isaiah-29
-isaiah-3
-isaiah-30
-isaiah-31
-isaiah-32
-isaiah-33
-isaiah-34
-isaiah-35
-isaiah-36
-isaiah-37
-isaiah-38
-isaiah-39
-isaiah-4
-isaiah-40
-isaiah-41
-isaiah-42
-isaiah-43
-isaiah-44
-isaiah-45
-isaiah-46
-isaiah-47
-isaiah-48
-isaiah-49
-isaiah-5
-isaiah-50
-isaiah-51
-isaiah-52
-isaiah-53
-isaiah-54
-isaiah-55
-isaiah-56
-isaiah-57
-isaiah-58
-isaiah-59
-isaiah-6
-isaiah-60
-isaiah-61
-isaiah-62
-isaiah-63
-isaiah-64
-isaiah-65
-isaiah-66
-isaiah-7
-isaiah-8
-isaiah-9
-james-1
-james-2
-james-3
-james-4
-james-5
-jeremiah-1
-jeremiah-10
-jeremiah-11
-jeremiah-12
-jeremiah-13
-jeremiah-14
-jeremiah-15
-jeremiah-16
-jeremiah-17
-jeremiah-18
-jeremiah-19
-jeremiah-2
-jeremiah-20
-jeremiah-21
-jeremiah-22
-jeremiah-23
-jeremiah-24
-jeremiah-25
-jeremiah-26
-jeremiah-27
-jeremiah-28
-jeremiah-29
-jeremiah-3
-jeremiah-30
-jeremiah-31
-jeremiah-32
-jeremiah-33
-jeremiah-34
-jeremiah-35
-jeremiah-36
-jeremiah-37
-jeremiah-38
-jeremiah-39
-jeremiah-4
-jeremiah-40
-jeremiah-41
-jeremiah-42
-jeremiah-43
-jeremiah-44
-jeremiah-45
-jeremiah-46
-jeremiah-47
-jeremiah-48
-jeremiah-49
-jeremiah-5
-jeremiah-50
-jeremiah-51
-jeremiah-52
-jeremiah-6
-jeremiah-7
-jeremiah-8
-jeremiah-9
-job-1
-job-10
-job-11
-job-12
-job-13
-job-14
-job-15
-job-16
-job-17
-job-18
-job-19
-job-2
-job-20
-job-21
-job-22
-job-23
-job-24
-job-25
-job-26
-job-27
-job-28
-job-29
-job-3
-job-30
-job-31
-job-32
-job-33
-job-34
-job-35
-job-36
-job-37
-job-38
-job-39
-job-4
-job-40
-job-41
-job-42
-job-5
-job-6
-job-7
-job-8
-job-9
-joel-1
-joel-2
-joel-3
-john-1
-john-10
-john-11
-john-12
-john-13
-john-14
-john-15
-john-16
-john-17
-john-18
-john-19
-john-2
-john-20
-john-21
-john-3
-john-4
-john-5
-john-6
-john-7
-john-8
-john-9
-jonah-1
-jonah-2
-jonah-3
-jonah-4
-joshua-1
-joshua-10
-joshua-11
-joshua-12
-joshua-13
-joshua-14
-joshua-15
-joshua-16
-joshua-17
-joshua-18
-joshua-19
-joshua-2
-joshua-20
-joshua-21
-joshua-22
-joshua-23
-joshua-24
-joshua-3
-joshua-4
-joshua-5
-joshua-6
-joshua-7
-joshua-8
-joshua-9
-jude-1
-judges-1
-judges-10
-judges-11
-judges-12
-judges-13
-judges-14
-judges-15
-judges-16
-judges-17
-judges-18
-judges-19
-judges-2
-judges-20
-judges-21
-judges-3
-judges-4
-judges-5
-judges-6
-judges-7
-judges-8
-judges-9
-lamentations-1
-lamentations-2
-lamentations-3
-lamentations-4
-lamentations-5
-leviticus-1
-leviticus-10
-leviticus-11
-leviticus-12
-leviticus-13
-leviticus-14
-leviticus-15
-leviticus-16
-leviticus-17
-leviticus-18
-leviticus-19
-leviticus-2
-leviticus-20
-leviticus-21
-leviticus-22
-leviticus-23
-leviticus-24
-leviticus-25
-leviticus-26
-leviticus-27
-leviticus-3
-leviticus-4
-leviticus-5
-leviticus-6
-leviticus-7
-leviticus-8
-leviticus-9
-luke-1
-luke-10
-luke-11
-luke-12
-luke-13
-luke-14
-luke-15
-luke-16
-luke-17
-luke-18
-luke-19
-luke-2
-luke-20
-luke-21
-luke-22
-luke-23
-luke-24
-luke-3
-luke-4
-luke-5
-luke-6
-luke-7
-luke-8
-luke-9
-malachi-1
-malachi-2
-malachi-3
-malachi-4
-mark-1
-mark-10
-mark-11
-mark-12
-mark-13
-mark-14
-mark-15
-mark-16
-mark-2
-mark-3
-mark-4
-mark-5
-mark-6
-mark-7
-mark-8
-mark-9
-matthew-1
-matthew-10
-matthew-11
-matthew-12
-matthew-13
-matthew-14
-matthew-15
-matthew-16
-matthew-17
-matthew-18
-matthew-19
-matthew-2
-matthew-20
-matthew-21
-matthew-22
-matthew-23
-matthew-24
-matthew-25
-matthew-26
-matthew-27
-matthew-28
-matthew-3
-matthew-4
-matthew-5
-matthew-6
-matthew-7
-matthew-8
-matthew-9
-micah-1
-micah-2
-micah-3
-micah-4
-micah-5
-micah-6
-micah-7
-nahum-1
-nahum-2
-nahum-3
-nehemiah-1
-nehemiah-10
-nehemiah-11
-nehemiah-12
-nehemiah-13
-nehemiah-2
-nehemiah-3
-nehemiah-4
-nehemiah-5
-nehemiah-6
-nehemiah-7
-nehemiah-8
-nehemiah-9
-numbers-1
-numbers-10
-numbers-11
-numbers-12
-numbers-13
-numbers-14
-numbers-15
-numbers-16
-numbers-17
-numbers-18
-numbers-19
-numbers-2
-numbers-20
-numbers-21
-numbers-22
-numbers-23
-numbers-24
-numbers-25
-numbers-26
-numbers-27
-numbers-28
-numbers-29
-numbers-3
-numbers-30
-numbers-31
-numbers-32
-numbers-33
-numbers-34
-numbers-35
-numbers-36
-numbers-4
-numbers-5
-numbers-6
-numbers-7
-numbers-8
-numbers-9
-obadiah-1
-philemon-1
-philippians-1
-philippians-2
-philippians-3
-philippians-4
-proverbs-1
-proverbs-10
-proverbs-11
-proverbs-12
-proverbs-13
-proverbs-14
-proverbs-15
-proverbs-16
-proverbs-17
-proverbs-18
-proverbs-19
-proverbs-2
-proverbs-20
-proverbs-21
-proverbs-22
-proverbs-23
-proverbs-24
-proverbs-25
-proverbs-26
-proverbs-27
-proverbs-28
-proverbs-29
-proverbs-3
-proverbs-30
-proverbs-31
-proverbs-4
-proverbs-5
-proverbs-6
-proverbs-7
-proverbs-8
-proverbs-9
-psalm-1
-psalm-10
-psalm-100
-psalm-101
-psalm-102
-psalm-103
-psalm-104
-psalm-105
-psalm-106
-psalm-107
-psalm-108
-psalm-109
-psalm-11
-psalm-110
-psalm-111
-psalm-112
-psalm-113
-psalm-114
-psalm-115
-psalm-116
-psalm-117
-psalm-118
-psalm-119
-psalm-12
-psalm-120
-psalm-121
-psalm-122
-psalm-123
-psalm-124
-psalm-125
-psalm-126
-psalm-127
-psalm-128
-psalm-129
-psalm-13
-psalm-130
-psalm-131
-psalm-132
-psalm-133
-psalm-134
-psalm-135
-psalm-136
-psalm-137
-psalm-138
-psalm-139
-psalm-14
-psalm-140
-psalm-141
-psalm-142
-psalm-143
-psalm-144
-psalm-145
-psalm-146
-psalm-147
-psalm-148
-psalm-149
-psalm-15
-psalm-150
-psalm-16
-psalm-17
-psalm-18
-psalm-19
-psalm-2
-psalm-20
-psalm-21
-psalm-22
-psalm-23
-psalm-24
-psalm-25
-psalm-26
-psalm-27
-psalm-28
-psalm-29
-psalm-3
-psalm-30
-psalm-31
-psalm-32
-psalm-33
-psalm-34
-psalm-35
-psalm-36
-psalm-37
-psalm-38
-psalm-39
-psalm-4
-psalm-40
-psalm-41
-psalm-42
-psalm-43
-psalm-44
-psalm-45
-psalm-46
-psalm-47
-psalm-48
-psalm-49
-psalm-5
-psalm-50
-psalm-51
-psalm-52
-psalm-53
-psalm-54
-psalm-55
-psalm-56
-psalm-57
-psalm-58
-psalm-59
-psalm-6
-psalm-60
-psalm-61
-psalm-62
-psalm-63
-psalm-64
-psalm-65
-psalm-66
-psalm-67
-psalm-68
-psalm-69
-psalm-7
-psalm-70
-psalm-71
-psalm-72
-psalm-73
-psalm-74
-psalm-75
-psalm-76
-psalm-77
-psalm-78
-psalm-79
-psalm-8
-psalm-80
-psalm-81
-psalm-82
-psalm-83
-psalm-84
-psalm-85
-psalm-86
-psalm-87
-psalm-88
-psalm-89
-psalm-9
-psalm-90
-psalm-91
-psalm-92
-psalm-93
-psalm-94
-psalm-95
-psalm-96
-psalm-97
-psalm-98
-psalm-99
-psalms-1
-revelation-1
-revelation-10
-revelation-11
-revelation-12
-revelation-13
-revelation-14
-revelation-15
-revelation-16
-revelation-17
-revelation-18
-revelation-19
-revelation-2
-revelation-20
-revelation-21
-revelation-22
-revelation-3
-revelation-4
-revelation-5
-revelation-6
-revelation-7
-revelation-8
-revelation-9
-romans-1
-romans-10
-romans-11
-romans-12
-romans-13
-romans-14
-romans-15
-romans-16
-romans-2
-romans-3
-romans-4
-romans-5
-romans-6
-romans-7
-romans-8
-romans-9
-ruth-1
-ruth-2
-ruth-3
-ruth-4
-song-of-solomon-1
-song-of-solomon-2
-song-of-solomon-3
-song-of-solomon-4
-song-of-solomon-5
-song-of-solomon-6
-song-of-solomon-7
-song-of-solomon-8
-titus-1
-titus-2
-titus-3
-zechariah-1
-zechariah-10
-zechariah-11
-zechariah-12
-zechariah-13
-zechariah-14
-zechariah-2
-zechariah-3
-zechariah-4
-zechariah-5
-zechariah-6
-zechariah-7
-zechariah-8
-zechariah-9
-zephaniah-1
-zephaniah-2
-zephaniah-3
+Genesis 1
+Genesis 2
+Genesis 3
+Genesis 4
+Genesis 5
+Genesis 6
+Genesis 7
+Genesis 8
+Genesis 9
+Genesis 10
+Genesis 11
+Genesis 12
+Genesis 13
+Genesis 14
+Genesis 15
+Genesis 16
+Genesis 17
+Genesis 18
+Genesis 19
+Genesis 20
+Genesis 21
+Genesis 22
+Genesis 23
+Genesis 24
+Genesis 25
+Genesis 26
+Genesis 27
+Genesis 28
+Genesis 29
+Genesis 30
+Genesis 31
+Genesis 32
+Genesis 33
+Genesis 34
+Genesis 35
+Genesis 36
+Genesis 37
+Genesis 38
+Genesis 39
+Genesis 40
+Genesis 41
+Genesis 42
+Genesis 43
+Genesis 44
+Genesis 45
+Genesis 46
+Genesis 47
+Genesis 48
+Genesis 49
+Genesis 50
+Exodus 1
+Exodus 2
+Exodus 3
+Exodus 4
+Exodus 5
+Exodus 6
+Exodus 7
+Exodus 8
+Exodus 9
+Exodus 10
+Exodus 11
+Exodus 12
+Exodus 13
+Exodus 14
+Exodus 15
+Exodus 16
+Exodus 17
+Exodus 18
+Exodus 19
+Exodus 20
+Exodus 21
+Exodus 22
+Exodus 23
+Exodus 24
+Exodus 25
+Exodus 26
+Exodus 27
+Exodus 28
+Exodus 29
+Exodus 30
+Exodus 31
+Exodus 32
+Exodus 33
+Exodus 34
+Exodus 35
+Exodus 36
+Exodus 37
+Exodus 38
+Exodus 39
+Exodus 40
+Leviticus 1
+Leviticus 2
+Leviticus 3
+Leviticus 4
+Leviticus 5
+Leviticus 6
+Leviticus 7
+Leviticus 8
+Leviticus 9
+Leviticus 10
+Leviticus 11
+Leviticus 12
+Leviticus 13
+Leviticus 14
+Leviticus 15
+Leviticus 16
+Leviticus 17
+Leviticus 18
+Leviticus 19
+Leviticus 20
+Leviticus 21
+Leviticus 22
+Leviticus 23
+Leviticus 24
+Leviticus 25
+Leviticus 26
+Leviticus 27
+Numbers 1
+Numbers 2
+Numbers 3
+Numbers 4
+Numbers 5
+Numbers 6
+Numbers 7
+Numbers 8
+Numbers 9
+Numbers 10
+Numbers 11
+Numbers 12
+Numbers 13
+Numbers 14
+Numbers 15
+Numbers 16
+Numbers 17
+Numbers 18
+Numbers 19
+Numbers 20
+Numbers 21
+Numbers 22
+Numbers 23
+Numbers 24
+Numbers 25
+Numbers 26
+Numbers 27
+Numbers 28
+Numbers 29
+Numbers 30
+Numbers 31
+Numbers 32
+Numbers 33
+Numbers 34
+Numbers 35
+Numbers 36
+Deuteronomy 1
+Deuteronomy 2
+Deuteronomy 3
+Deuteronomy 4
+Deuteronomy 5
+Deuteronomy 6
+Deuteronomy 7
+Deuteronomy 8
+Deuteronomy 9
+Deuteronomy 10
+Deuteronomy 11
+Deuteronomy 12
+Deuteronomy 13
+Deuteronomy 14
+Deuteronomy 15
+Deuteronomy 16
+Deuteronomy 17
+Deuteronomy 18
+Deuteronomy 19
+Deuteronomy 20
+Deuteronomy 21
+Deuteronomy 22
+Deuteronomy 23
+Deuteronomy 24
+Deuteronomy 25
+Deuteronomy 26
+Deuteronomy 27
+Deuteronomy 28
+Deuteronomy 29
+Deuteronomy 30
+Deuteronomy 31
+Deuteronomy 32
+Deuteronomy 33
+Deuteronomy 34
+Joshua 1
+Joshua 2
+Joshua 3
+Joshua 4
+Joshua 5
+Joshua 6
+Joshua 7
+Joshua 8
+Joshua 9
+Joshua 10
+Joshua 11
+Joshua 12
+Joshua 13
+Joshua 14
+Joshua 15
+Joshua 16
+Joshua 17
+Joshua 18
+Joshua 19
+Joshua 20
+Joshua 21
+Joshua 22
+Joshua 23
+Joshua 24
+Judges 1
+Judges 2
+Judges 3
+Judges 4
+Judges 5
+Judges 6
+Judges 7
+Judges 8
+Judges 9
+Judges 10
+Judges 11
+Judges 12
+Judges 13
+Judges 14
+Judges 15
+Judges 16
+Judges 17
+Judges 18
+Judges 19
+Judges 20
+Judges 21
+Ruth 1
+Ruth 2
+Ruth 3
+Ruth 4
+1 Samuel 1
+1 Samuel 2
+1 Samuel 3
+1 Samuel 4
+1 Samuel 5
+1 Samuel 6
+1 Samuel 7
+1 Samuel 8
+1 Samuel 9
+1 Samuel 10
+1 Samuel 11
+1 Samuel 12
+1 Samuel 13
+1 Samuel 14
+1 Samuel 15
+1 Samuel 16
+1 Samuel 17
+1 Samuel 18
+1 Samuel 19
+1 Samuel 20
+1 Samuel 21
+1 Samuel 22
+1 Samuel 23
+1 Samuel 24
+1 Samuel 25
+1 Samuel 26
+1 Samuel 27
+1 Samuel 28
+1 Samuel 29
+1 Samuel 30
+1 Samuel 31
+2 Samuel 1
+2 Samuel 2
+2 Samuel 3
+2 Samuel 4
+2 Samuel 5
+2 Samuel 6
+2 Samuel 7
+2 Samuel 8
+2 Samuel 9
+2 Samuel 10
+2 Samuel 11
+2 Samuel 12
+2 Samuel 13
+2 Samuel 14
+2 Samuel 15
+2 Samuel 16
+2 Samuel 17
+2 Samuel 18
+2 Samuel 19
+2 Samuel 20
+2 Samuel 21
+2 Samuel 22
+2 Samuel 23
+2 Samuel 24
+1 Kings 1
+1 Kings 2
+1 Kings 3
+1 Kings 4
+1 Kings 5
+1 Kings 6
+1 Kings 7
+1 Kings 8
+1 Kings 9
+1 Kings 10
+1 Kings 11
+1 Kings 12
+1 Kings 13
+1 Kings 14
+1 Kings 15
+1 Kings 16
+1 Kings 17
+1 Kings 18
+1 Kings 19
+1 Kings 20
+1 Kings 21
+1 Kings 22
+2 Kings 1
+2 Kings 2
+2 Kings 3
+2 Kings 4
+2 Kings 5
+2 Kings 6
+2 Kings 7
+2 Kings 8
+2 Kings 9
+2 Kings 10
+2 Kings 11
+2 Kings 12
+2 Kings 13
+2 Kings 14
+2 Kings 15
+2 Kings 16
+2 Kings 17
+2 Kings 18
+2 Kings 19
+2 Kings 20
+2 Kings 21
+2 Kings 22
+2 Kings 23
+2 Kings 24
+2 Kings 25
+1 Chronicles 1
+1 Chronicles 2
+1 Chronicles 3
+1 Chronicles 4
+1 Chronicles 5
+1 Chronicles 6
+1 Chronicles 7
+1 Chronicles 8
+1 Chronicles 9
+1 Chronicles 10
+1 Chronicles 11
+1 Chronicles 12
+1 Chronicles 13
+1 Chronicles 14
+1 Chronicles 15
+1 Chronicles 16
+1 Chronicles 17
+1 Chronicles 18
+1 Chronicles 19
+1 Chronicles 20
+1 Chronicles 21
+1 Chronicles 22
+1 Chronicles 23
+1 Chronicles 24
+1 Chronicles 25
+1 Chronicles 26
+1 Chronicles 27
+1 Chronicles 28
+1 Chronicles 29
+2 Chronicles 1
+2 Chronicles 2
+2 Chronicles 3
+2 Chronicles 4
+2 Chronicles 5
+2 Chronicles 6
+2 Chronicles 7
+2 Chronicles 8
+2 Chronicles 9
+2 Chronicles 10
+2 Chronicles 11
+2 Chronicles 12
+2 Chronicles 13
+2 Chronicles 14
+2 Chronicles 15
+2 Chronicles 16
+2 Chronicles 17
+2 Chronicles 18
+2 Chronicles 19
+2 Chronicles 20
+2 Chronicles 21
+2 Chronicles 22
+2 Chronicles 23
+2 Chronicles 24
+2 Chronicles 25
+2 Chronicles 26
+2 Chronicles 27
+2 Chronicles 28
+2 Chronicles 29
+2 Chronicles 30
+2 Chronicles 31
+2 Chronicles 32
+2 Chronicles 33
+2 Chronicles 34
+2 Chronicles 35
+2 Chronicles 36
+Ezra 1
+Ezra 2
+Ezra 3
+Ezra 4
+Ezra 5
+Ezra 6
+Ezra 7
+Ezra 8
+Ezra 9
+Ezra 10
+Nehemiah 1
+Nehemiah 2
+Nehemiah 3
+Nehemiah 4
+Nehemiah 5
+Nehemiah 6
+Nehemiah 7
+Nehemiah 8
+Nehemiah 9
+Nehemiah 10
+Nehemiah 11
+Nehemiah 12
+Nehemiah 13
+Esther 1
+Esther 2
+Esther 3
+Esther 4
+Esther 5
+Esther 6
+Esther 7
+Esther 8
+Esther 9
+Esther 10
+Job 1
+Job 2
+Job 3
+Job 4
+Job 5
+Job 6
+Job 7
+Job 8
+Job 9
+Job 10
+Job 11
+Job 12
+Job 13
+Job 14
+Job 15
+Job 16
+Job 17
+Job 18
+Job 19
+Job 20
+Job 21
+Job 22
+Job 23
+Job 24
+Job 25
+Job 26
+Job 27
+Job 28
+Job 29
+Job 30
+Job 31
+Job 32
+Job 33
+Job 34
+Job 35
+Job 36
+Job 37
+Job 38
+Job 39
+Job 40
+Job 41
+Job 42
+Psalm 1
+Psalm 2
+Psalm 3
+Psalm 4
+Psalm 5
+Psalm 6
+Psalm 7
+Psalm 8
+Psalm 9
+Psalm 10
+Psalm 11
+Psalm 12
+Psalm 13
+Psalm 14
+Psalm 15
+Psalm 16
+Psalm 17
+Psalm 18
+Psalm 19
+Psalm 20
+Psalm 21
+Psalm 22
+Psalm 23
+Psalm 24
+Psalm 25
+Psalm 26
+Psalm 27
+Psalm 28
+Psalm 29
+Psalm 30
+Psalm 31
+Psalm 32
+Psalm 33
+Psalm 34
+Psalm 35
+Psalm 36
+Psalm 37
+Psalm 38
+Psalm 39
+Psalm 40
+Psalm 41
+Psalm 42
+Psalm 43
+Psalm 44
+Psalm 45
+Psalm 46
+Psalm 47
+Psalm 48
+Psalm 49
+Psalm 50
+Psalm 51
+Psalm 52
+Psalm 53
+Psalm 54
+Psalm 55
+Psalm 56
+Psalm 57
+Psalm 58
+Psalm 59
+Psalm 60
+Psalm 61
+Psalm 62
+Psalm 63
+Psalm 64
+Psalm 65
+Psalm 66
+Psalm 67
+Psalm 68
+Psalm 69
+Psalm 70
+Psalm 71
+Psalm 72
+Psalm 73
+Psalm 74
+Psalm 75
+Psalm 76
+Psalm 77
+Psalm 78
+Psalm 79
+Psalm 80
+Psalm 81
+Psalm 82
+Psalm 83
+Psalm 84
+Psalm 85
+Psalm 86
+Psalm 87
+Psalm 88
+Psalm 89
+Psalm 90
+Psalm 91
+Psalm 92
+Psalm 93
+Psalm 94
+Psalm 95
+Psalm 96
+Psalm 97
+Psalm 98
+Psalm 99
+Psalm 100
+Psalm 101
+Psalm 102
+Psalm 103
+Psalm 104
+Psalm 105
+Psalm 106
+Psalm 107
+Psalm 108
+Psalm 109
+Psalm 110
+Psalm 111
+Psalm 112
+Psalm 113
+Psalm 114
+Psalm 115
+Psalm 116
+Psalm 117
+Psalm 118
+Psalm 119
+Psalm 120
+Psalm 121
+Psalm 122
+Psalm 123
+Psalm 124
+Psalm 125
+Psalm 126
+Psalm 127
+Psalm 128
+Psalm 129
+Psalm 130
+Psalm 131
+Psalm 132
+Psalm 133
+Psalm 134
+Psalm 135
+Psalm 136
+Psalm 137
+Psalm 138
+Psalm 139
+Psalm 140
+Psalm 141
+Psalm 142
+Psalm 143
+Psalm 144
+Psalm 145
+Psalm 146
+Psalm 147
+Psalm 148
+Psalm 149
+Psalm 150
+Proverbs 1
+Proverbs 2
+Proverbs 3
+Proverbs 4
+Proverbs 5
+Proverbs 6
+Proverbs 7
+Proverbs 8
+Proverbs 9
+Proverbs 10
+Proverbs 11
+Proverbs 12
+Proverbs 13
+Proverbs 14
+Proverbs 15
+Proverbs 16
+Proverbs 17
+Proverbs 18
+Proverbs 19
+Proverbs 20
+Proverbs 21
+Proverbs 22
+Proverbs 23
+Proverbs 24
+Proverbs 25
+Proverbs 26
+Proverbs 27
+Proverbs 28
+Proverbs 29
+Proverbs 30
+Proverbs 31
+Ecclesiastes 1
+Ecclesiastes 2
+Ecclesiastes 3
+Ecclesiastes 4
+Ecclesiastes 5
+Ecclesiastes 6
+Ecclesiastes 7
+Ecclesiastes 8
+Ecclesiastes 9
+Ecclesiastes 10
+Ecclesiastes 11
+Ecclesiastes 12
+Song of Solomon 1
+Song of Solomon 2
+Song of Solomon 3
+Song of Solomon 4
+Song of Solomon 5
+Song of Solomon 6
+Song of Solomon 7
+Song of Solomon 8
+Isaiah 1
+Isaiah 2
+Isaiah 3
+Isaiah 4
+Isaiah 5
+Isaiah 6
+Isaiah 7
+Isaiah 8
+Isaiah 9
+Isaiah 10
+Isaiah 11
+Isaiah 12
+Isaiah 13
+Isaiah 14
+Isaiah 15
+Isaiah 16
+Isaiah 17
+Isaiah 18
+Isaiah 19
+Isaiah 20
+Isaiah 21
+Isaiah 22
+Isaiah 23
+Isaiah 24
+Isaiah 25
+Isaiah 26
+Isaiah 27
+Isaiah 28
+Isaiah 29
+Isaiah 30
+Isaiah 31
+Isaiah 32
+Isaiah 33
+Isaiah 34
+Isaiah 35
+Isaiah 36
+Isaiah 37
+Isaiah 38
+Isaiah 39
+Isaiah 40
+Isaiah 41
+Isaiah 42
+Isaiah 43
+Isaiah 44
+Isaiah 45
+Isaiah 46
+Isaiah 47
+Isaiah 48
+Isaiah 49
+Isaiah 50
+Isaiah 51
+Isaiah 52
+Isaiah 53
+Isaiah 54
+Isaiah 55
+Isaiah 56
+Isaiah 57
+Isaiah 58
+Isaiah 59
+Isaiah 60
+Isaiah 61
+Isaiah 62
+Isaiah 63
+Isaiah 64
+Isaiah 65
+Isaiah 66
+Jeremiah 1
+Jeremiah 2
+Jeremiah 3
+Jeremiah 4
+Jeremiah 5
+Jeremiah 6
+Jeremiah 7
+Jeremiah 8
+Jeremiah 9
+Jeremiah 10
+Jeremiah 11
+Jeremiah 12
+Jeremiah 13
+Jeremiah 14
+Jeremiah 15
+Jeremiah 16
+Jeremiah 17
+Jeremiah 18
+Jeremiah 19
+Jeremiah 20
+Jeremiah 21
+Jeremiah 22
+Jeremiah 23
+Jeremiah 24
+Jeremiah 25
+Jeremiah 26
+Jeremiah 27
+Jeremiah 28
+Jeremiah 29
+Jeremiah 30
+Jeremiah 31
+Jeremiah 32
+Jeremiah 33
+Jeremiah 34
+Jeremiah 35
+Jeremiah 36
+Jeremiah 37
+Jeremiah 38
+Jeremiah 39
+Jeremiah 40
+Jeremiah 41
+Jeremiah 42
+Jeremiah 43
+Jeremiah 44
+Jeremiah 45
+Jeremiah 46
+Jeremiah 47
+Jeremiah 48
+Jeremiah 49
+Jeremiah 50
+Jeremiah 51
+Jeremiah 52
+Lamentations 1
+Lamentations 2
+Lamentations 3
+Lamentations 4
+Lamentations 5
+Ezekiel 1
+Ezekiel 2
+Ezekiel 3
+Ezekiel 4
+Ezekiel 5
+Ezekiel 6
+Ezekiel 7
+Ezekiel 8
+Ezekiel 9
+Ezekiel 10
+Ezekiel 11
+Ezekiel 12
+Ezekiel 13
+Ezekiel 14
+Ezekiel 15
+Ezekiel 16
+Ezekiel 17
+Ezekiel 18
+Ezekiel 19
+Ezekiel 20
+Ezekiel 21
+Ezekiel 22
+Ezekiel 23
+Ezekiel 24
+Ezekiel 25
+Ezekiel 26
+Ezekiel 27
+Ezekiel 28
+Ezekiel 29
+Ezekiel 30
+Ezekiel 31
+Ezekiel 32
+Ezekiel 33
+Ezekiel 34
+Ezekiel 35
+Ezekiel 36
+Ezekiel 37
+Ezekiel 38
+Ezekiel 39
+Ezekiel 40
+Ezekiel 41
+Ezekiel 42
+Ezekiel 43
+Ezekiel 44
+Ezekiel 45
+Ezekiel 46
+Ezekiel 47
+Ezekiel 48
+Daniel 1
+Daniel 2
+Daniel 3
+Daniel 4
+Daniel 5
+Daniel 6
+Daniel 7
+Daniel 8
+Daniel 9
+Daniel 10
+Daniel 11
+Daniel 12
+Hosea 1
+Hosea 2
+Hosea 3
+Hosea 4
+Hosea 5
+Hosea 6
+Hosea 7
+Hosea 8
+Hosea 9
+Hosea 10
+Hosea 11
+Hosea 12
+Hosea 13
+Hosea 14
+Joel 1
+Joel 2
+Joel 3
+Amos 1
+Amos 2
+Amos 3
+Amos 4
+Amos 5
+Amos 6
+Amos 7
+Amos 8
+Amos 9
+Obadiah 1
+Jonah 1
+Jonah 2
+Jonah 3
+Jonah 4
+Micah 1
+Micah 2
+Micah 3
+Micah 4
+Micah 5
+Micah 6
+Micah 7
+Nahum 1
+Nahum 2
+Nahum 3
+Habakkuk 1
+Habakkuk 2
+Habakkuk 3
+Zephaniah 1
+Zephaniah 2
+Zephaniah 3
+Haggai 1
+Haggai 2
+Zechariah 1
+Zechariah 2
+Zechariah 3
+Zechariah 4
+Zechariah 5
+Zechariah 6
+Zechariah 7
+Zechariah 8
+Zechariah 9
+Zechariah 10
+Zechariah 11
+Zechariah 12
+Zechariah 13
+Zechariah 14
+Malachi 1
+Malachi 2
+Malachi 3
+Malachi 4
+Matthew 1
+Matthew 2
+Matthew 3
+Matthew 4
+Matthew 5
+Matthew 6
+Matthew 7
+Matthew 8
+Matthew 9
+Matthew 10
+Matthew 11
+Matthew 12
+Matthew 13
+Matthew 14
+Matthew 15
+Matthew 16
+Matthew 17
+Matthew 18
+Matthew 19
+Matthew 20
+Matthew 21
+Matthew 22
+Matthew 23
+Matthew 24
+Matthew 25
+Matthew 26
+Matthew 27
+Matthew 28
+Mark 1
+Mark 2
+Mark 3
+Mark 4
+Mark 5
+Mark 6
+Mark 7
+Mark 8
+Mark 9
+Mark 10
+Mark 11
+Mark 12
+Mark 13
+Mark 14
+Mark 15
+Mark 16
+Luke 1
+Luke 2
+Luke 3
+Luke 4
+Luke 5
+Luke 6
+Luke 7
+Luke 8
+Luke 9
+Luke 10
+Luke 11
+Luke 12
+Luke 13
+Luke 14
+Luke 15
+Luke 16
+Luke 17
+Luke 18
+Luke 19
+Luke 20
+Luke 21
+Luke 22
+Luke 23
+Luke 24
+John 1
+John 2
+John 3
+John 4
+John 5
+John 6
+John 7
+John 8
+John 9
+John 10
+John 11
+John 12
+John 13
+John 14
+John 15
+John 16
+John 17
+John 18
+John 19
+John 20
+John 21
+Acts 1
+Acts 2
+Acts 3
+Acts 4
+Acts 5
+Acts 6
+Acts 7
+Acts 8
+Acts 9
+Acts 10
+Acts 11
+Acts 12
+Acts 13
+Acts 14
+Acts 15
+Acts 16
+Acts 17
+Acts 18
+Acts 19
+Acts 20
+Acts 21
+Acts 22
+Acts 23
+Acts 24
+Acts 25
+Acts 26
+Acts 27
+Acts 28
+Romans 1
+Romans 2
+Romans 3
+Romans 4
+Romans 5
+Romans 6
+Romans 7
+Romans 8
+Romans 9
+Romans 10
+Romans 11
+Romans 12
+Romans 13
+Romans 14
+Romans 15
+Romans 16
+1 Corinthians 1
+1 Corinthians 2
+1 Corinthians 3
+1 Corinthians 4
+1 Corinthians 5
+1 Corinthians 6
+1 Corinthians 7
+1 Corinthians 8
+1 Corinthians 9
+1 Corinthians 10
+1 Corinthians 11
+1 Corinthians 12
+1 Corinthians 13
+1 Corinthians 14
+1 Corinthians 15
+1 Corinthians 16
+2 Corinthians 1
+2 Corinthians 2
+2 Corinthians 3
+2 Corinthians 4
+2 Corinthians 5
+2 Corinthians 6
+2 Corinthians 7
+2 Corinthians 8
+2 Corinthians 9
+2 Corinthians 10
+2 Corinthians 11
+2 Corinthians 12
+2 Corinthians 13
+Galatians 1
+Galatians 2
+Galatians 3
+Galatians 4
+Galatians 5
+Galatians 6
+Ephesians 1
+Ephesians 2
+Ephesians 3
+Ephesians 4
+Ephesians 5
+Ephesians 6
+Philippians 1
+Philippians 2
+Philippians 3
+Philippians 4
+Colossians 1
+Colossians 2
+Colossians 3
+Colossians 4
+1 Thessalonians 1
+1 Thessalonians 2
+1 Thessalonians 3
+1 Thessalonians 4
+1 Thessalonians 5
+2 Thessalonians 1
+2 Thessalonians 2
+2 Thessalonians 3
+1 Timothy 1
+1 Timothy 2
+1 Timothy 3
+1 Timothy 4
+1 Timothy 5
+1 Timothy 6
+2 Timothy 1
+2 Timothy 2
+2 Timothy 3
+2 Timothy 4
+Titus 1
+Titus 2
+Titus 3
+Philemon 1
+Hebrews 1
+Hebrews 2
+Hebrews 3
+Hebrews 4
+Hebrews 5
+Hebrews 6
+Hebrews 7
+Hebrews 8
+Hebrews 9
+Hebrews 10
+Hebrews 11
+Hebrews 12
+Hebrews 13
+James 1
+James 2
+James 3
+James 4
+James 5
+1 Peter 1
+1 Peter 2
+1 Peter 3
+1 Peter 4
+1 Peter 5
+2 Peter 1
+2 Peter 2
+2 Peter 3
+1 John 1
+1 John 2
+1 John 3
+1 John 4
+1 John 5
+2 John 1
+3 John 1
+Jude 1
+Revelation 1
+Revelation 2
+Revelation 3
+Revelation 4
+Revelation 5
+Revelation 6
+Revelation 7
+Revelation 8
+Revelation 9
+Revelation 10
+Revelation 11
+Revelation 12
+Revelation 13
+Revelation 14
+Revelation 15
+Revelation 16
+Revelation 17
+Revelation 18
+Revelation 19
+Revelation 20
+Revelation 21
+Revelation 22

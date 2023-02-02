@@ -1,3 +1,0 @@
-#!/usr/bin/env node
-
-require('../scrapper/dist/structure.js')
