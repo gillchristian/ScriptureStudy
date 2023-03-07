@@ -72,8 +72,8 @@ const useSwipePrevNext = ({books, version, book, chapter}: Props) => {
   }, [books, version, book, chapter])
 
   const {ref} = useSwipeable({
-    onSwipedLeft: () => prev(),
-    onSwipedRight: () => next(),
+    onSwipedLeft: next,
+    onSwipedRight: prev,
     swipeDuration: 500,
     preventScrollOnSwipe: true,
     trackMouse: true
