@@ -1,16 +1,18 @@
 "use client"
 import {useAtom} from "jotai"
 import {useRouter} from "next/navigation"
+import {useSwipeable} from "react-swipeable"
 
 import {VisitedRecentlyAtom} from "@/models/atoms"
 import {Books, eqReference, findNext, findPrev, NamedReference, Reference} from "@/models/reference"
-import {useEffect} from "react"
+import {RefCallback, useCallback, useEffect} from "react"
 
 type Props = {books: Books} & Reference
 
 export const ChapterSideEffects = (props: Props) => {
   useTrackRecentChapters(props)
   usePrefetchPrevAndNext(props)
+  useSwipePrevNext(props)
 
   return null
 }
@@ -49,5 +51,35 @@ const usePrefetchPrevAndNext = ({books, version, book, chapter}: Props) => {
     if (next) {
       router.prefetch(`/${next.version}/${next.book}/${next.chapter}`)
     }
+  }, [])
+}
+
+const useSwipePrevNext = ({books, version, book, chapter}: Props) => {
+  const router = useRouter()
+
+  const prev = useCallback(() => {
+    const prev = findPrev({version, book, chapter}, books)
+    if (prev) {
+      router.push(`/${prev.version}/${prev.book}/${prev.chapter}`)
+    }
+  }, [books, version, book, chapter])
+
+  const next = useCallback(() => {
+    const next = findNext({version, book, chapter}, books)
+    if (next) {
+      router.push(`/${next.version}/${next.book}/${next.chapter}`)
+    }
+  }, [books, version, book, chapter])
+
+  const {ref} = useSwipeable({
+    onSwipedLeft: () => prev(),
+    onSwipedRight: () => next(),
+    swipeDuration: 500,
+    preventScrollOnSwipe: true,
+    trackMouse: true
+  }) as {ref: RefCallback<Document>}
+
+  useEffect(() => {
+    ref(document)
   }, [])
 }
