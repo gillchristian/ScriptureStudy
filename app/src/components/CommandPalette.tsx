@@ -121,7 +121,7 @@ const NextChapterAction: Shortcut = {
 const GoToHistoryAction: Shortcut = {
   tag: "shortcut",
   action: "got_to_history",
-  name: "Ho to history",
+  name: "Go to history",
   icon: ArchiveBoxIcon,
   shortcut: "h",
   withCtrl: true,
