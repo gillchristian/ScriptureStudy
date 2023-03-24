@@ -1,11 +1,11 @@
 "use client"
 
+import {useState} from "react"
 import {useAtom} from "jotai"
-import Link from "next/link"
 import {formatRelative} from "date-fns"
 
 import {VisitedRecentlyAtom} from "@/models/atoms"
-import {useState} from "react"
+import {Link} from "@/components/Link"
 
 export default function History() {
   const [recent, setRecent] = useAtom(VisitedRecentlyAtom)

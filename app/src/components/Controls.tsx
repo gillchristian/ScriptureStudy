@@ -2,12 +2,12 @@
 
 import {CommandLineIcon, HomeIcon, PencilSquareIcon} from "@heroicons/react/24/outline"
 import {atom, useAtom} from "jotai"
-import Link from "next/link"
 import {usePathname} from "next/navigation"
 
 import {clsxm} from "@/lib/clsxm"
 import {not} from "@/lib/fp"
 import {useIsMobile} from "@/lib/useIsMobile"
+import {Link} from "@/components/Link"
 
 import {CommandPaletteAtom} from "./CommandPalette"
 

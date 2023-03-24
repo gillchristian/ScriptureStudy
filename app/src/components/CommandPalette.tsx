@@ -1,6 +1,6 @@
 "use client"
 
-import {useRouter, useSelectedLayoutSegments} from "next/navigation"
+import {useSelectedLayoutSegments} from "next/navigation"
 import {Fragment, useEffect, useMemo, useRef, useState} from "react"
 import {Combobox, Dialog, Transition} from "@headlessui/react"
 import {MagnifyingGlassIcon} from "@heroicons/react/20/solid"
@@ -25,6 +25,7 @@ import {VisitedRecentlyAtom} from "@/models/atoms"
 import {NotesAtom} from "./Controls"
 import {not} from "@/lib/fp"
 import {useIsMobile} from "@/lib/useIsMobile"
+import {useRouter} from "@/lib/router-events"
 
 type Route = {tag: "history"} | {tag: "home"} | {tag: "not_found"} | ({tag: "chapter"} & Reference)
 type RouteTag = Route["tag"]

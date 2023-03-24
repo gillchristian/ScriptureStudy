@@ -1,7 +1,6 @@
-import Link from "next/link"
-
 import {CONFIG} from "@/config"
 import {getIndex} from "@/lib/bibleIndex"
+import {Link} from "@/components/Link"
 
 export default async function Home() {
   const version = CONFIG.DEFAULT_VERSION

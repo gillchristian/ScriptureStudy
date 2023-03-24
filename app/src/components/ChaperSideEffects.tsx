@@ -1,11 +1,12 @@
 "use client"
+
+import {RefCallback, useCallback, useEffect} from "react"
 import {useAtom} from "jotai"
-import {useRouter} from "next/navigation"
 import {useSwipeable} from "react-swipeable"
 
 import {VisitedRecentlyAtom} from "@/models/atoms"
 import {Books, eqReference, findNext, findPrev, NamedReference, Reference} from "@/models/reference"
-import {RefCallback, useCallback, useEffect} from "react"
+import {useRouter} from "@/lib/router-events"
 
 type Props = {books: Books} & Reference
 
