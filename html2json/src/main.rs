@@ -1,4 +1,5 @@
-use html_parser::Dom;
+mod tagged_dom;
+
 use std::env;
 use std::error::Error;
 use std::fs;
@@ -27,7 +28,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         None => read_stdin()?,
     };
 
-    let json = Dom::parse(&html)?.to_json()?;
+    let json = tagged_dom::Dom::parse(&html)?.to_json()?;
 
     println!("{}", json);
 
