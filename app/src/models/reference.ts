@@ -4,6 +4,7 @@ export type Books = {
   byCount: {[book: string]: number}
   inOrder: string[]
   names: {[book: string]: string}
+  short: {[book: string]: string}
 }
 
 export const toChapters = (version: string, books: Books): NamedReference[] =>

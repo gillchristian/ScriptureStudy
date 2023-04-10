@@ -44,6 +44,7 @@
     "browser-fs-access": "^0.31.0",
     "clsx": "^1.2.1",
     "date-fns": "^2.29.3",
+    "fp-ts": "^2.13.1",
     "idb-keyval": "^6.2.0",
     "jotai": "^1.13.0",
     "match-sorter": "^6.3.1",

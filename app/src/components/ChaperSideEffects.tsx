@@ -1,12 +1,14 @@
 "use client"
 
 import {RefCallback, useCallback, useEffect} from "react"
-import {useAtom} from "jotai"
+import {atom, useAtom} from "jotai"
 import {useSwipeable} from "react-swipeable"
 
 import {VisitedRecentlyAtom} from "@/models/atoms"
 import {Books, eqReference, findNext, findPrev, NamedReference, Reference} from "@/models/reference"
 import {useRouter} from "@/lib/router-events"
+
+import {CommandPaletteAtom} from "./CommandPalette"
 
 type Props = {books: Books} & Reference
 
@@ -14,8 +16,30 @@ export const ChapterSideEffects = (props: Props) => {
   useTrackRecentChapters(props)
   usePrefetchPrevAndNext(props)
   useSwipePrevNext(props)
+  useClearSelectedVerses()
 
   return null
+}
+
+export const SelectedVerseAtom = atom<Set<string>>(new Set([]))
+
+const useClearSelectedVerses = () => {
+  const [_, setSelectedVerses] = useAtom(SelectedVerseAtom)
+  const [isCommandPalletOpen] = useAtom(CommandPaletteAtom)
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (!isCommandPalletOpen && e.key === "Escape") {
+        setSelectedVerses(new Set([]))
+      }
+    }
+
+    document.addEventListener("keydown", handler)
+
+    return () => {
+      document.removeEventListener("keydown", handler)
+    }
+  }, [isCommandPalletOpen])
 }
 
 const useTrackRecentChapters = ({books, version, book, chapter}: Props) => {

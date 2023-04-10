@@ -2,12 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+sup, .chapternum, .versenum {
+  @apply select-none;
+}
+
 .hide-verses .versenum,
 .hide-verses .chapternum {
-  display: none;
+  @apply hidden;
 }
 
 .hide-footnotes .footnote,
 .hide-footnotes .footnotes {
-  display: none;
+  @apply hidden;
+}
+
+.selected {
+  @apply bg-yellow-200;
+}
+
+.verse {
+  @apply cursor-pointer;
 }

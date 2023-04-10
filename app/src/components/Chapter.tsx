@@ -19,6 +19,8 @@ export const Chapter = async ({books, reference}: Props) => {
     )
   }
 
+  const current = `${books.short[reference.book]}-${reference.chapter}-`
+
   return (
     <>
       <ChapterSideEffects
@@ -35,7 +37,7 @@ export const Chapter = async ({books, reference}: Props) => {
             {" | "}
             {books.names[reference.book]} {reference.chapter}
           </h2>
-          <Html node={html} />
+          <Html node={html} current={current} />
         </div>
       </div>
     </>
