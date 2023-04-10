@@ -1,6 +1,9 @@
 import {FC} from "react"
 
-export type Node = string | Element
+export type Node =
+  | {type: "Element"; data: Element}
+  | {type: "Text"; data: string}
+  | {type: "Comment"; data: string}
 
 export type Element = {
   id?: string
@@ -23,9 +26,8 @@ const processStyle = (styleStr: string) =>
   }, {} as {[key: string]: string})
 
 export const Html: FC<{node: Node}> = ({node}) =>
-  typeof node === "string" ? (
-    // TODO: this should be done in the JSON processing instead
-    node === "end of footnotes" ? (
+  node.type === "Comment" || node.type === "Text" ? (
+    node.data === "end of footnotes" ? (
       <>{undefined}</>
     ) : (
       <span
@@ -33,7 +35,7 @@ export const Html: FC<{node: Node}> = ({node}) =>
           // TODO: this doesn't fix the problem of the missing spaces because
           //       the Text(String) Node doesn't actually start/end with spaces
           //       is being added by the browser somehow in the HTML version
-          __html: node.replace(/^ /, "&nbsp;").replace(/ $/, "&nbsp;")
+          __html: node.data.replace(/^ /, "&nbsp;").replace(/ $/, "&nbsp;")
         }}
       />
     )
@@ -41,10 +43,10 @@ export const Html: FC<{node: Node}> = ({node}) =>
     // We don't really care about the types here, we trust that the parser did
     // the right job and we are getting html that can be properly rendered
     // @ts-expect-error
-    <node.name
-      id={node.id}
-      className={node.classes ? node.classes.join(" ") : undefined}
-      {...Object.entries(node.attributes ?? {}).reduce((acc, [key, value]) => {
+    <node.data.name
+      id={node.data.id}
+      className={node.data.classes ? node.data.classes.join(" ") : undefined}
+      {...Object.entries(node.data.attributes ?? {}).reduce((acc, [key, value]) => {
         const value_ = value === undefined ? true : key === "style" ? processStyle(value) : value
 
         acc[key] = value_
@@ -56,17 +58,19 @@ export const Html: FC<{node: Node}> = ({node}) =>
         // TODO: this is a hack to put spaces between words like "LORD"
         //       because the space between <span>s is not being properly added
         //       by the browser, whereas the HTML version of this does add them
-        node.children && node.variant === "normal" && node.classes?.includes("small-caps") ? (
+        node.data.children &&
+        node.data.variant === "normal" &&
+        node.data.classes?.includes("small-caps") ? (
           <span>
             &nbsp;
-            {node.children.map((n) => (
-              <Html node={n} />
+            {node.data.children.map((n, i) => (
+              <Html node={n} key={i} />
             ))}
             &nbsp;
           </span>
-        ) : node.children && node.variant === "normal" ? (
-          node.children.map((n) => <Html node={n} />)
+        ) : node.data.children && node.data.variant === "normal" ? (
+          node.data.children.map((n, i) => <Html node={n} key={i} />)
         ) : undefined
       }
-    </node.name>
+    </node.data.name>
   )

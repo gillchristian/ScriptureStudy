@@ -4,4 +4,4 @@ GITROOT=$(git rev-parse --show-toplevel)
 
 cd "$GITROOT"
 
-fd html bibles/WEB | parallel ./bin/extract-pipeline
+fd html bibles | parallel ./bin/extract-pipeline

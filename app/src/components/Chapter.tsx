@@ -1,7 +1,7 @@
 import {CONFIG} from "@/config"
 import {Books, Reference} from "@/models/reference"
 
-import {Element, Html} from "./Html"
+import {Node, Html} from "./Html"
 import {ChapterSideEffects} from "./ChaperSideEffects"
 
 type Props = {books: Books; reference: Reference}
@@ -42,7 +42,7 @@ export const Chapter = async ({books, reference}: Props) => {
   )
 }
 
-const getData = async ({version, book, chapter}: Reference): Promise<{html?: Element}> => {
+const getData = async ({version, book, chapter}: Reference): Promise<{html?: Node}> => {
   const url = `${CONFIG.API_URL}/${version}/${book}-${chapter}.json`
 
   const html = await fetch(url)
