@@ -22,7 +22,6 @@ import {matchSorter} from "match-sorter"
 import {CONFIG} from "@/config"
 import {Books, eqReference, findNext, findPrev, NamedReference, Reference} from "@/models/reference"
 import {VisitedRecentlyAtom} from "@/models/atoms"
-import {NotesAtom} from "./Controls"
 import {not} from "@/lib/fp"
 import {useIsMobile} from "@/lib/useIsMobile"
 import {useRouter} from "@/lib/router-events"
@@ -52,7 +51,6 @@ const useRoute = (): Route => {
 }
 
 type ShortcutEnum =
-  | "toggle_notes"
   | "toggle_verses"
   | "toggle_footnotes"
   | "next_chapter"
@@ -67,16 +65,6 @@ type Shortcut = {
   shortcut: string
   withCtrl: boolean
   showOn: "all" | RouteTag[]
-}
-
-const ToggleNotesAction: Shortcut = {
-  tag: "shortcut",
-  action: "toggle_notes",
-  name: "Toggle notes ...",
-  icon: PencilSquareIcon,
-  shortcut: "d",
-  withCtrl: true,
-  showOn: ["chapter"]
 }
 
 const ToggleVersesAction: Shortcut = {
@@ -160,7 +148,6 @@ const quickActions: (Shortcut | Action)[] =
     ? [
         SwitchVersion,
         GoToHistoryAction,
-        ToggleNotesAction,
         ToggleVersesAction,
         ToggleFootnotesAction,
         PrevChapterAction,
@@ -168,7 +155,6 @@ const quickActions: (Shortcut | Action)[] =
       ]
     : [
         GoToHistoryAction,
-        ToggleNotesAction,
         ToggleVersesAction,
         ToggleFootnotesAction,
         PrevChapterAction,
@@ -218,7 +204,6 @@ export const CommandPalette = ({books, chapters}: Props) => {
 
   const [query_, setQuery] = useState("")
   const [open, setOpen] = useAtom(CommandPaletteAtom)
-  const [showNotes, setShowNotes] = useAtom(NotesAtom)
   const [recent, _setRecent] = useAtom(VisitedRecentlyAtom)
   const [config, setConfig] = useAtom(ConfigAtom)
   const [mode, setMode] = useState<Mode>("search")
@@ -337,15 +322,6 @@ export const CommandPalette = ({books, chapters}: Props) => {
         return
       }
 
-      const isToggleNotes = e.key === ToggleNotesAction.shortcut.toLowerCase()
-      if (isModifier && isToggleNotes && !isMobile) {
-        e.preventDefault()
-        e.stopPropagation()
-
-        setShowNotes(not)
-        return
-      }
-
       const isToggleVerses = e.key === ToggleVersesAction.shortcut.toLowerCase()
       if (isToggleVerses && isModifier) {
         e.preventDefault()
@@ -373,11 +349,6 @@ export const CommandPalette = ({books, chapters}: Props) => {
         goToHistory()
       }
 
-      // Shortcuts with no modifier should not trigger when notes are open
-      if (isModifier || showNotes) {
-        return
-      }
-
       const isNextChapter = e.key === NextChapterAction.shortcut.toLowerCase()
       if (isNextChapter) {
         e.preventDefault()
@@ -403,7 +374,7 @@ export const CommandPalette = ({books, chapters}: Props) => {
     return () => {
       document.removeEventListener("keydown", handler)
     }
-  }, [open, showNotes, selectedChapter?.version, selectedChapter?.book, selectedChapter?.chapter])
+  }, [open, selectedChapter?.version, selectedChapter?.book, selectedChapter?.chapter])
 
   const onOpen = (item: Command) => {
     if (item.tag === "chapter") {
@@ -421,10 +392,6 @@ export const CommandPalette = ({books, chapters}: Props) => {
       setMode("commands")
       inputRef.current?.focus()
       return
-    }
-
-    if (item.tag === "shortcut" && item.action === "toggle_notes" && !isMobile) {
-      setShowNotes(not)
     }
 
     if (item.tag === "shortcut" && item.action === "toggle_verses") {
@@ -534,45 +501,43 @@ export const CommandPalette = ({books, chapters}: Props) => {
                     </li>
 
                     <ul className="text-sm text-gray-400">
-                      {filteredCommands.map((action) =>
-                        isMobile && action.action === "toggle_notes" ? null : (
-                          <Combobox.Option
-                            key={action.action}
-                            value={action}
-                            className={({active}) =>
-                              classNames(
-                                "flex cursor-default select-none items-center rounded-md px-3 py-2",
-                                active && "bg-gray-800 text-white"
-                              )
-                            }
-                          >
-                            {({active}) => (
-                              <>
-                                <action.icon
-                                  className={classNames(
-                                    "h-6 w-6 flex-none",
-                                    active ? "text-white" : "text-gray-500"
-                                  )}
-                                  aria-hidden="true"
-                                />
-                                <span className="ml-3 flex-auto truncate">{action.name}</span>
-                                {action.tag === "shortcut" && (
-                                  <span className="ml-3 flex flex-none justify-end space-x-1 text-xs font-semibold text-gray-400">
-                                    {action.withCtrl && (
-                                      <kbd className="rounded-sm bg-gray-700 p-1 font-mono leading-none">
-                                        Ctrl
-                                      </kbd>
-                                    )}
-                                    <kbd className="w-4 self-end rounded-sm bg-gray-700 p-1 text-center font-mono leading-none">
-                                      {action.shortcut}
-                                    </kbd>
-                                  </span>
+                      {filteredCommands.map((action) => (
+                        <Combobox.Option
+                          key={action.action}
+                          value={action}
+                          className={({active}) =>
+                            classNames(
+                              "flex cursor-default select-none items-center rounded-md px-3 py-2",
+                              active && "bg-gray-800 text-white"
+                            )
+                          }
+                        >
+                          {({active}) => (
+                            <>
+                              <action.icon
+                                className={classNames(
+                                  "h-6 w-6 flex-none",
+                                  active ? "text-white" : "text-gray-500"
                                 )}
-                              </>
-                            )}
-                          </Combobox.Option>
-                        )
-                      )}
+                                aria-hidden="true"
+                              />
+                              <span className="ml-3 flex-auto truncate">{action.name}</span>
+                              {action.tag === "shortcut" && (
+                                <span className="ml-3 flex flex-none justify-end space-x-1 text-xs font-semibold text-gray-400">
+                                  {action.withCtrl && (
+                                    <kbd className="rounded-sm bg-gray-700 p-1 font-mono leading-none">
+                                      Ctrl
+                                    </kbd>
+                                  )}
+                                  <kbd className="w-4 self-end rounded-sm bg-gray-700 p-1 text-center font-mono leading-none">
+                                    {action.shortcut}
+                                  </kbd>
+                                </span>
+                              )}
+                            </>
+                          )}
+                        </Combobox.Option>
+                      ))}
                     </ul>
                   </Combobox.Options>
                 )}

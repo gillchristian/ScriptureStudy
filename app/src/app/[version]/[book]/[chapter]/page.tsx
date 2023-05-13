@@ -1,5 +1,4 @@
 import {Chapter} from "@/components/Chapter"
-import {Notes} from "@/components/Notes"
 import {getIndex} from "@/lib/bibleIndex"
 
 type Params = {
@@ -24,7 +23,6 @@ export default async function ChapterPage({params}: Props) {
         // @ts-expect-error
         <Chapter books={books} reference={reference} />
       }
-      <Notes reference={reference} />
     </div>
   )
 }
