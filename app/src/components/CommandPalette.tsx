@@ -431,7 +431,7 @@ export const CommandPalette = ({books, chapters}: Props) => {
   const recent_ = useMemo(
     () =>
       recent
-        .filter((c) => (selectedChapter ? !eqReference.equal(c.reference, selectedChapter) : true))
+        .filter((c) => (selectedChapter ? !eqReference.equals(c.reference, selectedChapter) : true))
         .slice(0, 5),
     [recent, selectedChapter]
   )

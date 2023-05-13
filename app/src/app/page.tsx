@@ -14,7 +14,7 @@ export default async function Home() {
             Old Testament
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-            {books.inOrder.slice(0, 39).map((book) => (
+            {books.ordered.slice(0, 39).map((book) => (
               <Link
                 className="my-2 text-blue-600 dark:text-blue-400"
                 href={`/${version}/${book}/1`}
@@ -30,7 +30,7 @@ export default async function Home() {
             New Testament
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-            {books.inOrder.slice(39).map((book) => (
+            {books.ordered.slice(39).map((book) => (
               <Link
                 className="my-2 text-blue-600 dark:text-blue-400"
                 href={`/${version}/${book}/1`}

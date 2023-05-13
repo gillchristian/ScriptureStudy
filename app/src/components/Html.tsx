@@ -1,13 +1,11 @@
 "use client"
 
-import * as S from "fp-ts/Set"
-import {Eq as eqString} from "fp-ts/string"
-import {useAtom} from "jotai"
 import {FC} from "react"
 
 import {clsxm} from "@/lib/clsxm"
+import {Books, Reference, Verse} from "@/models/reference"
 
-import {SelectedVerseAtom} from "./ChaperSideEffects"
+import {useSelectedVerses} from "./ChaperSideEffects"
 
 export type Node =
   | {type: "Element"; data: Element}
@@ -21,53 +19,47 @@ export type Element = {
   attributes?: {[key: string]: string | undefined}
   classes?: string[]
   children: Node[]
+  verse?: Verse
 }
 
 type Attrs = {[key: string]: string | {[key: string]: string} | boolean}
 
-const processStyle = (styleStr: string) =>
-  styleStr.split(";").reduce((acc, rule) => {
-    const [name, value] = rule.split(":")
-
-    acc[name.trim()] = value.trim()
-
-    return acc
-  }, {} as {[key: string]: string})
+const processStyle = (styleStr: string): {[rule: string]: string} => {
+  try {
+    return JSON.parse(styleStr)
+  } catch (e) {
+    return {}
+  }
+}
 
 type Props = {
   node: Node
-  current: string
+  version: string
+  books: Books
+  reference: Reference
 }
 
-export const Html: FC<Props> = ({node, current}) => {
-  const [selectedVerses, setSelectedVerses] = useAtom(SelectedVerseAtom)
+export const Html: FC<Props> = ({node, version, books, reference}) => {
+  if (node.type === "Comment") {
+    return null
+  }
 
-  if (node.type === "Comment" || node.type === "Text") {
-    return node.data === "end of footnotes" ? (
-      <>{undefined}</>
-    ) : (
-      <span
-        dangerouslySetInnerHTML={{
-          // TODO: this doesn't fix the problem of the missing spaces because
-          //       the Text(String) Node doesn't actually start/end with spaces
-          //       is being added by the browser somehow in the HTML version
-          __html: node.data.replace(/^ /, "&nbsp;").replace(/ $/, "&nbsp;")
-        }}
+  if (node.type === "Text") {
+    return <Text text={node.data} />
+  }
+
+  if (node.data.verse) {
+    return (
+      <Verse_
+        // TS doesn't pick up that `node.data.verse` is present
+        // @ts-expect-error
+        element={node.data}
+        version={version}
+        books={books}
+        reference={reference}
       />
     )
   }
-
-  const verse = node.data.classes?.find((c) => c.startsWith(current))
-
-  const onSelectVerse = () => {
-    if (verse) {
-      setSelectedVerses((vs) =>
-        vs.has(verse) ? S.remove(eqString)(verse)(vs) : S.insert(eqString)(verse)(vs)
-      )
-    }
-  }
-
-  const isSelected = verse ? selectedVerses.has(verse) : false
 
   return (
     // We don't really care about the types here, we trust that the parser did
@@ -76,12 +68,53 @@ export const Html: FC<Props> = ({node, current}) => {
     // @ts-expect-error
     <node.data.name
       id={node.data.id}
+      className={node.data.classes ? clsxm(node.data.classes) : undefined}
+      {...Object.entries(node.data.attributes ?? {}).reduce((acc, [key, value]) => {
+        const value_ = value === undefined ? true : key === "style" ? processStyle(value) : value
+
+        acc[key] = value_
+
+        return acc
+      }, {} as Attrs)}
+    >
+      {node.data.children?.map((n, i) => (
+        <Html node={n} key={i} version={version} books={books} reference={reference} />
+      ))}
+    </node.data.name>
+  )
+}
+
+const Text = ({text: __html}: {text: string}) => <span dangerouslySetInnerHTML={{__html}} />
+
+type VerseProps = {
+  element: Element & {verse: Verse}
+  version: string
+  books: Books
+  reference: Reference
+}
+
+const Verse_: FC<VerseProps> = ({element, version, books, reference}) => {
+  const {toggle: toggleVerse, isSelected} = useSelectedVerses()
+
+  const {verse} = element
+
+  const onSelectVerse = () => {
+    toggleVerse(element.verse)
+  }
+
+  return (
+    // We don't really care about the types here, we trust that the parser did
+    // the right job and we are getting html that can be properly rendered
+    //
+    // @ts-expect-error
+    <element.name
+      id={element.id}
       className={
-        node.data.classes
-          ? clsxm(node.data.classes, isSelected && "selected", verse && "verse")
+        element.classes
+          ? clsxm(element.classes, isSelected(verse) && "selected", "verse")
           : undefined
       }
-      {...Object.entries(node.data.attributes ?? {}).reduce((acc, [key, value]) => {
+      {...Object.entries(element.attributes ?? {}).reduce((acc, [key, value]) => {
         const value_ = value === undefined ? true : key === "style" ? processStyle(value) : value
 
         acc[key] = value_
@@ -90,24 +123,9 @@ export const Html: FC<Props> = ({node, current}) => {
       }, {} as Attrs)}
       onClick={onSelectVerse}
     >
-      {
-        // TODO: this is a hack to put spaces between words like "LORD"
-        //       because the space between <span>s is not being properly added
-        //       by the browser, whereas the HTML version of this does add them
-        node.data.children &&
-        node.data.variant === "normal" &&
-        node.data.classes?.includes("small-caps") ? (
-          <span>
-            &nbsp;
-            {node.data.children.map((n, i) => (
-              <Html node={n} key={i} current={current} />
-            ))}
-            &nbsp;
-          </span>
-        ) : node.data.children && node.data.variant === "normal" ? (
-          node.data.children.map((n, i) => <Html node={n} key={i} current={current} />)
-        ) : undefined
-      }
-    </node.data.name>
+      {element.children?.map((n, i) => (
+        <Html node={n} key={i} version={version} books={books} reference={reference} />
+      ))}
+    </element.name>
   )
 }

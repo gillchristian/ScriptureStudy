@@ -3,6 +3,7 @@ import {Books, Reference} from "@/models/reference"
 
 import {Node, Html} from "./Html"
 import {ChapterSideEffects} from "./ChaperSideEffects"
+import {VerseSelection} from "./VerseSelection"
 
 type Props = {books: Books; reference: Reference}
 
@@ -19,16 +20,9 @@ export const Chapter = async ({books, reference}: Props) => {
     )
   }
 
-  const current = `${books.short[reference.book]}-${reference.chapter}-`
-
   return (
     <>
-      <ChapterSideEffects
-        books={books}
-        version={reference.version}
-        book={reference.book}
-        chapter={reference.chapter}
-      />
+      <ChapterSideEffects books={books} reference={reference} />
 
       <div className="mx-auto flex min-h-screen w-full justify-center p-4">
         <div className="prose pb-40 dark:prose-invert">
@@ -37,8 +31,10 @@ export const Chapter = async ({books, reference}: Props) => {
             {" | "}
             {books.names[reference.book]} {reference.chapter}
           </h2>
-          <Html node={html} current={current} />
+          <Html node={html} version={reference.version} books={books} reference={reference} />
         </div>
+
+        <VerseSelection books={books} reference={reference} />
       </div>
     </>
   )

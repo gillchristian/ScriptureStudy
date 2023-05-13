@@ -17,7 +17,7 @@ sup, .chapternum, .versenum {
 }
 
 .selected {
-  @apply bg-yellow-200;
+  @apply bg-yellow-200 underline;
 }
 
 .verse {

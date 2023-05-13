@@ -1,15 +1,18 @@
-import {Eq} from "@/lib/Eq"
+import {Eq} from "fp-ts/Eq"
+import {Ord} from "fp-ts/Ord"
+import {Ordering} from "fp-ts/Ordering"
 
 export type Books = {
-  byCount: {[book: string]: number}
-  inOrder: string[]
+  count: {[book: string]: number}
+  ordered: string[]
   names: {[book: string]: string}
-  short: {[book: string]: string}
+  shorts: {[book: string]: string}
+  by_short: {[book: string]: string}
 }
 
 export const toChapters = (version: string, books: Books): NamedReference[] =>
-  books.inOrder.flatMap((book) =>
-    new Array(books.byCount[book]).fill(true).map((_, i) => ({
+  books.ordered.flatMap((book) =>
+    new Array(books.count[book]).fill(true).map((_, i) => ({
       tag: "chapter",
       version,
       book,
@@ -24,23 +27,53 @@ export type Reference = {
   chapter: number
 }
 
+export type Verse = {
+  book: string
+  chapter: number
+  verse: number
+}
+
+export const verseEq: Eq<Verse> = {
+  equals: (a: Verse, b: Verse) =>
+    a.book === b.book && a.chapter === b.chapter && a.verse === b.verse
+}
+
+export const verseOrd: Ord<Verse> = {
+  ...verseEq,
+  compare: (a: Verse, b: Verse): Ordering =>
+    a.book < b.book
+      ? -1
+      : a.book > b.book
+      ? 1
+      : a.chapter < b.chapter
+      ? -1
+      : a.chapter > b.chapter
+      ? 1
+      : a.verse < b.verse
+      ? -1
+      : a.verse > b.verse
+      ? 1
+      : 0
+}
+
 export type NamedReference = {tag: "chapter"; name: string} & Reference
 
 export const eqReference: Eq<Reference> = {
-  equal: (a, b) => a.version === b.version && a.book === b.book && a.chapter === b.chapter
+  equals: (a: Reference, b: Reference) =>
+    a.version === b.version && a.book === b.book && a.chapter === b.chapter
 }
 
 export const findPrev = (current: Reference, chapters: Books): Reference | undefined => {
-  const i = chapters.inOrder.findIndex((b) => b === current.book)
+  const i = chapters.ordered.findIndex((b) => b === current.book)
 
-  const prev = chapters.inOrder[i - 1]
+  const prev = chapters.ordered[i - 1]
 
   if (current.chapter === 1) {
     return prev
       ? {
           version: current.version,
           book: prev,
-          chapter: chapters.byCount[prev]
+          chapter: chapters.count[prev]
         }
       : undefined
   }
@@ -53,12 +86,12 @@ export const findPrev = (current: Reference, chapters: Books): Reference | undef
 }
 
 export const findNext = (current: Reference, chapters: Books): Reference | undefined => {
-  const i = chapters.inOrder.findIndex((b) => b === current.book)
+  const i = chapters.ordered.findIndex((b) => b === current.book)
 
-  const book = chapters.inOrder[i]
-  const next = chapters.inOrder[i + 1]
+  const book = chapters.ordered[i]
+  const next = chapters.ordered[i + 1]
 
-  if (chapters.byCount[book] === current.chapter) {
+  if (chapters.count[book] === current.chapter) {
     return next ? {version: current.version, book: next, chapter: 1} : undefined
   }
 
