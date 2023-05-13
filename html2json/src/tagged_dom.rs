@@ -1,14 +1,37 @@
 /// This code is taken from the html_parser crate and adapted make the Node enum tagged
 use html_parser;
+use lazy_static::lazy_static;
 use serde::{Serialize, Serializer};
 use std::collections::BTreeMap;
 use std::collections::HashMap;
+use std::error::Error;
+use std::fmt;
+use std::str::FromStr;
 
 pub type Attributes = HashMap<String, Option<String>>;
 
 fn ordered_map<S: Serializer>(value: &Attributes, serializer: S) -> Result<S::Ok, S::Error> {
     let ordered: BTreeMap<_, _> = value.iter().collect();
     ordered.serialize(serializer)
+}
+
+/// Turns styles in HTML format and turns them into JSON.
+///
+/// This way, when handling the styles in JavaScript, we can `JSON.parse(`) them.
+fn process_style(style_str: &str) -> String {
+    serde_json::to_string(
+        &style_str
+            .split(';')
+            .map(|rule| {
+                let mut parts = rule.split(':');
+                (
+                    parts.next().unwrap().trim().to_string(),
+                    parts.next().unwrap().trim().to_string(),
+                )
+            })
+            .collect::<HashMap<String, String>>(),
+    )
+    .unwrap()
 }
 
 /// Normal: `<div></div>` or Void: `<meta/>`and `<meta>`
@@ -28,6 +51,45 @@ impl ElementVariant {
             html_parser::ElementVariant::Normal => Self::Normal,
             html_parser::ElementVariant::Void => Self::Void,
         }
+    }
+}
+
+#[derive(Debug, Clone)]
+struct ParseBibleVerseError;
+
+impl fmt::Display for ParseBibleVerseError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Failed to parse Bible verse")
+    }
+}
+
+impl Error for ParseBibleVerseError {}
+
+#[derive(Debug, Clone, Serialize, PartialEq)]
+pub struct BibleVerse {
+    pub book: String,
+    pub chapter: u32,
+    pub verse: u32,
+}
+
+// <book>-<chapter>-<verse>
+impl FromStr for BibleVerse {
+    type Err = Box<dyn Error>;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let parts = s.split('-').collect::<Vec<_>>();
+        if parts.len() != 3 {
+            return Err(Box::new(ParseBibleVerseError));
+        }
+
+        Ok(Self {
+            book: BY_SHORT
+                .get(parts[0])
+                .ok_or(Box::new(ParseBibleVerseError))?
+                .to_string(),
+            chapter: parts[1].parse::<u32>()?,
+            verse: parts[2].parse::<u32>()?,
+        })
     }
 }
 
@@ -56,15 +118,169 @@ pub struct Element {
     /// All of the elements child nodes
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub children: Vec<Node>,
+
+    /// Information about Bible verses in the element
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verse: Option<BibleVerse>,
+}
+
+lazy_static! {
+    static ref BY_SHORT: HashMap<&'static str, &'static str> = hashmap! {
+        "Gen" => "genesis",
+        "Exod" => "exodus",
+        "Lev" => "leviticus",
+        "Num" => "numbers",
+        "Deut" => "deuteronomy",
+        "Josh" => "joshua",
+        "Judg" => "judges",
+        "Ruth" => "ruth",
+        "1Sam" => "1-samuel",
+        "2Sam" => "2-samuel",
+        "1Kgs" => "1-kings",
+        "2Kgs" => "2-kings",
+        "1Chr" => "1-chronicles",
+        "2Chr" => "2-chronicles",
+        "Ezra" => "ezra",
+        "Neh" => "nehemiah",
+        "Esth" => "esther",
+        "Job" => "job",
+        "Ps" => "psalm",
+        "Prov" => "proverbs",
+        "Eccl" => "ecclesiastes",
+        "Song" => "song-of-solomon",
+        "Isa" => "isaiah",
+        "Jer" => "jeremiah",
+        "Lam" => "lamentations",
+        "Ezek" => "ezekiel",
+        "Dan" => "daniel",
+        "Hos" => "hosea",
+        "Joel" => "joel",
+        "Amos" => "amos",
+        "Obad" => "obadiah",
+        "Jonah" => "jonah",
+        "Mic" => "micah",
+        "Nah" => "nahum",
+        "Hab" => "habakkuk",
+        "Zeph" => "zephaniah",
+        "Hag" => "haggai",
+        "Zech" => "zechariah",
+        "Mal" => "malachi",
+        "Matt" => "matthew",
+        "Mark" => "mark",
+        "Luke" => "luke",
+        "John" => "john",
+        "Acts" => "acts",
+        "Rom" => "romans",
+        "1Cor" => "1-corinthians",
+        "2Cor" => "2-corinthians",
+        "Gal" => "galatians",
+        "Eph" => "ephesians",
+        "Phil" => "philippians",
+        "Col" => "colossians",
+        "1Thess" => "1-thessalonians",
+        "2Thess" => "2-thessalonians",
+        "1Tim" => "1-timothy",
+        "2Tim" => "2-timothy",
+        "Titus" => "titus",
+        "Phlm" => "philemon",
+        "Heb" => "hebrews",
+        "Jas" => "james",
+        "1Pet" => "1-peter",
+        "2Pet" => "2-peter",
+        "1John" => "1-john",
+        "2John" => "2-john",
+        "3John" => "3-john",
+        "Jude" => "jude",
+        "Rev" => "revelation"
+    };
+    static ref BY_BOOK: HashMap<&'static str, &'static str> = hashmap! {
+        "genesis" => "Gen",
+        "exodus" => "Exod",
+        "leviticus" => "Lev",
+        "numbers" => "Num",
+        "deuteronomy" => "Deut",
+        "joshua" => "Josh",
+        "judges" => "Judg",
+        "ruth" => "Ruth",
+        "1-samuel" => "1Sam",
+        "2-samuel" => "2Sam",
+        "1-kings" => "1Kgs",
+        "2-kings" => "2Kgs",
+        "1-chronicles" => "1Chr",
+        "2-chronicles" => "2Chr",
+        "ezra" => "Ezra",
+        "nehemiah" => "Neh",
+        "esther" => "Esth",
+        "job" => "Job",
+        "psalm" => "Ps",
+        "proverbs" => "Prov",
+        "ecclesiastes" => "Eccl",
+        "song-of-solomon" => "Song",
+        "isaiah" => "Isa",
+        "jeremiah" => "Jer",
+        "lamentations" => "Lam",
+        "ezekiel" => "Ezek",
+        "daniel" => "Dan",
+        "hosea" => "Hos",
+        "joel" => "Joel",
+        "amos" => "Amos",
+        "obadiah" => "Obad",
+        "jonah" => "Jonah",
+        "micah" => "Mic",
+        "nahum" => "Nah",
+        "habakkuk" => "Hab",
+        "zephaniah" => "Zeph",
+        "haggai" => "Hag",
+        "zechariah" => "Zech",
+        "malachi" => "Mal",
+        "matthew" => "Matt",
+        "mark" => "Mark",
+        "luke" => "Luke",
+        "john" => "John",
+        "acts" => "Acts",
+        "romans" => "Rom",
+        "1-corinthians" => "1Cor",
+        "2-corinthians" => "2Cor",
+        "galatians" => "Gal",
+        "ephesians" => "Eph",
+        "philippians" => "Phil",
+        "colossians" => "Col",
+        "1-thessalonians" => "1Thess",
+        "2-thessalonians" => "2Thess",
+        "1-timothy" => "1Tim",
+        "2-timothy" => "2Tim",
+        "titus" => "Titus",
+        "philemon" => "Phlm",
+        "hebrews" => "Heb",
+        "james" => "Jas",
+        "1-peter" => "1Pet",
+        "2-peter" => "2Pet",
+        "1-john" => "1John",
+        "2-john" => "2John",
+        "3-john" => "3John",
+        "jude" => "Jude",
+        "revelation" => "Rev"
+    };
 }
 
 impl Element {
     pub fn from_html_parser(original: &html_parser::Element) -> Self {
-        Self {
+        let verse = original
+            .classes
+            .iter()
+            .find_map(|c| c.parse::<BibleVerse>().ok());
+
+        let mut attributes = original.attributes.clone();
+        attributes.get_mut("style").map(|s| match s {
+            Some(s) => Some(process_style(s)),
+            None => None,
+        });
+
+        let new_elem = Self {
             id: original.id.clone(),
             name: original.name.clone(),
             variant: ElementVariant::from_html_parser(&original.variant),
-            attributes: original.attributes.clone(),
+            attributes,
             classes: original.classes.clone(),
             children: original
                 .children
@@ -72,6 +288,30 @@ impl Element {
                 .map(|node| Node::from_html_parser(node))
                 .filter(|node| !node.is_empty())
                 .collect(),
+            verse,
+        };
+
+        let is_small_caps = original.classes.iter().any(|c| c == "small-caps");
+
+        if is_small_caps {
+            // This is a hack to put spaces between words like "LORD"
+            // because the space between <span>s is not being properly added
+            // by the browser, whereas the HTML version of this does add them
+            Self {
+                id: None,
+                name: "span".to_string(),
+                variant: ElementVariant::Normal,
+                attributes: HashMap::new(),
+                classes: vec![],
+                children: vec![
+                    Node::Text("&nbsp;".to_string()),
+                    Node::Element(new_elem),
+                    Node::Text("&nbsp;".to_string()),
+                ],
+                verse: None,
+            }
+        } else {
+            new_elem
         }
     }
 }
@@ -87,7 +327,20 @@ pub enum Node {
 impl Node {
     pub fn from_html_parser(original: &html_parser::Node) -> Self {
         match original {
-            html_parser::Node::Text(text) => Self::Text(text.clone()),
+            html_parser::Node::Text(text) => {
+                // TODO: validate that this is making a difference in the HTML rendering
+                let mut text = text.clone();
+
+                if text.ends_with(" ") || text.ends_with("\n") && text.len() > 1 {
+                    text.replace_range((text.len() - 1)..(text.len()), "&nbsp;");
+                }
+
+                if (text.starts_with(" ") || text.starts_with("\n")) && text.len() > 1 {
+                    text.replace_range(..1, "&nbsp;");
+                }
+
+                Self::Text(text)
+            }
             html_parser::Node::Element(element) => {
                 Self::Element(Element::from_html_parser(element))
             }
@@ -97,7 +350,7 @@ impl Node {
 
     pub fn is_empty(&self) -> bool {
         match self {
-            Self::Text(text) => text.is_empty(),
+            Self::Text(text) => text.is_empty() || text == "end of notes",
             Self::Element(_) => false,
             Self::Comment(_) => false,
         }

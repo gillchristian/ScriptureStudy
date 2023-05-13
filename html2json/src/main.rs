@@ -6,6 +6,10 @@ use std::fs;
 use std::io;
 use std::io::Read;
 
+#[macro_use]
+extern crate maplit;
+extern crate lazy_static;
+
 fn fst_arg() -> Option<String> {
     let args: Vec<String> = env::args().skip(1).collect();
 
