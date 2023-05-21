@@ -13,7 +13,7 @@ import {
   ArrowLeftIcon,
   ArrowRightIcon,
   ArchiveBoxIcon,
-  PencilSquareIcon
+  ShieldCheckIcon
 } from "@heroicons/react/24/outline"
 import {atom, useAtom} from "jotai"
 import {atomWithStorage} from "jotai/utils"
@@ -22,8 +22,6 @@ import {matchSorter} from "match-sorter"
 import {CONFIG} from "@/config"
 import {Books, eqReference, findNext, findPrev, NamedReference, Reference} from "@/models/reference"
 import {VisitedRecentlyAtom} from "@/models/atoms"
-import {not} from "@/lib/fp"
-import {useIsMobile} from "@/lib/useIsMobile"
 import {useRouter} from "@/lib/router-events"
 
 type Route = {tag: "history"} | {tag: "home"} | {tag: "not_found"} | ({tag: "chapter"} & Reference)
@@ -117,7 +115,7 @@ const GoToHistoryAction: Shortcut = {
   showOn: ["chapter", "home", "not_found"]
 }
 
-type ActionEnum = "switch_version" | "search_commands"
+type ActionEnum = "switch_version" | "search_commands" | "insert_secret"
 
 type Action = {
   tag: "action"
@@ -143,6 +141,14 @@ const SwitchVersion: Action = {
   showOn: ["chapter"]
 }
 
+const InsertSecret: Action = {
+  tag: "action",
+  action: "insert_secret",
+  name: "Insert Secret",
+  icon: ShieldCheckIcon,
+  showOn: "all"
+}
+
 const quickActions: (Shortcut | Action)[] =
   CONFIG.AVAILABLE_VERSIONS.length > 1
     ? [
@@ -151,14 +157,16 @@ const quickActions: (Shortcut | Action)[] =
         ToggleVersesAction,
         ToggleFootnotesAction,
         PrevChapterAction,
-        NextChapterAction
+        NextChapterAction,
+        InsertSecret
       ]
     : [
         GoToHistoryAction,
         ToggleVersesAction,
         ToggleFootnotesAction,
         PrevChapterAction,
-        NextChapterAction
+        NextChapterAction,
+        InsertSecret
       ]
 
 type Version = {
@@ -209,8 +217,6 @@ export const CommandPalette = ({books, chapters}: Props) => {
   const [mode, setMode] = useState<Mode>("search")
   const openRef = useRef(open)
   const inputRef = useRef<HTMLInputElement>(null)
-
-  const isMobile = useIsMobile()
 
   useEffect(() => {
     openRef.current = open
@@ -391,6 +397,15 @@ export const CommandPalette = ({books, chapters}: Props) => {
       setQuery("> ")
       setMode("commands")
       inputRef.current?.focus()
+      return
+    }
+
+    if (item.tag === "action" && item.action === "insert_secret") {
+      setOpen(false)
+
+      const secret = prompt("Plese enter the secret")
+      localStorage.setItem("secret", secret ?? "")
+
       return
     }
 

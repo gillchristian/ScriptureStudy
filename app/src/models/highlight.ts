@@ -15,25 +15,30 @@ export const getHighlights = async (
   version: string,
   book: string,
   chapter: number
-): Promise<{highlights: Highlight[]; table: Record<string, Highlight>}> =>
-  fetch(`${CONFIG.API_URL}/highlights/${version}/${book}/${chapter}`, {
-    headers: {Authorization: `Bearer ${localStorage.getItem("secret")}`}
-  })
-    .then((res) => (res.ok ? res.json() : Promise.reject(res)))
-    .then((res: Highlight[]) => ({
-      highlights: res,
-      table: res.reduce((acc, cur) => {
-        cur.verses.forEach((verse) => {
-          acc[`${cur.version}-${cur.book}-${cur.chapter}-${verse}-${cur.color}`] = cur
-        })
+): Promise<{highlights: Highlight[]; table: Record<string, Highlight>}> => {
+  const secret = localStorage.getItem("secret")
 
-        return acc
-      }, {} as Record<string, Highlight>)
-    }))
-    .catch((err) => {
-      console.error(err)
-      return {highlights: [], table: {}}
-    })
+  return secret
+    ? fetch(`${CONFIG.API_URL}/highlights/${version}/${book}/${chapter}`, {
+        headers: {Authorization: `Bearer ${secret}`}
+      })
+        .then((res) => (res.ok ? res.json() : Promise.reject(res)))
+        .then((res: Highlight[]) => ({
+          highlights: res,
+          table: res.reduce((acc, cur) => {
+            cur.verses.forEach((verse) => {
+              acc[`${cur.version}-${cur.book}-${cur.chapter}-${verse}-${cur.color}`] = cur
+            })
+
+            return acc
+          }, {} as Record<string, Highlight>)
+        }))
+        .catch((err) => {
+          console.error(err)
+          return {highlights: [], table: {}}
+        })
+    : Promise.resolve({highlights: [], table: {}})
+}
 
 export const createHighlight = async (
   version: string,
