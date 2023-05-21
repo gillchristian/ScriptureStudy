@@ -1,6 +1,5 @@
 "use client"
 
-import * as S from "fp-ts/Set"
 import {RefCallback, useCallback, useEffect} from "react"
 import {atom, useAtom} from "jotai"
 import {useSwipeable} from "react-swipeable"
@@ -14,8 +13,7 @@ import {
   findPrev,
   NamedReference,
   Reference,
-  Verse,
-  verseEq
+  Verse
 } from "@/models/reference"
 import {useRouter} from "@/lib/router-events"
 
@@ -33,37 +31,6 @@ export const ChapterSideEffects = (props: Props) => {
 }
 
 export const SelectedVerseAtom = atom<Set<Verse>>(new Set([]))
-
-const has = S.elem<Verse>(verseEq)
-const remove = S.remove<Verse>(verseEq)
-const insert = S.insert<Verse>(verseEq)
-
-// Verse: <prop>:<book>-<chapter>-<verse>
-export const parseVerse = (books: Books, verse_: string): Verse & {version: string} => {
-  const [version, bookShort, chapter, verse] = verse_.split("-")
-
-  return {
-    version,
-    book: books.by_short[bookShort],
-    chapter: parseInt(chapter, 10),
-    verse: parseInt(verse, 10)
-  }
-}
-
-export const useSelectedVerses = () => {
-  const [selectedVerses, setSelectedVerses] = useAtom(SelectedVerseAtom)
-
-  const toggle = useCallback(
-    (verse: Verse) => {
-      setSelectedVerses((vs) => (has(verse)(vs) ? remove(verse)(vs) : insert(verse)(vs)))
-    },
-    [setSelectedVerses]
-  )
-
-  const isSelected = useCallback((verse: Verse) => has(verse)(selectedVerses), [selectedVerses])
-
-  return {isSelected, toggle}
-}
 
 export function useOnComplete() {}
 

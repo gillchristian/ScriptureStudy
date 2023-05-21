@@ -56,6 +56,19 @@ export const verseOrd: Ord<Verse> = {
       : 0
 }
 
+export type VerseWithVersion = Verse & {version: string}
+
+export const verseWithVersionEq: Eq<VerseWithVersion> = {
+  equals: (a: VerseWithVersion, b: VerseWithVersion) =>
+    a.version === b.version && verseEq.equals(a, b)
+}
+
+export const verseWithVersionOrd: Ord<VerseWithVersion> = {
+  ...verseWithVersionEq,
+  compare: (a: VerseWithVersion, b: VerseWithVersion): Ordering =>
+    a.version < b.version ? -1 : a.version > b.version ? 1 : verseOrd.compare(a, b)
+}
+
 export type NamedReference = {tag: "chapter"; name: string} & Reference
 
 export const eqReference: Eq<Reference> = {

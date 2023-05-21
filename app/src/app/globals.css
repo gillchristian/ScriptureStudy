@@ -15,11 +15,3 @@ sup, .chapternum, .versenum {
 .hide-footnotes .footnotes {
   @apply hidden;
 }
-
-.selected {
-  @apply bg-yellow-200 underline;
-}
-
-.verse {
-  @apply cursor-pointer;
-}

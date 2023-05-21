@@ -41,7 +41,7 @@ export const Chapter = async ({books, reference}: Props) => {
 }
 
 const getData = async ({version, book, chapter}: Reference): Promise<{html?: Node}> => {
-  const url = `${CONFIG.API_URL}/${version}/${book}-${chapter}.json`
+  const url = `${CONFIG.BIBLES_URL}/${version}/${book}-${chapter}.json`
 
   const html = await fetch(url)
     .then((res) => (res.ok ? res.json() : Promise.reject(new Error("Failed to fetch"))))

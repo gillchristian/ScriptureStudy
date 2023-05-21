@@ -1,11 +1,11 @@
 "use client"
 
-import {FC} from "react"
+import {FC, useMemo} from "react"
 
 import {clsxm} from "@/lib/clsxm"
 import {Books, Reference, Verse} from "@/models/reference"
 
-import {useSelectedVerses} from "./ChaperSideEffects"
+import {useHighlights, useVerseToggler} from "./VerseSelection"
 
 export type Node =
   | {type: "Element"; data: Element}
@@ -94,9 +94,16 @@ type VerseProps = {
 }
 
 const Verse_: FC<VerseProps> = ({element, version, books, reference}) => {
-  const {toggle: toggleVerse, isSelected} = useSelectedVerses()
+  const {toggle: toggleVerse, isSelected} = useVerseToggler()
 
   const {verse} = element
+
+  const {table} = useHighlights(reference.version, reference.book, reference.chapter)
+
+  const key = `${reference.version}-${reference.book}-${reference.chapter}-${verse.verse}`
+  const green = useMemo(() => table[`${key}-green`], [table, key])
+  const red = useMemo(() => table[`${key}-red`], [table, key])
+  const yellow = useMemo(() => table[`${key}-yellow`], [table, key])
 
   const onSelectVerse = () => {
     toggleVerse(element.verse)
@@ -111,7 +118,15 @@ const Verse_: FC<VerseProps> = ({element, version, books, reference}) => {
       id={element.id}
       className={
         element.classes
-          ? clsxm(element.classes, isSelected(verse) && "selected", "verse")
+          ? clsxm(
+              element.classes,
+              "verse",
+              "cursor-pointer",
+              isSelected(verse) && "underline decoration-dotted",
+              green && "bg-green-200",
+              red && "bg-red-200",
+              yellow && "bg-yellow-200"
+            )
           : undefined
       }
       {...Object.entries(element.attributes ?? {}).reduce((acc, [key, value]) => {
