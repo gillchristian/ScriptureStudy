@@ -23,6 +23,7 @@ import {CONFIG} from "@/config"
 import {Books, eqReference, findNext, findPrev, NamedReference, Reference} from "@/models/reference"
 import {VisitedRecentlyAtom} from "@/models/atoms"
 import {useRouter} from "@/lib/router-events"
+import {TokenAtom} from "@/models/token"
 
 type Route = {tag: "history"} | {tag: "home"} | {tag: "not_found"} | ({tag: "chapter"} & Reference)
 type RouteTag = Route["tag"]
@@ -210,6 +211,7 @@ export const CommandPalette = ({books, chapters}: Props) => {
 
   const selectedChapter: Reference | undefined = route.tag === "chapter" ? route : undefined
 
+  const [_, setToken] = useAtom(TokenAtom)
   const [query_, setQuery] = useState("")
   const [open, setOpen] = useAtom(CommandPaletteAtom)
   const [recent, _setRecent] = useAtom(VisitedRecentlyAtom)
@@ -404,7 +406,7 @@ export const CommandPalette = ({books, chapters}: Props) => {
       setOpen(false)
 
       const secret = prompt("Plese enter the secret")
-      localStorage.setItem("secret", secret ?? "")
+      setToken(secret ?? "")
 
       return
     }

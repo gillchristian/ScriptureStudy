@@ -15,32 +15,26 @@ export const getHighlights = async (
   version: string,
   book: string,
   chapter: number
-): Promise<{highlights: Highlight[]; table: Record<string, Highlight>}> => {
-  const secret = localStorage.getItem("secret")
-
-  return secret
-    ? fetch(`${CONFIG.API_URL}/highlights/${version}/${book}/${chapter}`, {
-        headers: {Authorization: `Bearer ${secret}`}
-      })
-        .then((res) => (res.ok ? res.json() : Promise.reject(res)))
-        .then((res: Highlight[]) => ({
-          highlights: res,
-          table: res.reduce((acc, cur) => {
-            cur.verses.forEach((verse) => {
-              acc[`${cur.version}-${cur.book}-${cur.chapter}-${verse}-${cur.color}`] = cur
-            })
-
-            return acc
-          }, {} as Record<string, Highlight>)
-        }))
-        .catch((err) => {
-          console.error(err)
-          return {highlights: [], table: {}}
+): Promise<{highlights: Highlight[]; table: Record<string, Highlight>}> =>
+  fetch(`${CONFIG.API_URL}/highlights/${version}/${book}/${chapter}`)
+    .then((res) => (res.ok ? res.json() : Promise.reject(res)))
+    .then((res: Highlight[]) => ({
+      highlights: res,
+      table: res.reduce((acc, cur) => {
+        cur.verses.forEach((verse) => {
+          acc[`${cur.version}-${cur.book}-${cur.chapter}-${verse}-${cur.color}`] = cur
         })
-    : Promise.resolve({highlights: [], table: {}})
-}
+
+        return acc
+      }, {} as Record<string, Highlight>)
+    }))
+    .catch((err) => {
+      console.error(err)
+      return {highlights: [], table: {}}
+    })
 
 export const createHighlight = async (
+  token: string,
   version: string,
   book: string,
   chapter: number,
@@ -51,7 +45,7 @@ export const createHighlight = async (
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("secret")}`
+      Authorization: `Bearer ${token}`
     },
     body: JSON.stringify({verses, color})
   })
@@ -61,10 +55,10 @@ export const createHighlight = async (
       return null
     })
 
-export const deleteHighlight = async ({id, version, book, chapter}: Highlight): Promise<boolean> =>
+export const deleteHighlight = async (token: string, {id, version, book, chapter}: Highlight): Promise<boolean> =>
   fetch(`${CONFIG.API_URL}/highlights/${version}/${book}/${chapter}/${id}`, {
     method: "DELETE",
-    headers: {Authorization: `Bearer ${localStorage.getItem("secret")}`}
+    headers: {Authorization: `Bearer ${token}`}
   })
     .then((res) => res.ok)
     .catch((err) => {

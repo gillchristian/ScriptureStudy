@@ -6,6 +6,8 @@ import {clsxm} from "@/lib/clsxm"
 import {Books, Reference, Verse} from "@/models/reference"
 
 import {useHighlights, useVerseToggler} from "./VerseSelection"
+import {useAtom} from "jotai"
+import {TokenAtom} from "@/models/token"
 
 export type Node =
   | {type: "Element"; data: Element}
@@ -94,6 +96,7 @@ type VerseProps = {
 }
 
 const Verse_: FC<VerseProps> = ({element, version, books, reference}) => {
+  const [token, _] = useAtom(TokenAtom)
   const {toggle: toggleVerse, isSelected} = useVerseToggler()
 
   const {verse} = element
@@ -106,7 +109,9 @@ const Verse_: FC<VerseProps> = ({element, version, books, reference}) => {
   const yellow = useMemo(() => table[`${key}-yellow`], [table, key])
 
   const onSelectVerse = () => {
-    toggleVerse(element.verse)
+    if (token) {
+      toggleVerse(element.verse)
+    }
   }
 
   return (
