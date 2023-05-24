@@ -128,9 +128,10 @@ const Verse_: FC<VerseProps> = ({element, version, books, reference}) => {
               "verse",
               "cursor-pointer",
               isSelected(verse) && "underline decoration-dotted",
-              green && "bg-green-200",
-              red && "bg-red-200",
-              yellow && "bg-yellow-200"
+              // highlights
+              green && "bg-green-200 dark:bg-green-400 dark:text-gray-800",
+              red && "bg-red-200 dark:bg-red-400 dark:text-gray-800",
+              yellow && "bg-yellow-200 dark:bg-yellow-400 dark:text-gray-800"
             )
           : undefined
       }

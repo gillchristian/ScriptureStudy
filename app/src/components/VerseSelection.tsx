@@ -191,31 +191,31 @@ export const VerseSelection = ({books, reference}: Props) => {
 
   return (
     <div className="fixed bottom-0 left-1/2 w-screen max-w-[70ch] -translate-x-1/2 transform shadow-md">
-      <div className="space-y-4 rounded-t-lg bg-gray-200 px-4 py-8">
+      <div className="space-y-4 rounded-t-lg bg-gray-200 px-4 py-8 dark:bg-gray-600">
         <div className="flex items-center justify-center">
-          <p>
+          <p className="dark:text-white">
             {books.names[reference.book]} {reference.chapter}:{formatted}
           </p>
         </div>
         <div className="flex w-full items-center justify-center space-x-6">
           {selectedHighLightedVerses && (
             <button
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-200"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-200 dark:bg-yellow-500"
               onClick={removeSelected}
             >
-              <XMarkIcon className="h-4 w-4 text-gray-500" />
+              <XMarkIcon className="h-4 w-4 text-gray-500 dark:text-gray-800" />
             </button>
           )}
           <button
-            className="h-8 w-8 rounded-full bg-yellow-200"
+            className="h-8 w-8 rounded-full bg-yellow-200 dark:bg-yellow-500"
             onClick={() => highlightSelected("yellow")}
           />
           <button
-            className="h-8 w-8 rounded-full bg-red-200"
+            className="h-8 w-8 rounded-full bg-red-200 dark:bg-red-500"
             onClick={() => highlightSelected("red")}
           />
           <button
-            className="h-8 w-8 rounded-full bg-green-200"
+            className="h-8 w-8 rounded-full bg-green-200 dark:bg-green-500"
             onClick={() => highlightSelected("green")}
           />
         </div>
