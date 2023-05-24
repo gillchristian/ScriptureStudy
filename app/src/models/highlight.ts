@@ -55,7 +55,10 @@ export const createHighlight = async (
       return null
     })
 
-export const deleteHighlight = async (token: string, {id, version, book, chapter}: Highlight): Promise<boolean> =>
+export const deleteHighlight = async (
+  token: string,
+  {id, version, book, chapter}: Highlight
+): Promise<boolean> =>
   fetch(`${CONFIG.API_URL}/highlights/${version}/${book}/${chapter}/${id}`, {
     method: "DELETE",
     headers: {Authorization: `Bearer ${token}`}

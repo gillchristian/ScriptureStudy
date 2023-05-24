@@ -2,17 +2,17 @@
 
 import * as S from "fp-ts/Set"
 import * as A from "fp-ts/Array"
-import { pipe } from "fp-ts/function"
-import { useCallback, useMemo } from "react"
-import { useAtom } from "jotai"
+import {pipe} from "fp-ts/function"
+import {useCallback, useMemo} from "react"
+import {useAtom} from "jotai"
 import useSWR from "swr"
 
-import { Books, Reference, Verse, verseEq, verseOrd, VerseWithVersion } from "@/models/reference"
+import {Books, Reference, Verse, verseEq, verseOrd, VerseWithVersion} from "@/models/reference"
 
-import { SelectedVerseAtom } from "./ChaperSideEffects"
-import { XMarkIcon } from "@heroicons/react/24/outline"
-import { createHighlight, deleteHighlight, getHighlights, Highlight } from "@/models/highlight"
-import { TokenAtom } from "@/models/token"
+import {SelectedVerseAtom} from "./ChaperSideEffects"
+import {XMarkIcon} from "@heroicons/react/24/outline"
+import {createHighlight, deleteHighlight, getHighlights, Highlight} from "@/models/highlight"
+import {TokenAtom} from "@/models/token"
 
 export const useHighlights = (version: string, book: string, chapter: number) => {
   const fetcher = useCallback(
@@ -20,7 +20,7 @@ export const useHighlights = (version: string, book: string, chapter: number) =>
     [version, book, chapter]
   )
 
-  const { data, mutate } = useSWR<{ highlights: Highlight[]; table: Record<string, Highlight> }>(
+  const {data, mutate} = useSWR<{highlights: Highlight[]; table: Record<string, Highlight>}>(
     `${version}-${book}-${chapter}`,
     fetcher
   )
@@ -40,11 +40,11 @@ export const useHighlights = (version: string, book: string, chapter: number) =>
     [highlights]
   )
 
-  return { highlights, table, mutate, isHighLighted }
+  return {highlights, table, mutate, isHighLighted}
 }
 
 const useHighLightedVerses = (reference: Reference) => {
-  const { highlights, mutate, isHighLighted } = useHighlights(
+  const {highlights, mutate, isHighLighted} = useHighlights(
     reference.version,
     reference.book,
     reference.chapter
@@ -80,7 +80,7 @@ const useHighLightedVerses = (reference: Reference) => {
     [highlights]
   )
 
-  return { highlights, highlight, remove, isHighLighted }
+  return {highlights, highlight, remove, isHighLighted}
 }
 
 const has = S.elem<Verse>(verseEq)
@@ -99,7 +99,7 @@ export const useVerseToggler = () => {
 
   const isSelected = useCallback((verse: Verse) => has(verse)(selectedVerses), [selectedVerses])
 
-  return { isSelected, toggle }
+  return {isSelected, toggle}
 }
 
 const useSelectedVerses = () => {
@@ -125,10 +125,10 @@ const useSelectedVerses = () => {
       return ""
     }
 
-    type State = { ranges: Verse[][]; current: Verse[]; last: Verse }
-    const state: State = { ranges: [], current: [sorted[0]], last: sorted[0] }
+    type State = {ranges: Verse[][]; current: Verse[]; last: Verse}
+    const state: State = {ranges: [], current: [sorted[0]], last: sorted[0]}
 
-    const { ranges, current } = sorted.slice(1).reduce(
+    const {ranges, current} = sorted.slice(1).reduce(
       (state, verse) => {
         if (verse.verse === state.last.verse + 1) {
           state.current.push(verse)
@@ -150,8 +150,8 @@ const useSelectedVerses = () => {
         range.length === 0
           ? acc
           : range.length === 1
-            ? `${acc},${range[0].verse}`
-            : `${acc},${range[0].verse}-${range[range.length - 1].verse}`,
+          ? `${acc},${range[0].verse}`
+          : `${acc},${range[0].verse}-${range[range.length - 1].verse}`,
       ""
     )
 
@@ -160,14 +160,14 @@ const useSelectedVerses = () => {
 
   const verses_ = useMemo(() => [...selectedVerses], [selectedVerses])
 
-  return { verses: selectedVerses, verses_, formatted, isSelected, toggle, hasSelected, clear }
+  return {verses: selectedVerses, verses_, formatted, isSelected, toggle, hasSelected, clear}
 }
 
-type Props = { books: Books; reference: Reference }
+type Props = {books: Books; reference: Reference}
 
-export const VerseSelection = ({ books, reference }: Props) => {
-  const { hasSelected, verses_, formatted } = useSelectedVerses()
-  const { highlight, remove, isHighLighted, highlights } = useHighLightedVerses(reference)
+export const VerseSelection = ({books, reference}: Props) => {
+  const {hasSelected, verses_, formatted} = useSelectedVerses()
+  const {highlight, remove, isHighLighted, highlights} = useHighLightedVerses(reference)
 
   const highlightSelected = (color: string) => {
     highlight(verses_, reference.version, color)
@@ -186,7 +186,7 @@ export const VerseSelection = ({ books, reference }: Props) => {
   if (!hasSelected) return null
 
   const selectedHighLightedVerses = verses_.some((v) =>
-    isHighLighted({ ...v, version: reference.version })
+    isHighLighted({...v, version: reference.version})
   )
 
   return (
