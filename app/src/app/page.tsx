@@ -7,7 +7,7 @@ export default async function Home() {
   const {books, chapters: _} = await getIndex(version)
 
   return (
-    <div className="flex h-screen w-screen justify-center p-4 pt-4 sm:pt-10">
+    <div className="page flex h-screen w-screen justify-center pt-4 sm:pt-10">
       <div className="container space-y-8">
         <div>
           <p className="my-2 border-b-2 border-gray-200 font-bold text-gray-600 dark:text-gray-400">

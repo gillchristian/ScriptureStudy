@@ -13,17 +13,22 @@ import {
   ArrowLeftIcon,
   ArrowRightIcon,
   ArchiveBoxIcon,
-  ShieldCheckIcon
+  ShieldCheckIcon,
+  PencilIcon
 } from "@heroicons/react/24/outline"
 import {atom, useAtom} from "jotai"
 import {atomWithStorage} from "jotai/utils"
 import {matchSorter} from "match-sorter"
+import {not} from "fp-ts/Predicate"
+import {identity} from "fp-ts/function"
 
 import {CONFIG} from "@/config"
 import {Books, eqReference, findNext, findPrev, NamedReference, Reference} from "@/models/reference"
 import {VisitedRecentlyAtom} from "@/models/atoms"
 import {useRouter} from "@/lib/router-events"
 import {TokenAtom} from "@/models/token"
+
+import {EditorAtom} from "./FloatingEditor"
 
 type Route = {tag: "history"} | {tag: "home"} | {tag: "not_found"} | ({tag: "chapter"} & Reference)
 type RouteTag = Route["tag"]
@@ -55,6 +60,7 @@ type ShortcutEnum =
   | "next_chapter"
   | "prev_chapter"
   | "got_to_history"
+  | "toggle_editor"
 
 type Shortcut = {
   tag: "shortcut"
@@ -116,6 +122,16 @@ const GoToHistoryAction: Shortcut = {
   showOn: ["chapter", "home", "not_found"]
 }
 
+const ToggleEditor: Shortcut = {
+  tag: "shortcut",
+  action: "toggle_editor",
+  name: "Next chapter",
+  icon: PencilIcon,
+  shortcut: "e",
+  withCtrl: true,
+  showOn: ["chapter"]
+}
+
 type ActionEnum = "switch_version" | "search_commands" | "insert_secret"
 
 type Action = {
@@ -159,7 +175,8 @@ const quickActions: (Shortcut | Action)[] =
         ToggleFootnotesAction,
         PrevChapterAction,
         NextChapterAction,
-        InsertSecret
+        InsertSecret,
+        ToggleEditor
       ]
     : [
         GoToHistoryAction,
@@ -167,7 +184,8 @@ const quickActions: (Shortcut | Action)[] =
         ToggleFootnotesAction,
         PrevChapterAction,
         NextChapterAction,
-        InsertSecret
+        InsertSecret,
+        ToggleEditor
       ]
 
 type Version = {
@@ -211,7 +229,8 @@ export const CommandPalette = ({books, chapters}: Props) => {
 
   const selectedChapter: Reference | undefined = route.tag === "chapter" ? route : undefined
 
-  const [_, setToken] = useAtom(TokenAtom)
+  const [_showEditor, setShowEditor] = useAtom(EditorAtom)
+  const [_setToken, setToken] = useAtom(TokenAtom)
   const [query_, setQuery] = useState("")
   const [open, setOpen] = useAtom(CommandPaletteAtom)
   const [recent, _setRecent] = useAtom(VisitedRecentlyAtom)
@@ -345,6 +364,15 @@ export const CommandPalette = ({books, chapters}: Props) => {
         e.stopPropagation()
 
         toggleFootnotes()
+        return
+      }
+
+      const isToggleEditor = e.key === ToggleEditor.shortcut.toLowerCase()
+      if (isToggleEditor && isModifier) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        setShowEditor(not(identity))
         return
       }
 

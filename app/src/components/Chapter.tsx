@@ -1,6 +1,7 @@
 import {CONFIG} from "@/config"
 import {Books, Reference} from "@/models/reference"
 
+import {FloatingEditor} from "./FloatingEditor"
 import {Node, Html} from "./Html"
 import {ChapterSideEffects} from "./ChaperSideEffects"
 import {VerseSelection} from "./VerseSelection"
@@ -23,6 +24,7 @@ export const Chapter = async ({books, reference}: Props) => {
   return (
     <>
       <ChapterSideEffects books={books} reference={reference} />
+      <FloatingEditor />
 
       <div className="mx-auto flex min-h-screen w-full justify-center p-4">
         <div className="prose pb-40 dark:prose-invert">

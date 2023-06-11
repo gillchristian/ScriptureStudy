@@ -13,7 +13,7 @@ export const Controls = () => {
   const pathname = usePathname()
 
   return (
-    <div className="fixed top-2 right-2 z-50 flex flex-col items-center justify-around space-y-1 rounded-md bg-stone-100 p-1 dark:bg-gray-800">
+    <div className="fixed top-2 right-2 z-40 flex flex-col items-center justify-around space-y-1 rounded-md bg-stone-100 p-1 dark:bg-gray-800">
       <button
         onClick={() => setOpen(true)}
         className="rounded-md p-1 hover:bg-gray-200 dark:hover:bg-gray-500"
