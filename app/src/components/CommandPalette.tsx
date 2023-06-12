@@ -125,7 +125,7 @@ const GoToHistoryAction: Shortcut = {
 const ToggleEditor: Shortcut = {
   tag: "shortcut",
   action: "toggle_editor",
-  name: "Next chapter",
+  name: "Toggle editor",
   icon: PencilIcon,
   shortcut: "e",
   withCtrl: true,
