@@ -455,6 +455,10 @@ export const CommandPalette = ({books, chapters}: Props) => {
       onNextChapter()
     }
 
+    if (item.tag === "shortcut" && item.action === "toggle_editor") {
+      setShowEditor(not(identity))
+    }
+
     if (item.tag === "version" && selectedChapter) {
       const next: NamedReference = {
         tag: "chapter",
