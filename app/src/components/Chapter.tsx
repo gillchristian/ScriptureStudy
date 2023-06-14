@@ -1,8 +1,8 @@
 import {CONFIG} from "@/config"
 import {Books, Reference} from "@/models/reference"
 
-import {FloatingEditor} from "./FloatingEditor"
 import {Node, Html} from "./Html"
+import {FloatingEditor} from "./FloatingEditor"
 import {ChapterSideEffects} from "./ChaperSideEffects"
 import {VerseSelection} from "./VerseSelection"
 

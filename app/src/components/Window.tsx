@@ -1,4 +1,6 @@
 import {ReactNode, useState, MouseEventHandler, TouchEventHandler, useCallback, useRef} from "react"
+import {atom, useAtom} from "jotai"
+import {atomWithStorage} from "jotai/utils"
 import {
   XMarkIcon,
   ArrowsPointingInIcon,
@@ -17,20 +19,30 @@ type MoveEvent = {
   height: number
 }
 
+const XAtom = atomWithStorage("editor_x", 0)
+const YAtom = atomWithStorage("editor_y", 0)
+const WidthAtom = atomWithStorage("editor_width", 500)
+const HeightAtom = atomWithStorage("editor_height", 700)
+const FullScreenAtom = atomWithStorage("editor_is_full_screen", false)
+
 // TODO
 // - [x] Add a close button
 // - [x] Add drag handle button
 // - [x] Fix the text (sub/supertext) to not show on top
-// - [ ] Better icons (triple dots for drag handle, square for min/maximize)
+// - [x] Remember the position and size
 // - [ ] Set min/max size (max on mobile)
 // - [ ] Fix interaction with the top borders of the window (ie. when the pointer goes outside the window)
+// - [ ] Mobile scrolls while dragging (touch-action: none;)
+// - [ ] Better icons (triple dots for drag handle, square for min/maximize)
+// - [ ] Shortcuts (close, full screen, position somewhere?
+// - [ ] Content (ie. Bible chapter) should not be centered otherwise the window covers it
 export const Window = ({children, show, onClose}: Props) => {
-  const [width, _setWidth] = useState(500)
-  const [height, _setHeight] = useState(700)
-  const [x, setX] = useState(0)
-  const [y, setY] = useState(0)
+  const [width, _setWidth] = useAtom(WidthAtom)
+  const [height, _setHeight] = useAtom(HeightAtom)
+  const [x, setX] = useAtom(XAtom)
+  const [y, setY] = useAtom(YAtom)
+  const [isFullScreen, setIsFullScreen] = useAtom(FullScreenAtom)
   const [isDragging, setIsDragging] = useState(false)
-  const [isFullScreen, setIsFullScreen] = useState(false)
 
   const ref = useRef<HTMLDivElement>(null)
 
@@ -67,8 +79,8 @@ export const Window = ({children, show, onClose}: Props) => {
   }, [])
 
   const move = useCallback(({clientX, clientY, width, height}: MoveEvent) => {
-    const newX = Math.min(Math.max(clientX - shiftX.current, 20), window.innerWidth - 75 - width)
-    const newY = Math.min(Math.max(clientY - shiftY.current, 0), window.innerHeight - 20 - height)
+    const newX = Math.min(Math.max(clientX - shiftX.current, 0), window.innerWidth - 65 - width)
+    const newY = Math.min(Math.max(clientY - shiftY.current, 0), window.innerHeight - height)
 
     setX(newX)
     setY(newY)
@@ -102,16 +114,22 @@ export const Window = ({children, show, onClose}: Props) => {
       }}
       // Mobile ------------------------
       onTouchMove={(e) => {
+        if (!isDragging) {
+          return
+        }
+
         e.stopPropagation()
-        e.preventDefault()
 
         const {clientX, clientY} = e.changedTouches[0]
 
         move({clientX, clientY, width, height})
       }}
       onTouchEnd={(e) => {
+        if (!isDragging) {
+          return
+        }
+
         e.stopPropagation()
-        e.preventDefault()
 
         setIsDragging(false)
 
@@ -124,30 +142,32 @@ export const Window = ({children, show, onClose}: Props) => {
       }}
     >
       {/* Window controls */}
-      <div className="absolute top-8 right-2 flex space-x-3">
-        <button onClick={toggleFullScreen} className="rounded bg-gray-200 p-1">
+      <div className={clsxm("absolute right-2 flex space-x-3", isFullScreen ? "top-2" : "top-9")}>
+        <button onClick={toggleFullScreen} className="rounded bg-gray-200 p-1 dark:bg-gray-400">
           {isFullScreen ? (
             <ArrowsPointingInIcon className="h-4 w-4" />
           ) : (
             <ArrowsPointingOutIcon className="h-4 w-4" />
           )}
         </button>
-        <button onClick={onClose} className="rounded bg-gray-200 p-1">
+        <button onClick={onClose} className="rounded bg-gray-200 p-1 dark:bg-gray-400">
           <XMarkIcon className="h-4 w-4" />
         </button>
       </div>
 
       <div className="flex h-full flex-col">
         {/* Drag handle */}
-        <div className="flex items-center justify-center">
-          <button
-            onMouseDown={onMouseDown}
-            onTouchStart={onTouchStart}
-            className="rounded bg-gray-400 bg-opacity-5 px-1"
-          >
-            <EllipsisHorizontalIcon className="h-6 w-6" />
-          </button>
-        </div>
+        {!isFullScreen && (
+          <div className="flex items-center justify-center pb-1">
+            <button
+              className="rounded bg-gray-400 bg-opacity-5 px-1"
+              onMouseDown={onMouseDown}
+              onTouchStart={onTouchStart}
+            >
+              <EllipsisHorizontalIcon className="h-6 w-6 dark:text-gray-100" />
+            </button>
+          </div>
+        )}{" "}
         {/* Main content */}
         <div className="h-full flex-1">{children}</div>
       </div>

@@ -11,7 +11,7 @@ export const FloatingEditor = () => {
 
   return (
     <Window show={showEditor} onClose={() => setShowEditor(false)}>
-      <div className="h-full w-full rounded-md bg-gray-50 p-4 shadow-lg">
+      <div className="h-full w-full rounded-md bg-gray-50 p-4 shadow-lg dark:bg-gray-700 dark:text-white">
         <Editor />
       </div>
     </Window>
