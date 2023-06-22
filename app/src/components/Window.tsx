@@ -1,12 +1,15 @@
-import {ReactNode, useState, MouseEventHandler, TouchEventHandler, useCallback, useRef} from "react"
-import {atom, useAtom} from "jotai"
-import {atomWithStorage} from "jotai/utils"
 import {
-  XMarkIcon,
-  ArrowsPointingInIcon,
-  ArrowsPointingOutIcon,
-  EllipsisHorizontalIcon
-} from "@heroicons/react/24/outline"
+  ReactNode,
+  useState,
+  MouseEventHandler,
+  TouchEventHandler,
+  useCallback,
+  useRef,
+  useEffect
+} from "react"
+import {useAtom} from "jotai"
+import {atomWithStorage} from "jotai/utils"
+import {XMarkIcon, ArrowsPointingInIcon, ArrowsPointingOutIcon} from "@heroicons/react/24/outline"
 
 import {clsxm} from "@/lib/clsxm"
 
@@ -19,84 +22,276 @@ type MoveEvent = {
   height: number
 }
 
-const XAtom = atomWithStorage("editor_x", 0)
-const YAtom = atomWithStorage("editor_y", 0)
-const WidthAtom = atomWithStorage("editor_width", 500)
-const HeightAtom = atomWithStorage("editor_height", 700)
-const FullScreenAtom = atomWithStorage("editor_is_full_screen", false)
+type Position = "floating" | "fullscreen" | "left-side" | "right-side"
+
+const DEFAULTS = {
+  width: 500,
+  height: 700,
+
+  minWidth: 300,
+  minHeight: 300,
+
+  maxWidth: typeof window !== "undefined" ? window.innerWidth - 65 : 0,
+  maxHeight: typeof window !== "undefined" ? window.innerHeight : 0,
+
+  x: 0,
+  y: 0,
+
+  position: "normal" as Position,
+
+  sideWidth: 500,
+  rightPadding: 65
+}
+
+const XAtom = atomWithStorage("editor_x", DEFAULTS.x)
+const YAtom = atomWithStorage("editor_y", DEFAULTS.y)
+const WidthAtom = atomWithStorage("editor_width", DEFAULTS.width)
+const HeightAtom = atomWithStorage("editor_height", DEFAULTS.height)
+const PositionAtom = atomWithStorage("editor_position", DEFAULTS.position)
+
+type PositioningStyles = {
+  width: number | string
+  height: number | string
+  left: number
+  top: number
+}
+
+const limitToWindowHeight = (height: number) => Math.min(height, DEFAULTS.maxHeight)
+const limitToWindowWidth = (width: number) => Math.min(width, DEFAULTS.maxWidth)
+
+const windowPositioning = (
+  {width, height, x, y}: {width: number; height: number; x: number; y: number},
+  position: Position
+): PositioningStyles =>
+  position === "fullscreen"
+    ? {width: "100%", height: "100vh", left: 0, top: 0}
+    : position === "left-side"
+    ? {width: limitToWindowWidth(DEFAULTS.sideWidth), height: "100vh", left: 0, top: 0}
+    : position === "right-side"
+    ? {
+        width: limitToWindowWidth(DEFAULTS.sideWidth),
+        height: "100vh",
+        left: Math.max(window.innerWidth - DEFAULTS.sideWidth - DEFAULTS.rightPadding, 0),
+        top: 0
+      }
+    : {width: limitToWindowWidth(width), height: limitToWindowHeight(height), left: x, top: y}
 
 // TODO
-// - [x] Add a close button
-// - [x] Add drag handle button
-// - [x] Fix the text (sub/supertext) to not show on top
-// - [x] Remember the position and size
 // - [ ] Set min/max size (max on mobile)
-// - [ ] Fix interaction with the top borders of the window (ie. when the pointer goes outside the window)
-// - [ ] Mobile scrolls while dragging (touch-action: none;)
-// - [ ] Better icons (triple dots for drag handle, square for min/maximize)
-// - [ ] Shortcuts (close, full screen, position somewhere?
+// - [ ] Mobile scrolls while dragging (touch-action: none;?)
+// - [ ] Shortcuts (close, full screen, position presets OS window shortcuts)
 // - [ ] Content (ie. Bible chapter) should not be centered otherwise the window covers it
 export const Window = ({children, show, onClose}: Props) => {
-  const [width, _setWidth] = useAtom(WidthAtom)
-  const [height, _setHeight] = useAtom(HeightAtom)
+  const [width, setWidth] = useAtom(WidthAtom)
+  const [height, setHeight] = useAtom(HeightAtom)
   const [x, setX] = useAtom(XAtom)
   const [y, setY] = useAtom(YAtom)
-  const [isFullScreen, setIsFullScreen] = useAtom(FullScreenAtom)
-  const [isDragging, setIsDragging] = useState(false)
+  const [position, setPosition] = useAtom(PositionAtom)
+  const [isRepositioning, setIsRepositioning] = useState(false)
+  const [isResizing, setIsResizing] = useState(false)
 
   const ref = useRef<HTMLDivElement>(null)
 
-  const shiftX = useRef<number>(0)
-  const shiftY = useRef<number>(0)
+  const shiftX = useRef(0)
+  const shiftY = useRef(0)
+  // Start in a rought approximation of where the reposition handle is
+  // Only keeps track of the position inside the screen
+  const lastX = useRef(x + Math.floor(width / 2))
+  const lastY = useRef(y + 10)
 
-  const onMouseDown: MouseEventHandler<HTMLButtonElement> = useCallback((e) => {
-    setIsDragging(true)
+  const resizeShiftX = useRef(0)
+  const resizeShiftY = useRef(0)
 
-    const windowRect = ref.current?.getBoundingClientRect()
+  const onDragStart = useCallback(({clientX, clientY, width}: MoveEvent, position: Position) => {
+    const isFullScreen = position === "fullscreen"
+
+    // Exit full screen by positkoning the window in the top center of the screen
+    if (isFullScreen) {
+      setY(0)
+      setX(window.innerWidth / 2 - width / 2)
+    }
+
+    setIsRepositioning(true)
+    setPosition("floating")
+
+    const windowRect = isFullScreen
+      ? {x: window.innerWidth / 2 - width / 2, y: 0}
+      : ref.current?.getBoundingClientRect() ?? {x: 0, y: 0}
 
     // Calculate the distance from the mouse to the top left corner of the
     // window (ie. the component's outer div)
-    shiftX.current = e.clientX - (windowRect?.x ?? 0)
-    shiftY.current = e.clientY - (windowRect?.y ?? 0)
+    shiftX.current = clientX - windowRect.x
+    shiftY.current = clientY - windowRect.y
   }, [])
 
-  const onTouchStart: TouchEventHandler<HTMLButtonElement> = useCallback((e) => {
-    e.stopPropagation()
-    e.preventDefault()
+  const onResizeStart = useCallback(({clientX, clientY, width, height}: MoveEvent) => {
+    setIsResizing(true)
 
-    setIsDragging(true)
+    const windowRect = ref.current?.getBoundingClientRect() ?? {x: 0, y: 0}
 
-    const windowRect = ref.current?.getBoundingClientRect()
-
-    // Calculate the distance from the mouse to the top left corner of the
+    // Calculate the distance from the mouse to the bottom right corner of the
     // window (ie. the component's outer div)
-    shiftX.current = e.changedTouches[0].clientX - (windowRect?.x ?? 0)
-    shiftY.current = e.changedTouches[0].clientY - (windowRect?.y ?? 0)
+    resizeShiftX.current = windowRect.x + width - clientX
+    resizeShiftY.current = windowRect.y + height - clientY
   }, [])
+
+  const onStartResizeByMouse: MouseEventHandler<HTMLButtonElement> = useCallback(
+    ({clientX, clientY}) => {
+      onResizeStart({clientX, clientY, width, height})
+    },
+    [width, height]
+  )
+
+  const onStartResizeByTouch: TouchEventHandler<HTMLButtonElement> = useCallback(
+    (e) => {
+      e.stopPropagation()
+      e.preventDefault()
+
+      onResizeStart({
+        clientX: e.changedTouches[0].clientX,
+        clientY: e.changedTouches[0].clientY,
+        width,
+        height
+      })
+    },
+    [width, height]
+  )
+
+  const onStartRepositionByMouse: MouseEventHandler<HTMLButtonElement> = useCallback(
+    (e) => {
+      onDragStart({clientX: e.clientX, clientY: e.clientY, width, height}, position)
+    },
+    [width, height, position]
+  )
+
+  const onStartRepositionByTouch: TouchEventHandler<HTMLButtonElement> = useCallback(
+    (e) => {
+      e.stopPropagation()
+      e.preventDefault()
+
+      onDragStart(
+        {clientX: e.changedTouches[0].clientX, clientY: e.changedTouches[0].clientY, width, height},
+        position
+      )
+    },
+    [width, height, position]
+  )
 
   const toggleFullScreen: MouseEventHandler<HTMLButtonElement> = useCallback((_) => {
-    setIsFullScreen((isFullScreen) => !isFullScreen)
+    setPosition((position) => (position === "fullscreen" ? "floating" : "fullscreen"))
   }, [])
 
-  const move = useCallback(({clientX, clientY, width, height}: MoveEvent) => {
-    const newX = Math.min(Math.max(clientX - shiftX.current, 0), window.innerWidth - 65 - width)
-    const newY = Math.min(Math.max(clientY - shiftY.current, 0), window.innerHeight - height)
+  const move = useCallback(({clientX, clientY, width, height}: MoveEvent, position: Position) => {
+    const isOutOfBound = clientX === 0 && clientY === 0
 
-    setX(newX)
-    setY(newY)
+    // Cursor is out of Window bounds and last pointer position was close to the top of the screen
+    const isTopBorder = isOutOfBound && lastY.current < 10
+    if (isTopBorder) {
+      setPosition("fullscreen")
+      return
+    }
+
+    // Cursor is out of Window bounds and last pointer position was close to the bottom of the screen
+    const isBottomBorder = isOutOfBound && lastY.current > window.innerHeight - height - 20
+    if (isBottomBorder) {
+      return
+    }
+
+    // Sometimes we get an unwanted out of bounds event
+    if (isOutOfBound) {
+      return
+    }
+
+    if (clientX > 0 && clientY > 0) {
+      lastX.current = clientX
+      lastY.current = clientY
+    }
+
+    // Pointer is close to the left side of the screen
+    const isLeftBorder = clientX < DEFAULTS.sideWidth / 2
+    if (isLeftBorder) {
+      setPosition("left-side")
+      return
+    }
+
+    // Pointer is close to the right side of the screen
+    const isRightBorder =
+      clientX > window.innerWidth - (DEFAULTS.sideWidth + DEFAULTS.rightPadding) / 2
+    if (isRightBorder) {
+      setPosition("right-side")
+      return
+    }
+
+    if (position !== "floating") {
+      setPosition("floating")
+    }
+
+    const deltaX = Math.min(
+      Math.max(clientX - shiftX.current, 0),
+      window.innerWidth - DEFAULTS.rightPadding - width
+    )
+    const deltaY = Math.min(Math.max(clientY - shiftY.current, 0), window.innerHeight - height)
+
+    setX(deltaX)
+    setY(deltaY)
+  }, [])
+
+  const resize = useCallback(
+    ({clientX, clientY}: MoveEvent, x: number, y: number, position: Position) => {
+      const isOutOfBound = clientX === 0 && clientY === 0
+
+      if (isOutOfBound || position !== "floating") {
+        return
+      }
+
+      const newWidth = Math.min(
+        DEFAULTS.maxWidth,
+        Math.max(
+          DEFAULTS.minWidth,
+          // Don't allow to go further than the right padding
+          Math.min(clientX + resizeShiftX.current, window.innerWidth - DEFAULTS.rightPadding) - x
+        )
+      )
+      const newHeight = Math.min(
+        DEFAULTS.maxHeight,
+        Math.max(
+          DEFAULTS.minHeight,
+          // Don't allow to go further than the bottom of the screen
+          Math.min(clientY + resizeShiftY.current, window.innerHeight) - y
+        )
+      )
+
+      setWidth(newWidth)
+      setHeight(newHeight)
+    },
+    []
+  )
+
+  useEffect(() => {
+    const handleResize = () => {
+      console.log("TODO: handle resize")
+      // Resize behavior:
+      // - On mobile (phone) support full-screen
+      // - On tablet portrait:  only support full-screen?
+      // - On tablet landscape: only support righ/left window split
+      // - On larger screens: move or resize the window
+      //
+      // Tablet ~= iPad 11"
+    }
+
+    window.addEventListener("resize", handleResize)
+
+    return () => {
+      window.removeEventListener("resize", handleResize)
+    }
   }, [])
 
   return show ? (
     <div
       ref={ref}
       className={clsxm("fixed z-50")}
-      draggable={isDragging}
-      style={{
-        width: isFullScreen ? "100%" : width,
-        height: isFullScreen ? "100%" : height,
-        left: isFullScreen ? 0 : x,
-        top: isFullScreen ? 0 : y
-      }}
+      draggable={isRepositioning || isResizing}
+      style={windowPositioning({width, height, x, y}, position)}
       // Desktop -----------------------
       onDragStart={(e) => {
         e.dataTransfer.effectAllowed = "move"
@@ -106,15 +301,21 @@ export const Window = ({children, show, onClose}: Props) => {
         e.dataTransfer.setDragImage(img, 0, 0)
       }}
       onDrag={({clientX, clientY}) => {
-        move({clientX, clientY, width, height})
+        if (isRepositioning) move({clientX, clientY, width, height}, position)
+        if (isResizing) resize({clientX, clientY, width, height}, x, y, position)
       }}
       onDragEnd={({clientX, clientY}) => {
-        setIsDragging(false)
-        move({clientX, clientY, width, height})
+        // clientX/Y are 0 in the last event of `onDrag`
+        // so we set one last time on `onDragEnd`
+        if (isRepositioning) move({clientX, clientY, width, height}, position)
+        if (isResizing) resize({clientX, clientY, width, height}, x, y, position)
+
+        setIsRepositioning(false)
+        setIsResizing(false)
       }}
       // Mobile ------------------------
       onTouchMove={(e) => {
-        if (!isDragging) {
+        if (!isRepositioning || !isResizing) {
           return
         }
 
@@ -122,29 +323,98 @@ export const Window = ({children, show, onClose}: Props) => {
 
         const {clientX, clientY} = e.changedTouches[0]
 
-        move({clientX, clientY, width, height})
+        if (isRepositioning) move({clientX, clientY, width, height}, position)
+        if (isResizing) resize({clientX, clientY, width, height}, x, y, position)
       }}
       onTouchEnd={(e) => {
-        if (!isDragging) {
+        if (!isRepositioning || !isResizing) {
           return
         }
 
         e.stopPropagation()
 
-        setIsDragging(false)
+        setIsRepositioning(false)
 
         const touch = e.changedTouches[0]
 
-        if (touch) {
-          const {clientX, clientY} = touch
-          move({clientX, clientY, width, height})
+        if (!touch) {
+          return
         }
+
+        const {clientX, clientY} = touch
+
+        if (isRepositioning) move({clientX, clientY, width, height}, position)
+        if (isResizing) resize({clientX, clientY, width, height}, x, y, position)
       }}
     >
+      {/* Reposition handle */}
+      <div className="absolute top-1 left-1/2 -translate-x-1/2 transform">
+        <button
+          className={clsxm("rounded px-1", isRepositioning && "bg-gray-400 bg-opacity-5")}
+          onMouseDown={onStartRepositionByMouse}
+          onTouchStart={onStartRepositionByTouch}
+        >
+          <svg
+            className="h-6 w-6 dark:text-gray-100"
+            fill="none"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              clipRule="evenodd"
+              d="M2 12C2 10.8954 2.89543 10 4 10C5.10457 10 6 10.8954 6 12C6 13.1046 5.10457 14 4 14C2.89543 14 2 13.1046 2 12Z"
+              fill="currentColor"
+              fillRule="evenodd"
+            />
+            <path
+              clipRule="evenodd"
+              d="M10 12C10 10.8954 10.8954 10 12 10C13.1046 10 14 10.8954 14 12C14 13.1046 13.1046 14 12 14C10.8954 14 10 13.1046 10 12Z"
+              fill="currentColor"
+              fillRule="evenodd"
+            />
+            <path
+              clipRule="evenodd"
+              d="M18 12C18 10.8954 18.8954 10 20 10C21.1046 10 22 10.8954 22 12C22 13.1046 21.1046 14 20 14C18.8954 14 18 13.1046 18 12Z"
+              fill="currentColor"
+              fillRule="evenodd"
+            />
+          </svg>
+        </button>
+      </div>
+
+      {/* Resize handle */}
+      {position === "floating" && (
+        <div className="absolute bottom-0 right-0">
+          <button
+            className={clsxm(
+              "cursor-nwse-resize rounded px-1",
+              isResizing && "bg-gray-400 bg-opacity-5"
+            )}
+            onMouseDown={onStartResizeByMouse}
+            onTouchStart={onStartResizeByTouch}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 dark:text-gray-100"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m21 15-6 6m6-13L8 21"
+              />
+            </svg>
+          </button>
+        </div>
+      )}
+
       {/* Window controls */}
-      <div className={clsxm("absolute right-2 flex space-x-3", isFullScreen ? "top-2" : "top-9")}>
+      <div className={clsxm("absolute right-2 top-2 flex space-x-3")}>
         <button onClick={toggleFullScreen} className="rounded bg-gray-200 p-1 dark:bg-gray-400">
-          {isFullScreen ? (
+          {position === "fullscreen" ? (
             <ArrowsPointingInIcon className="h-4 w-4" />
           ) : (
             <ArrowsPointingOutIcon className="h-4 w-4" />
@@ -156,18 +426,6 @@ export const Window = ({children, show, onClose}: Props) => {
       </div>
 
       <div className="flex h-full flex-col">
-        {/* Drag handle */}
-        {!isFullScreen && (
-          <div className="flex items-center justify-center pb-1">
-            <button
-              className="rounded bg-gray-400 bg-opacity-5 px-1"
-              onMouseDown={onMouseDown}
-              onTouchStart={onTouchStart}
-            >
-              <EllipsisHorizontalIcon className="h-6 w-6 dark:text-gray-100" />
-            </button>
-          </div>
-        )}{" "}
         {/* Main content */}
         <div className="h-full flex-1">{children}</div>
       </div>
