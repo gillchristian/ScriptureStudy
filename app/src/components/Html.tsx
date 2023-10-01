@@ -39,9 +39,12 @@ type Props = {
   version: string
   books: Books
   reference: Reference
+  // Section titles have the same data as the following
+  // verse although aren't part of the verse.
+  isTitleChild?: boolean
 }
 
-export const Html: FC<Props> = ({node, version, books, reference}) => {
+export const Html: FC<Props> = ({node, version, books, reference, isTitleChild = false}) => {
   if (node.type === "Comment") {
     return null
   }
@@ -50,7 +53,7 @@ export const Html: FC<Props> = ({node, version, books, reference}) => {
     return <Text text={node.data} />
   }
 
-  if (node.data.verse) {
+  if (node.data.verse && !isTitleChild) {
     return (
       <Verse_
         // TS doesn't pick up that `node.data.verse` is present
@@ -80,7 +83,14 @@ export const Html: FC<Props> = ({node, version, books, reference}) => {
       }, {} as Attrs)}
     >
       {node.data.children?.map((n, i) => (
-        <Html node={n} key={i} version={version} books={books} reference={reference} />
+        <Html
+          node={n}
+          key={i}
+          version={version}
+          books={books}
+          reference={reference}
+          isTitleChild={node.data.name === "h3"}
+        />
       ))}
     </node.data.name>
   )
