@@ -50,7 +50,11 @@ export const Html: FC<Props> = ({node, version, books, reference, isTitleChild =
   }
 
   if (node.type === "Text") {
-    return <><Text text={node.data} /> </>
+    return (
+      <>
+        <Text text={node.data} />{" "}
+      </>
+    )
   }
 
   if (node.data.verse && !isTitleChild) {

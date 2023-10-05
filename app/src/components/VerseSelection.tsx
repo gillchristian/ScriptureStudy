@@ -166,7 +166,7 @@ const useSelectedVerses = () => {
 type Props = {books: Books; reference: Reference}
 
 export const VerseSelection = ({books, reference}: Props) => {
-  const {hasSelected, verses_, formatted} = useSelectedVerses()
+  const {hasSelected, verses_, formatted, clear} = useSelectedVerses()
   const {highlight, remove, isHighLighted, highlights} = useHighLightedVerses(reference)
 
   const highlightSelected = (color: string) => {
@@ -192,6 +192,12 @@ export const VerseSelection = ({books, reference}: Props) => {
   return (
     <div className="fixed bottom-0 left-1/2 w-screen max-w-[70ch] -translate-x-1/2 transform shadow-md">
       <div className="space-y-4 rounded-t-lg bg-gray-200 px-4 py-8 dark:bg-gray-600">
+        <div className="absolute top-1 right-1">
+          <button className="flex items-center justify-center rounded-lg p-2" onClick={clear}>
+            <XMarkIcon className="h-4 w-4 text-gray-500 dark:text-gray-800" />
+          </button>
+        </div>
+
         <div className="flex items-center justify-center">
           <p className="dark:text-white">
             {books.names[reference.book]} {reference.chapter}:{formatted}

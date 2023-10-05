@@ -212,10 +212,7 @@ type Config = {
 }
 
 const CONFIG_KEY = "ScriptureStudy__config"
-const ConfigAtom = atomWithStorage<Config>(CONFIG_KEY, {
-  verses: true,
-  footnotes: true
-})
+const ConfigAtom = atomWithStorage<Config>(CONFIG_KEY, {verses: false, footnotes: false})
 
 type Props = {
   books: Books
