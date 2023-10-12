@@ -1,4 +1,5 @@
-import {CONFIG} from "@/config"
+"use client"
+
 import {Books, Reference} from "@/models/reference"
 
 import {Node, Html} from "./Html"
@@ -6,27 +7,15 @@ import {FloatingEditor} from "./FloatingEditor"
 import {ChapterSideEffects} from "./ChaperSideEffects"
 import {VerseSelection} from "./VerseSelection"
 
-type Props = {books: Books; reference: Reference}
+type Props = {books: Books; reference: Reference; html: Node}
 
-export const Chapter = async ({books, reference}: Props) => {
-  const {html} = await getData(reference)
-
-  if (!html) {
-    return (
-      <div className="mx-auto flex min-h-screen w-full justify-center p-4">
-        <div className="prose dark:prose-invert">
-          <p>...</p>
-        </div>
-      </div>
-    )
-  }
-
+export const Chapter = ({books, reference, html}: Props) => {
   return (
     <>
       <ChapterSideEffects books={books} reference={reference} />
       <FloatingEditor />
 
-      <div className="mx-auto flex min-h-screen w-full justify-center p-4">
+      <div className="min-h-screen p-4">
         <div className="prose pb-40 dark:prose-invert">
           <h2>
             {reference.version}
@@ -40,14 +29,4 @@ export const Chapter = async ({books, reference}: Props) => {
       </div>
     </>
   )
-}
-
-const getData = async ({version, book, chapter}: Reference): Promise<{html?: Node}> => {
-  const url = `${CONFIG.BIBLES_URL}/${version}/${book}-${chapter}.json`
-
-  const html = await fetch(url)
-    .then((res) => (res.ok ? res.json() : Promise.reject(new Error("Failed to fetch"))))
-    .catch(() => undefined)
-
-  return {html}
 }
