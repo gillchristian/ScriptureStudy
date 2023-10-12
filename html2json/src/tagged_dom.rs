@@ -327,20 +327,7 @@ pub enum Node {
 impl Node {
     pub fn from_html_parser(original: &html_parser::Node) -> Self {
         match original {
-            html_parser::Node::Text(text) => {
-                // TODO: validate that this is making a difference in the HTML rendering
-                let mut text = text.clone();
-
-                if text.ends_with(" ") || text.ends_with("\n") && text.len() > 1 {
-                    text.replace_range((text.len() - 1)..(text.len()), "&nbsp;");
-                }
-
-                if (text.starts_with(" ") || text.starts_with("\n")) && text.len() > 1 {
-                    text.replace_range(..1, "&nbsp;");
-                }
-
-                Self::Text(text)
-            }
+            html_parser::Node::Text(text) => Self::Text(text.to_string()),
             html_parser::Node::Element(element) => {
                 Self::Element(Element::from_html_parser(element))
             }
