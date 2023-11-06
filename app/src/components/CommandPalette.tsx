@@ -1,6 +1,5 @@
 "use client"
 
-import {useSelectedLayoutSegments} from "next/navigation"
 import {Fragment, useEffect, useMemo, useRef, useState} from "react"
 import {Combobox, Dialog, Transition} from "@headlessui/react"
 import {MagnifyingGlassIcon} from "@heroicons/react/20/solid"
@@ -27,32 +26,9 @@ import {Books, eqReference, findNext, findPrev, NamedReference, Reference} from 
 import {VisitedRecentlyAtom} from "@/models/atoms"
 import {useRouter} from "@/lib/router-events"
 import {TokenAtom} from "@/models/token"
+import {RouteTag, useRoute} from "@/models/routes"
 
 import {EditorAtom} from "./FloatingEditor"
-
-type Route = {tag: "history"} | {tag: "home"} | {tag: "not_found"} | ({tag: "chapter"} & Reference)
-type RouteTag = Route["tag"]
-
-const useRoute = (): Route => {
-  const [a, b, c] = useSelectedLayoutSegments()
-
-  if (!a) {
-    return {tag: "home"}
-  }
-
-  if (a === "history") {
-    return {tag: "history"}
-  }
-
-  if (!b || !c) {
-    return {tag: "not_found"}
-  }
-
-  const chapter_ = parseInt(c, 10)
-  const chapter = Number.isNaN(chapter_) ? 1 : chapter_
-
-  return {tag: "chapter", version: a, book: b, chapter}
-}
 
 type ShortcutEnum =
   | "toggle_verses"
@@ -226,7 +202,7 @@ export const CommandPalette = ({books, chapters}: Props) => {
 
   const selectedChapter: Reference | undefined = route.tag === "chapter" ? route : undefined
 
-  const [_showEditor, setShowEditor] = useAtom(EditorAtom)
+  const [showEditor, setShowEditor] = useAtom(EditorAtom)
   const [_setToken, setToken] = useAtom(TokenAtom)
   const [query_, setQuery] = useState("")
   const [open, setOpen] = useAtom(CommandPaletteAtom)
@@ -332,6 +308,18 @@ export const CommandPalette = ({books, chapters}: Props) => {
 
       const isModifier = isCmd || isCtrl
 
+      const isToggleEditor = e.key === ToggleEditor.shortcut.toLowerCase()
+      if (isToggleEditor && isModifier) {
+        e.preventDefault()
+
+        setShowEditor(not(identity))
+        return
+      }
+
+      if (showEditor) {
+        return
+      }
+
       const isOpenCommandPatellte = e.key === "/" || e.key === "k" || e.key === "p"
       if (!open && isOpenCommandPatellte && isModifier) {
         e.preventDefault()
@@ -361,15 +349,6 @@ export const CommandPalette = ({books, chapters}: Props) => {
         e.stopPropagation()
 
         toggleFootnotes()
-        return
-      }
-
-      const isToggleEditor = e.key === ToggleEditor.shortcut.toLowerCase()
-      if (isToggleEditor && isModifier) {
-        e.preventDefault()
-        e.stopPropagation()
-
-        setShowEditor(not(identity))
         return
       }
 
@@ -407,7 +386,7 @@ export const CommandPalette = ({books, chapters}: Props) => {
     return () => {
       document.removeEventListener("keydown", handler)
     }
-  }, [open, selectedChapter?.version, selectedChapter?.book, selectedChapter?.chapter])
+  }, [open, showEditor, selectedChapter?.version, selectedChapter?.book, selectedChapter?.chapter])
 
   const onOpen = (item: Command) => {
     if (item.tag === "chapter") {

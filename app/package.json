@@ -10,6 +10,8 @@
     "fmt": "prettier --write '**/*.{ts,tsx}'"
   },
   "dependencies": {
+    "@blocknote/core": "^0.9.6",
+    "@blocknote/react": "^0.9.6",
     "@headlessui/react": "^1.7.7",
     "@heroicons/react": "^2.0.13",
     "@next/font": "13.1.5",

@@ -31,12 +31,7 @@ export default async function ChapterPage({params}: Props) {
     )
   }
 
-  return (
-    // TODO: how to make this the size of the chapter?
-    <div className="relative">
-      <Chapter books={books} reference={reference} html={html} />
-    </div>
-  )
+  return <Chapter books={books} reference={reference} html={html} />
 }
 
 const getChapter = async ({version, book, chapter}: Reference): Promise<{html?: Node}> => {
