@@ -80,8 +80,9 @@ export const Html: FC<Props> = ({node, version, books, reference, isTitleChild =
       className={node.data.classes ? clsxm(node.data.classes) : undefined}
       {...Object.entries(node.data.attributes ?? {}).reduce((acc, [key, value]) => {
         const value_ = value === undefined ? true : key === "style" ? processStyle(value) : value
+        const key_ = key === "xml:lang" ? "xmlLang" : key
 
-        acc[key] = value_
+        acc[key_] = value_
 
         return acc
       }, {} as Attrs)}
@@ -151,8 +152,9 @@ const Verse_: FC<VerseProps> = ({element, version, books, reference}) => {
       }
       {...Object.entries(element.attributes ?? {}).reduce((acc, [key, value]) => {
         const value_ = value === undefined ? true : key === "style" ? processStyle(value) : value
+        const key_ = key === "xml:lang" ? "xmlLang" : key
 
-        acc[key] = value_
+        acc[key_] = value_
 
         return acc
       }, {} as Attrs)}

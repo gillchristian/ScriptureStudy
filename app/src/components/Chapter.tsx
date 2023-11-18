@@ -1,36 +1,73 @@
 "use client"
+import {useAtom} from "jotai"
 
 import {Books, Reference} from "@/models/reference"
+import {useChapterEffects} from "@/hooks/chaperEffects"
+import {useWindowSize} from "@/hooks/window"
 
 import {Node, Html} from "./Html"
-import {ChapterSideEffects} from "./ChaperSideEffects"
 import {VerseSelection} from "./VerseSelection"
 import {ChapterNotes} from "./ChapterNotes"
+import {EditorAtom} from "./FloatingEditor"
 
 type Props = {books: Books; reference: Reference; html: Node}
 
 export const Chapter = ({books, reference, html}: Props) => {
-  return (
-    <>
-      <ChapterSideEffects books={books} reference={reference} />
-      <div className="relative flex space-x-8">
-        <div className="min-h-screen p-4">
-          <div className="prose pb-40 dark:prose-invert">
-            <h2>
-              {reference.version}
-              {" | "}
-              {books.names[reference.book]} {reference.chapter}
-            </h2>
-            <Html node={html} version={reference.version} books={books} reference={reference} />
-          </div>
+  useChapterEffects({books, reference})
 
-          <VerseSelection books={books} reference={reference} />
-        </div>
+  const {width} = useWindowSize()
+  const [showEditor, _setShowEditor] = useAtom(EditorAtom)
 
-        <div className="relative min-h-screen w-full max-w-prose p-4">
-          <ChapterNotes title="Notes" reference={reference} />
-        </div>
+  const isMobile = (width ?? 0) <= 768
+
+  if (isMobile && showEditor) {
+    return (
+      <div className="relative min-h-screen w-full max-w-prose p-4">
+        <ChapterNotes
+          title={`${reference.version} | ${books.names[reference.book]} ${
+            reference.chapter
+          } ${width}`}
+          reference={reference}
+        />
       </div>
-    </>
+    )
+  }
+
+  if (isMobile && !showEditor) {
+    return (
+      <div className="min-h-screen w-full max-w-prose p-4">
+        <div className="prose pb-40 dark:prose-invert">
+          <h2>
+            {reference.version}
+            {" | "}
+            {books.names[reference.book]} {reference.chapter} {width}
+          </h2>
+          <Html node={html} version={reference.version} books={books} reference={reference} />
+        </div>
+
+        <VerseSelection books={books} reference={reference} />
+      </div>
+    )
+  }
+
+  return (
+    <div className="relative flex space-x-8">
+      <div className="min-h-screen w-full max-w-prose p-4">
+        <div className="prose pb-40 dark:prose-invert">
+          <h2>
+            {reference.version}
+            {" | "}
+            {books.names[reference.book]} {reference.chapter}
+          </h2>
+          <Html node={html} version={reference.version} books={books} reference={reference} />
+        </div>
+
+        <VerseSelection books={books} reference={reference} />
+      </div>
+
+      <div className="relative min-h-screen w-full max-w-prose p-4">
+        <ChapterNotes title="Notes" reference={reference} />
+      </div>
+    </div>
   )
 }
