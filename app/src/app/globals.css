@@ -41,6 +41,13 @@ sup, .chapternum, .versenum {
   @apply h-full;
 }
 
+/* Editor */
+
+.ProseMirror {
+  /* The editor uses inline styles so it requires specificity override */
+  @apply bg-transparent !important;
+}
+
 /**
  * Unreset CSS, adapted to work with Tailwind
  *
