@@ -6,11 +6,10 @@ import {pipe} from "fp-ts/function"
 import {useCallback, useMemo} from "react"
 import {useAtom} from "jotai"
 import useSWR from "swr"
-
-import {Books, Reference, Verse, verseEq, verseOrd, VerseWithVersion} from "@/models/reference"
-
-import {SelectedVerseAtom} from "./ChaperSideEffects"
 import {XMarkIcon} from "@heroicons/react/24/outline"
+
+import {SelectedVerseAtom} from "@/hooks/chaperEffects"
+import {Books, Reference, Verse, verseEq, verseOrd, VerseWithVersion} from "@/models/reference"
 import {createHighlight, deleteHighlight, getHighlights, Highlight} from "@/models/highlight"
 import {TokenAtom} from "@/models/token"
 
@@ -190,7 +189,7 @@ export const VerseSelection = ({books, reference}: Props) => {
   )
 
   return (
-    <div className="fixed bottom-0 left-1/2 w-screen max-w-[70ch] -translate-x-1/2 transform shadow-md">
+    <div className="fixed bottom-0 w-screen max-w-prose transform shadow-md">
       <div className="space-y-4 rounded-t-lg bg-gray-200 px-4 py-8 dark:bg-gray-600">
         <div className="absolute top-1 right-1">
           <button className="flex items-center justify-center rounded-lg p-2" onClick={clear}>

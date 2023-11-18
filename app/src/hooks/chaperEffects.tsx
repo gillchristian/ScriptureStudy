@@ -16,18 +16,15 @@ import {
   Verse
 } from "@/models/reference"
 import {useRouter} from "@/lib/router-events"
-
-import {CommandPaletteAtom} from "./CommandPalette"
+import {CommandPaletteAtom} from "@/components/CommandPalette"
 
 type Props = {books: Books; reference: Reference}
 
-export const ChapterSideEffects = (props: Props) => {
+export const useChapterEffects = (props: Props) => {
   useTrackRecentChapters(props)
   usePrefetchPrevAndNext(props)
   useSwipePrevNext(props)
   useClearSelectedVerses()
-
-  return null
 }
 
 export const SelectedVerseAtom = atom<Set<Verse>>(new Set([]))
