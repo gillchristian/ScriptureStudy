@@ -1,4 +1,6 @@
+import "@blocknote/core/style.css"
 import "nprogress/nprogress.css"
+
 import "./globals.css"
 
 import {Controls} from "@/components/Controls"

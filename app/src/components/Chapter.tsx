@@ -18,30 +18,23 @@ export const Chapter = ({books, reference, html}: Props) => {
   const {width} = useWindowSize()
   const [showEditor, _setShowEditor] = useAtom(EditorAtom)
 
-  const isMobile = (width ?? 0) <= 768
+  const showSingleColumn = (width ?? 0) <= 840
 
-  if (isMobile && showEditor) {
+  const t = `${reference.version} | ${books.names[reference.book]} ${reference.chapter}`
+
+  if (showSingleColumn && showEditor) {
     return (
       <div className="relative min-h-screen w-full max-w-prose p-4">
-        <ChapterNotes
-          title={`${reference.version} | ${books.names[reference.book]} ${
-            reference.chapter
-          } ${width}`}
-          reference={reference}
-        />
+        <ChapterNotes title={t} reference={reference} />
       </div>
     )
   }
 
-  if (isMobile && !showEditor) {
+  if (showSingleColumn && !showEditor) {
     return (
       <div className="min-h-screen w-full max-w-prose p-4">
         <div className="prose pb-40 dark:prose-invert">
-          <h2>
-            {reference.version}
-            {" | "}
-            {books.names[reference.book]} {reference.chapter} {width}
-          </h2>
+          <h2>{t}</h2>
           <Html node={html} version={reference.version} books={books} reference={reference} />
         </div>
 
