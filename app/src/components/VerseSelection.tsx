@@ -3,15 +3,19 @@
 import * as S from "fp-ts/Set"
 import * as A from "fp-ts/Array"
 import {pipe} from "fp-ts/function"
-import {useCallback, useMemo} from "react"
+import {useCallback, useEffect, useMemo, useState} from "react"
 import {useAtom} from "jotai"
 import useSWR from "swr"
 import {XMarkIcon} from "@heroicons/react/24/outline"
 
-import {SelectedVerseAtom} from "@/hooks/chaperEffects"
 import {Books, Reference, Verse, verseEq, verseOrd, VerseWithVersion} from "@/models/reference"
 import {createHighlight, deleteHighlight, getHighlights, Highlight} from "@/models/highlight"
 import {TokenAtom} from "@/models/token"
+import {
+  emitClearSelectedVerses,
+  useOnClearSelectedVerses,
+  useOnVerseSelected
+} from "@/models/selection"
 
 export const useHighlights = (version: string, book: string, chapter: number) => {
   const fetcher = useCallback(
@@ -50,7 +54,6 @@ const useHighLightedVerses = (reference: Reference) => {
   )
 
   const [token, _] = useAtom(TokenAtom)
-  const [__, setSelectedVerses] = useAtom(SelectedVerseAtom)
 
   const highlight = useCallback(
     (verses: Verse[], version: string, color: string) => {
@@ -60,7 +63,7 @@ const useHighLightedVerses = (reference: Reference) => {
         (highlight) => {
           if (highlight) {
             mutate()
-            setSelectedVerses(new Set([]))
+            emitClearSelectedVerses()
           }
         }
       )
@@ -72,9 +75,8 @@ const useHighLightedVerses = (reference: Reference) => {
     (toDelete: Highlight[]) => {
       Promise.all(toDelete.map((highlight) => deleteHighlight(token, highlight))).then(() => {
         mutate()
+        emitClearSelectedVerses()
       })
-
-      setSelectedVerses(new Set([]))
     },
     [highlights]
   )
@@ -86,23 +88,8 @@ const has = S.elem<Verse>(verseEq)
 const remove = S.remove<Verse>(verseEq)
 const insert = S.insert<Verse>(verseEq)
 
-export const useVerseToggler = () => {
-  const [selectedVerses, setSelectedVerses] = useAtom(SelectedVerseAtom)
-
-  const toggle = useCallback(
-    (verse: Verse) => {
-      setSelectedVerses((vs) => (has(verse)(vs) ? remove(verse)(vs) : insert(verse)(vs)))
-    },
-    [setSelectedVerses]
-  )
-
-  const isSelected = useCallback((verse: Verse) => has(verse)(selectedVerses), [selectedVerses])
-
-  return {isSelected, toggle}
-}
-
 const useSelectedVerses = () => {
-  const [selectedVerses, setSelectedVerses] = useAtom(SelectedVerseAtom)
+  const [selectedVerses, setSelectedVerses] = useState(new Set<Verse>())
 
   const toggle = useCallback(
     (verse: Verse) => {
@@ -165,8 +152,11 @@ const useSelectedVerses = () => {
 type Props = {books: Books; reference: Reference}
 
 export const VerseSelection = ({books, reference}: Props) => {
-  const {hasSelected, verses_, formatted, clear} = useSelectedVerses()
+  const {hasSelected, verses_, formatted, clear, toggle} = useSelectedVerses()
   const {highlight, remove, isHighLighted, highlights} = useHighLightedVerses(reference)
+
+  useOnClearSelectedVerses(clear)
+  useOnVerseSelected(toggle)
 
   const highlightSelected = (color: string) => {
     highlight(verses_, reference.version, color)
@@ -191,8 +181,11 @@ export const VerseSelection = ({books, reference}: Props) => {
   return (
     <div className="fixed bottom-0 w-screen max-w-prose transform shadow-md">
       <div className="space-y-4 rounded-t-lg bg-gray-200 px-4 py-8 dark:bg-gray-600">
-        <div className="absolute top-1 right-1">
-          <button className="flex items-center justify-center rounded-lg p-2" onClick={clear}>
+        <div className="absolute top-1 left-1">
+          <button
+            className="flex items-center justify-center rounded-lg p-2"
+            onClick={emitClearSelectedVerses}
+          >
             <XMarkIcon className="h-4 w-4 text-gray-500 dark:text-gray-800" />
           </button>
         </div>

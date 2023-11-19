@@ -4,8 +4,9 @@ import {useAtom} from "jotai"
 import {Books, Reference} from "@/models/reference"
 import {useChapterEffects} from "@/hooks/chaperEffects"
 import {useWindowSize} from "@/hooks/window"
+import {Node} from "@/models/html"
 
-import {Node, Html} from "./Html"
+import {Html} from "./Html"
 import {VerseSelection} from "./VerseSelection"
 import {ChapterNotes} from "./ChapterNotes"
 import {EditorAtom} from "./FloatingEditor"
@@ -45,8 +46,8 @@ export const Chapter = ({books, reference, html}: Props) => {
 
   return (
     <div className="relative flex space-x-8">
-      <div className="min-h-screen w-full max-w-prose p-4">
-        <div className="prose pb-40 dark:prose-invert">
+      <div className="min-h-screen w-full p-4">
+        <div className="prose max-w-prose pb-40 dark:prose-invert">
           <h2>
             {reference.version}
             {" | "}
