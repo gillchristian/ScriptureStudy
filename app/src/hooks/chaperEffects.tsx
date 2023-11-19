@@ -1,22 +1,15 @@
 "use client"
 
 import {RefCallback, useCallback, useEffect} from "react"
-import {atom, useAtom} from "jotai"
+import {useAtom} from "jotai"
 import {useSwipeable} from "react-swipeable"
 import {usePathname, useSearchParams} from "next/navigation"
 
 import {VisitedRecentlyAtom} from "@/models/atoms"
-import {
-  Books,
-  eqReference,
-  findNext,
-  findPrev,
-  NamedReference,
-  Reference,
-  Verse
-} from "@/models/reference"
+import {Books, eqReference, findNext, findPrev, NamedReference, Reference} from "@/models/reference"
 import {useRouter} from "@/lib/router-events"
 import {CommandPaletteAtom} from "@/components/CommandPalette"
+import {emitClearSelectedVerses} from "@/models/selection"
 
 type Props = {books: Books; reference: Reference}
 
@@ -27,19 +20,14 @@ export const useChapterEffects = (props: Props) => {
   useClearSelectedVerses()
 }
 
-export const SelectedVerseAtom = atom<Set<Verse>>(new Set([]))
-
-export function useOnComplete() {}
-
 const useClearSelectedVerses = () => {
   // On ESC press
   const [isCommandPalletOpen] = useAtom(CommandPaletteAtom)
-  const [_, setSelectedVerses] = useAtom(SelectedVerseAtom)
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (!isCommandPalletOpen && e.key === "Escape") {
-        setSelectedVerses(new Set([]))
+        emitClearSelectedVerses()
       }
     }
 
@@ -56,7 +44,7 @@ const useClearSelectedVerses = () => {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   useEffect(() => {
-    setSelectedVerses(new Set([]))
+    emitClearSelectedVerses()
   }, [pathname, searchParams])
 }
 

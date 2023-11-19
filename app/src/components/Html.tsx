@@ -1,38 +1,15 @@
 "use client"
 
-import {FC, useMemo} from "react"
+import {FC, useMemo, useState} from "react"
+import {useAtom} from "jotai"
 
 import {clsxm} from "@/lib/clsxm"
 import {Books, Reference, Verse} from "@/models/reference"
-
-import {useHighlights, useVerseToggler} from "./VerseSelection"
-import {useAtom} from "jotai"
 import {TokenAtom} from "@/models/token"
+import {Node, Element} from "@/models/html"
 
-export type Node =
-  | {type: "Element"; data: Element}
-  | {type: "Text"; data: string}
-  | {type: "Comment"; data: string}
-
-export type Element = {
-  id?: string
-  name: string
-  variant: "void" | "normal"
-  attributes?: {[key: string]: string | undefined}
-  classes?: string[]
-  children: Node[]
-  verse?: Verse
-}
-
-type Attrs = {[key: string]: string | {[key: string]: string} | boolean}
-
-const processStyle = (styleStr: string): {[rule: string]: string} => {
-  try {
-    return JSON.parse(styleStr)
-  } catch (e) {
-    return {}
-  }
-}
+import {useHighlights} from "./VerseSelection"
+import {emitVerseSelected, useOnClearSelectedVerses} from "@/models/selection"
 
 type Props = {
   node: Node
@@ -78,14 +55,7 @@ export const Html: FC<Props> = ({node, version, books, reference, isTitleChild =
     <node.data.name
       id={node.data.id}
       className={node.data.classes ? clsxm(node.data.classes) : undefined}
-      {...Object.entries(node.data.attributes ?? {}).reduce((acc, [key, value]) => {
-        const value_ = value === undefined ? true : key === "style" ? processStyle(value) : value
-        const key_ = key === "xml:lang" ? "xmlLang" : key
-
-        acc[key_] = value_
-
-        return acc
-      }, {} as Attrs)}
+      {...node.data.attributes}
     >
       {node.data.children?.map((n, i) => (
         <Html
@@ -94,7 +64,12 @@ export const Html: FC<Props> = ({node, version, books, reference, isTitleChild =
           version={version}
           books={books}
           reference={reference}
-          isTitleChild={node.data.name === "h3"}
+          isTitleChild={
+            node.data.name === "h1" ||
+            node.data.name === "h2" ||
+            node.data.name === "h3" ||
+            node.data.name === "h4"
+          }
         />
       ))}
     </node.data.name>
@@ -112,7 +87,7 @@ type VerseProps = {
 
 const Verse_: FC<VerseProps> = ({element, version, books, reference}) => {
   const [token, _] = useAtom(TokenAtom)
-  const {toggle: toggleVerse, isSelected} = useVerseToggler()
+  const [isSelected, setIsSelected] = useState(false)
 
   const {verse} = element
 
@@ -124,10 +99,15 @@ const Verse_: FC<VerseProps> = ({element, version, books, reference}) => {
   const yellow = useMemo(() => table[`${key}-yellow`], [table, key])
 
   const onSelectVerse = () => {
-    if (token) {
-      toggleVerse(element.verse)
+    if (!token) {
+      return
     }
+
+    emitVerseSelected(verse)
+    setIsSelected(!isSelected)
   }
+
+  useOnClearSelectedVerses(() => setIsSelected(false))
 
   return (
     // We don't really care about the types here, we trust that the parser did
@@ -136,28 +116,17 @@ const Verse_: FC<VerseProps> = ({element, version, books, reference}) => {
     // @ts-expect-error
     <element.name
       id={element.id}
-      className={
-        element.classes
-          ? clsxm(
-              element.classes,
-              "verse",
-              "cursor-pointer",
-              isSelected(verse) && "underline decoration-dotted",
-              // highlights
-              green && "bg-green-200 dark:bg-green-400 dark:text-gray-800",
-              red && "bg-red-200 dark:bg-red-400 dark:text-gray-800",
-              yellow && "bg-yellow-200 dark:bg-yellow-400 dark:text-gray-800"
-            )
-          : undefined
-      }
-      {...Object.entries(element.attributes ?? {}).reduce((acc, [key, value]) => {
-        const value_ = value === undefined ? true : key === "style" ? processStyle(value) : value
-        const key_ = key === "xml:lang" ? "xmlLang" : key
-
-        acc[key_] = value_
-
-        return acc
-      }, {} as Attrs)}
+      className={clsxm(
+        element.classes,
+        "verse",
+        "cursor-pointer",
+        isSelected && "underline decoration-dotted",
+        // highlights
+        green && "bg-green-200 dark:bg-green-400 dark:text-gray-800",
+        red && "bg-red-200 dark:bg-red-400 dark:text-gray-800",
+        yellow && "bg-yellow-200 dark:bg-yellow-400 dark:text-gray-800"
+      )}
+      {...element.attributes}
       onClick={onSelectVerse}
     >
       {element.children?.map((n, i) => (

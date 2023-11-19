@@ -1,8 +1,8 @@
 import {CONFIG} from "@/config"
 import {Chapter} from "@/components/Chapter"
 import {getIndex} from "@/lib/bibleIndex"
-import type {Node} from "@/components/Html"
 import type {Reference} from "@/models/reference"
+import {Node, htmlToReact} from "@/models/html"
 
 type Params = {
   version: string
@@ -39,6 +39,7 @@ const getChapter = async ({version, book, chapter}: Reference): Promise<{html?: 
 
   const html = await fetch(url)
     .then((res) => (res.ok ? res.json() : Promise.reject(new Error("Failed to fetch"))))
+    .then(htmlToReact)
     .catch(() => undefined)
 
   return {html}
