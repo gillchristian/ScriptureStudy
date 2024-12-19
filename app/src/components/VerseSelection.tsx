@@ -8,7 +8,15 @@ import {useAtom} from "jotai"
 import useSWR from "swr"
 import {XMarkIcon} from "@heroicons/react/24/outline"
 
-import {Books, Reference, Verse, verseEq, verseOrd, VerseWithVersion} from "@/models/reference"
+import {
+  Books,
+  formatVerses,
+  Reference,
+  Verse,
+  verseEq,
+  verseOrd,
+  VerseWithVersion
+} from "@/models/reference"
 import {createHighlight, deleteHighlight, getHighlights, Highlight} from "@/models/highlight"
 import {TokenAtom} from "@/models/token"
 import {
@@ -89,6 +97,7 @@ const remove = S.remove<Verse>(verseEq)
 const insert = S.insert<Verse>(verseEq)
 
 const useSelectedVerses = () => {
+  // TODO: store `number` instead of `Verse`
   const [selectedVerses, setSelectedVerses] = useState(new Set<Verse>())
 
   const toggle = useCallback(
@@ -104,45 +113,10 @@ const useSelectedVerses = () => {
 
   const clear = useCallback(() => setSelectedVerses(new Set([])), [setSelectedVerses])
 
-  const formatted = useMemo(() => {
-    const sorted = pipe([...selectedVerses], A.sort(verseOrd))
-
-    if (sorted.length === 0) {
-      return ""
-    }
-
-    type State = {ranges: Verse[][]; current: Verse[]; last: Verse}
-    const state: State = {ranges: [], current: [sorted[0]], last: sorted[0]}
-
-    const {ranges, current} = sorted.slice(1).reduce(
-      (state, verse) => {
-        if (verse.verse === state.last.verse + 1) {
-          state.current.push(verse)
-        } else {
-          state.ranges.push(state.current)
-          state.current = [verse]
-        }
-
-        state.last = verse
-
-        return state
-      },
-
-      state
-    )
-
-    const formatted = [...ranges, current].reduce(
-      (acc, range) =>
-        range.length === 0
-          ? acc
-          : range.length === 1
-          ? `${acc},${range[0].verse}`
-          : `${acc},${range[0].verse}-${range[range.length - 1].verse}`,
-      ""
-    )
-
-    return formatted.replace(/^,/, "")
-  }, [selectedVerses])
+  const formatted = useMemo(
+    () => formatVerses([...selectedVerses].map(({verse}) => verse)),
+    [selectedVerses]
+  )
 
   const verses_ = useMemo(() => [...selectedVerses], [selectedVerses])
 

@@ -13,7 +13,8 @@ import {
   ArrowRightIcon,
   ArchiveBoxIcon,
   ShieldCheckIcon,
-  PencilIcon
+  PencilIcon,
+  StarIcon
 } from "@heroicons/react/24/outline"
 import {atom, useAtom} from "jotai"
 import {atomWithStorage} from "jotai/utils"
@@ -35,7 +36,8 @@ type ShortcutEnum =
   | "toggle_footnotes"
   | "next_chapter"
   | "prev_chapter"
-  | "got_to_history"
+  | "go_to_history"
+  | "go_to_highlights"
   | "toggle_editor"
 
 type Shortcut = {
@@ -90,12 +92,22 @@ const NextChapterAction: Shortcut = {
 
 const GoToHistoryAction: Shortcut = {
   tag: "shortcut",
-  action: "got_to_history",
+  action: "go_to_history",
   name: "Go to history",
   icon: ArchiveBoxIcon,
   shortcut: "h",
   withCtrl: true,
-  showOn: ["chapter", "home", "not_found"]
+  showOn: ["chapter", "home", "not_found", "highlights"]
+}
+
+const GoToHighlightsAction: Shortcut = {
+  tag: "shortcut",
+  action: "go_to_highlights",
+  name: "Go to highlights",
+  icon: StarIcon,
+  shortcut: "y",
+  withCtrl: true,
+  showOn: ["chapter", "home", "not_found", "history"]
 }
 
 const ToggleEditor: Shortcut = {
@@ -147,6 +159,7 @@ const quickActions: (Shortcut | Action)[] =
     ? [
         SwitchVersion,
         GoToHistoryAction,
+        GoToHighlightsAction,
         ToggleVersesAction,
         ToggleFootnotesAction,
         PrevChapterAction,
@@ -156,6 +169,7 @@ const quickActions: (Shortcut | Action)[] =
       ]
     : [
         GoToHistoryAction,
+        GoToHighlightsAction,
         ToggleVersesAction,
         ToggleFootnotesAction,
         PrevChapterAction,
@@ -276,6 +290,10 @@ export const CommandPalette = ({books, chapters}: Props) => {
     router.push(`/history`)
   }
 
+  const goToHighlights = () => {
+    router.push(`/highlights`)
+  }
+
   const toggleFootnotes = () => {
     setConfig((c) => ({...c, footnotes: !c.footnotes}))
   }
@@ -359,6 +377,15 @@ export const CommandPalette = ({books, chapters}: Props) => {
         e.stopPropagation()
 
         goToHistory()
+      }
+
+      const isOpenHighlights = e.key === GoToHighlightsAction.shortcut.toLowerCase()
+
+      if (isModifier && isOpenHighlights) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        goToHighlights()
       }
 
       const isNextChapter = e.key === NextChapterAction.shortcut.toLowerCase()
@@ -446,8 +473,12 @@ export const CommandPalette = ({books, chapters}: Props) => {
       setMode("commands")
     }
 
-    if (item.tag === "shortcut" && item.action === "got_to_history") {
+    if (item.tag === "shortcut" && item.action === "go_to_history") {
       goToHistory()
+    }
+
+    if (item.tag === "shortcut" && item.action === "go_to_highlights") {
+      goToHighlights()
     }
 
     setOpen(false)

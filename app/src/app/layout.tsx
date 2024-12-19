@@ -11,8 +11,8 @@ import {RootLayoutClient} from "./layout.client"
 
 export const metadata = {
   title: "The Bible",
-  description: "My own, personal Bible",
-};
+  description: "My own, personal Bible"
+}
 
 export default async function RootLayout({children}: {children: React.ReactNode}) {
   const {books, chapters} = await getIndex("NET")

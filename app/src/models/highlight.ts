@@ -1,4 +1,11 @@
+import {Eq} from "fp-ts/Eq"
+import {Ord} from "fp-ts/Ord"
+import * as Num from "fp-ts/number"
+import * as A from "fp-ts/Array"
+
 import {CONFIG} from "@/config"
+
+import {Books} from "./reference"
 
 export type Highlight = {
   id: string
@@ -9,6 +16,50 @@ export type Highlight = {
   color: string
   updated_at: string
   created_at: string
+}
+
+const highlightEq: Eq<Highlight> = {
+  equals: (a, b) =>
+    a.version === b.version &&
+    a.book === b.book &&
+    a.chapter === b.chapter &&
+    A.getEq(Num.Eq).equals(a.verses, b.verses) &&
+    a.color === b.color
+}
+
+const getHighlightOrd = (books: Books): Ord<Highlight> => {
+  const booksOrder = books.ordered.reduce((acc, book, i) => {
+    acc[book] = i
+    return acc
+  }, {} as Record<string, number>)
+
+  return {
+    ...highlightEq,
+    compare: (a, b) =>
+      a.version < b.version
+        ? -1
+        : a.version > b.version
+        ? 1
+        : booksOrder[a.book] < booksOrder[b.book]
+        ? -1
+        : booksOrder[a.book] > booksOrder[b.book]
+        ? 1
+        : a.chapter < b.chapter
+        ? -1
+        : a.chapter > b.chapter
+        ? 1
+        : A.getOrd(Num.Ord).compare(a.verses, b.verses)
+  }
+}
+
+export const getAllHighlights = async (books: Books): Promise<Highlight[]> => {
+  return fetch(`${CONFIG.API_URL}/highlights`)
+    .then((res) => (res.ok ? res.json() : Promise.reject(res)))
+    .then(A.sort(getHighlightOrd(books)))
+    .catch((err) => {
+      console.error(err)
+      return []
+    })
 }
 
 export const getHighlights = async (

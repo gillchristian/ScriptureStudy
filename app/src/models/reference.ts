@@ -1,6 +1,9 @@
 import {Eq} from "fp-ts/Eq"
 import {Ord} from "fp-ts/Ord"
+import * as A from "fp-ts/Array"
 import {Ordering} from "fp-ts/Ordering"
+import {pipe} from "fp-ts/function"
+import * as Num from "fp-ts/number"
 
 export type Books = {
   count: {[book: string]: number}
@@ -113,4 +116,44 @@ export const findNext = (current: Reference, chapters: Books): Reference | undef
     book: current.book,
     chapter: current.chapter + 1
   }
+}
+
+export const formatVerses = (verses: number[]): string => {
+  const sorted = pipe(verses, A.sort(Num.Ord))
+
+  if (sorted.length === 0) {
+    return ""
+  }
+
+  type State = {ranges: number[][]; current: number[]; last: number}
+  const state: State = {ranges: [], current: [sorted[0]], last: sorted[0]}
+
+  const {ranges, current} = sorted.slice(1).reduce(
+    (state, verse) => {
+      if (verse === state.last + 1) {
+        state.current.push(verse)
+      } else {
+        state.ranges.push(state.current)
+        state.current = [verse]
+      }
+
+      state.last = verse
+
+      return state
+    },
+
+    state
+  )
+
+  const formatted = [...ranges, current].reduce(
+    (acc, range) =>
+      range.length === 0
+        ? acc
+        : range.length === 1
+        ? `${acc},${range[0]}`
+        : `${acc},${range[0]}-${range[range.length - 1]}`,
+    ""
+  )
+
+  return formatted.replace(/^,/, "")
 }

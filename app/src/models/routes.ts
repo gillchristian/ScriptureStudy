@@ -4,6 +4,7 @@ import {Reference} from "./reference"
 
 export type Route =
   | {tag: "history"}
+  | {tag: "highlights"}
   | {tag: "home"}
   | {tag: "not_found"}
   | ({tag: "chapter"} & Reference)
@@ -19,6 +20,10 @@ export const useRoute = (): Route => {
 
   if (a === "history") {
     return {tag: "history"}
+  }
+
+  if (a === "highlights") {
+    return {tag: "highlights"}
   }
 
   if (!b || !c) {
