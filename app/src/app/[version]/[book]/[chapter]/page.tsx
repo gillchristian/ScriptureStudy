@@ -10,9 +10,10 @@ type Params = {
   chapter: string
 }
 
-type Props = {params: Params}
+type Props = {params: Promise<Params>}
 
-export default async function ChapterPage({params}: Props) {
+export default async function ChapterPage({params: params_}: Props) {
+  const params = await params_
   const chapter_ = parseInt(params.chapter, 10)
   const chapter = Number.isNaN(chapter_) ? 1 : chapter_
   const reference = {version: params.version, book: params.book, chapter}
