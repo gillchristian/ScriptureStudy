@@ -96,13 +96,25 @@ const toNameDict = (chapters: Chapter_[]) =>
     return acc
   }, {} as {[chapter: string]: string})
 
-const normalize = (input: string[]) => {
+
+type Books = {
+  count: {[book: string]: number}
+  ordered: string[]
+  names: {[book: string]: string}
+  shorts: {[book: string]: string}
+  by_short: {[book: string]: string}
+}
+
+const normalize = (input: string[]): Books => {
   const chapters = parse(input)
 
   return {
-    byCount: toCount(chapters),
-    inOrder: toOrder(chapters),
-    names: toNameDict(chapters)
+    count: toCount(chapters),
+    ordered: toOrder(chapters),
+    names: toNameDict(chapters),
+    // TODO: implement shorts (ie. abbreviations)
+    shorts: toNameDict(chapters),
+    by_short: toNameDict(chapters),
   }
 }
 
@@ -118,7 +130,7 @@ const chaptersP = normalizeOnly
 
 withDuration(() =>
   chaptersP
-    .then((results) => normalize(results))
+    .then(normalize)
     .then((index) =>
       fs.writeFile("index.json", JSON.stringify(index, null, 2), "utf-8")
     )
