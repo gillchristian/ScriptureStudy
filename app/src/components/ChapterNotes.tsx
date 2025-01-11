@@ -62,7 +62,7 @@ type EditorProps = {
 const Editor_ = ({notes: persistedNotes, reference, onSaved}: EditorProps) => {
   const [note, setNote] = useState<Output>()
   const [_ready, setReady] = useState(false)
-  const editorRef = useRef<BlockNoteEditor>()
+  const editorRef = useRef<BlockNoteEditor>(null)
 
   const [token, _] = useAtom(TokenAtom)
 
@@ -71,8 +71,8 @@ const Editor_ = ({notes: persistedNotes, reference, onSaved}: EditorProps) => {
       return
     }
 
-    const html = await editorRef.current.blocksToHTML(note.blocks)
-    const text = await editorRef.current.blocksToMarkdown(note.blocks)
+    const html = await editorRef.current.blocksToFullHTML(note.blocks)
+    const text = await editorRef.current.blocksToMarkdownLossy(note.blocks)
 
     const comment: AddComment = {
       version: reference.version,
@@ -105,9 +105,9 @@ const Editor_ = ({notes: persistedNotes, reference, onSaved}: EditorProps) => {
     <Editor
       onChange={(v) => setNote(v)}
       initialData={persistedNotes}
-      autofocus={true}
       readOnly={false}
       onReady={(editor) => {
+        console.log("ready", editor)
         setReady(true)
         editorRef.current = editor
       }}

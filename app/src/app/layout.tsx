@@ -1,4 +1,5 @@
-import "@blocknote/core/style.css"
+import "@blocknote/core/fonts/inter.css";
+import "@blocknote/mantine/style.css";
 import "nprogress/nprogress.css"
 
 import "./globals.css"

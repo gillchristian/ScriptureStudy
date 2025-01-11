@@ -99,6 +99,7 @@ const Verse_: FC<VerseProps> = ({element, version, books, reference}) => {
   const yellow = useMemo(() => table[`${key}-yellow`], [table, key])
 
   const onSelectVerse = () => {
+    // TODO: check if `event.shiftKey` and apply range instead of single verse
     if (!token) {
       return
     }

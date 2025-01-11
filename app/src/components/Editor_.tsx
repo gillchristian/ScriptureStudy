@@ -1,6 +1,7 @@
-import {FocusEventHandler} from "react"
+import {FocusEventHandler, useEffect} from "react"
 import {BlockNoteEditor} from "@blocknote/core"
-import {BlockNoteView, useBlockNote} from "@blocknote/react"
+import {BlockNoteView} from "@blocknote/mantine";
+import {useCreateBlockNote} from "@blocknote/react"
 
 import {Output as OutputData} from "@/models/editor"
 
@@ -10,7 +11,6 @@ import {clsxm} from "@/lib/clsxm"
 type Props = {
   editable?: boolean
   readOnly?: boolean
-  autofocus?: boolean
   initialData?: OutputData
   onChange: (data: OutputData) => void
   onReady?: (editor: BlockNoteEditor) => void
@@ -20,36 +20,35 @@ type Props = {
 export default function Editor({
   editable = true,
   initialData,
-  autofocus,
   onChange,
   onReady,
   onFocus
 }: Props) {
-  const editor: BlockNoteEditor | null = useBlockNote(
+  const editor: BlockNoteEditor | null = useCreateBlockNote(
     {
-      editable,
-      initialContent: initialData?.blocks ?? [],
-      onEditorContentChange: (editor) => {
-        onChange({
-          version: "v1",
-          time: Date.now(),
-          blocks: editor.topLevelBlocks
-        })
-      },
-      onEditorReady: (editor) => {
-        if (autofocus) {
-          editor.domElement?.focus()
-        }
-
-        onReady?.(editor)
-      }
+      initialContent: initialData?.blocks,
     },
     []
   )
 
+  useEffect(() => {
+    onReady?.(editor)
+  }, [])
+
+
   return (
-    <div className={clsxm("reset", CONFIG.DEBUG_EDITOR && "debug-editor")} onFocus={onFocus}>
-      <BlockNoteView editor={editor} />
+    <div className={clsxm(CONFIG.DEBUG_EDITOR && "debug-editor")} onFocus={onFocus}>
+      <BlockNoteView
+        editor={editor}
+        editable={editable}
+        onChange={() => {
+          onChange({
+            version: "v1",
+            time: Date.now(),
+            blocks: editor.document
+          })
+        }}
+      />
     </div>
   )
 }
