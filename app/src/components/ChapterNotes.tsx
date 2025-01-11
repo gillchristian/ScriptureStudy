@@ -107,7 +107,6 @@ const Editor_ = ({notes: persistedNotes, reference, onSaved}: EditorProps) => {
       initialData={persistedNotes}
       readOnly={false}
       onReady={(editor) => {
-        console.log("ready", editor)
         setReady(true)
         editorRef.current = editor
       }}

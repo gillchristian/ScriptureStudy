@@ -10,19 +10,16 @@ export default async function Home() {
     <div className="page flex h-screen w-screen justify-center pt-4 sm:pt-10">
       <div className="container space-y-6">
         <div className="container">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-              <Link
-                className="my-2 text-blue-600 dark:text-blue-400"
-                href="/highlights"
-              >
-                Highlights
-              </Link>
-              <Link
-                className="my-2 text-blue-600 dark:text-blue-400"
-                href="/history"
-              >
-                History
-              </Link>
+          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            <Link className="my-2 text-blue-600 dark:text-blue-400" href="/highlights">
+              Highlights
+            </Link>
+            <Link className="my-2 text-blue-600 dark:text-blue-400" href="/notes">
+              Notes
+            </Link>
+            <Link className="my-2 text-blue-600 dark:text-blue-400" href="/history">
+              History
+            </Link>
           </div>
         </div>
         <div className="container">

@@ -1,6 +1,6 @@
 import {FocusEventHandler, useEffect} from "react"
 import {BlockNoteEditor} from "@blocknote/core"
-import {BlockNoteView} from "@blocknote/mantine";
+import {BlockNoteView} from "@blocknote/mantine"
 import {useCreateBlockNote} from "@blocknote/react"
 
 import {Output as OutputData} from "@/models/editor"
@@ -17,16 +17,10 @@ type Props = {
   onFocus?: FocusEventHandler<HTMLDivElement>
 }
 
-export default function Editor({
-  editable = true,
-  initialData,
-  onChange,
-  onReady,
-  onFocus
-}: Props) {
+export default function Editor({editable = true, initialData, onChange, onReady, onFocus}: Props) {
   const editor: BlockNoteEditor | null = useCreateBlockNote(
     {
-      initialContent: initialData?.blocks,
+      initialContent: initialData?.blocks
     },
     []
   )
@@ -34,7 +28,6 @@ export default function Editor({
   useEffect(() => {
     onReady?.(editor)
   }, [])
-
 
   return (
     <div className={clsxm(CONFIG.DEBUG_EDITOR && "debug-editor")} onFocus={onFocus}>

@@ -533,7 +533,7 @@ export const CommandPalette = ({books, chapters}: Props) => {
               <Combobox onChange={onOpen}>
                 <div className="relative">
                   <MagnifyingGlassIcon
-                    className="pointer-events-none absolute top-3.5 left-4 h-5 w-5 text-gray-500"
+                    className="pointer-events-none absolute left-4 top-3.5 h-5 w-5 text-gray-500"
                     aria-hidden="true"
                   />
                   <Combobox.Input
@@ -551,7 +551,7 @@ export const CommandPalette = ({books, chapters}: Props) => {
                     className="max-h-[28rem] scroll-py-2 divide-y divide-gray-500 divide-opacity-20 overflow-y-auto"
                   >
                     <li className="p-2">
-                      <h2 className="mt-4 mb-2 px-3 text-xs font-semibold text-gray-200">
+                      <h2 className="mb-2 mt-4 px-3 text-xs font-semibold text-gray-200">
                         Actions
                       </h2>
                     </li>
@@ -604,7 +604,7 @@ export const CommandPalette = ({books, chapters}: Props) => {
                     className="max-h-[28rem] scroll-py-2 divide-y divide-gray-500 divide-opacity-20 overflow-y-auto"
                   >
                     <li className="p-2">
-                      <h2 className="mt-4 mb-2 px-3 text-xs font-semibold text-gray-200">
+                      <h2 className="mb-2 mt-4 px-3 text-xs font-semibold text-gray-200">
                         Versions
                       </h2>
                     </li>
@@ -669,7 +669,7 @@ export const CommandPalette = ({books, chapters}: Props) => {
                     }
                     {query === "" && recent_.length > 0 && (
                       <li className="p-2">
-                        <h2 className="mt-4 mb-2 px-3 text-xs font-semibold text-gray-200">
+                        <h2 className="mb-2 mt-4 px-3 text-xs font-semibold text-gray-200">
                           Recent reads
                         </h2>
 
@@ -699,7 +699,7 @@ export const CommandPalette = ({books, chapters}: Props) => {
                 )}
 
                 {mode === "search" && query !== "" && filteredChapters.length === 0 && (
-                  <div className="py-14 px-6 text-center sm:px-14">
+                  <div className="px-6 py-14 text-center sm:px-14">
                     <BookOpenIcon className="mx-auto h-6 w-6 text-gray-500" aria-hidden="true" />
                     <p className="mt-4 text-sm text-gray-200">
                       We couldn't find any chapters with that term. Please try again.

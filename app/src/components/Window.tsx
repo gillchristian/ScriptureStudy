@@ -348,7 +348,7 @@ export const Window = ({children, show, onClose}: Props) => {
       }}
     >
       {/* Reposition handle */}
-      <div className="absolute top-1 left-1/2 -translate-x-1/2 transform">
+      <div className="absolute left-1/2 top-1 -translate-x-1/2 transform">
         <button
           className={clsxm("rounded px-1", isRepositioning && "bg-gray-400 bg-opacity-5")}
           onMouseDown={onStartRepositionByMouse}

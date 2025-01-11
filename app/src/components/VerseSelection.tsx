@@ -155,7 +155,7 @@ export const VerseSelection = ({books, reference}: Props) => {
   return (
     <div className="fixed bottom-0 w-screen max-w-prose transform shadow-md">
       <div className="space-y-4 rounded-t-lg bg-gray-200 px-4 py-8 dark:bg-gray-600">
-        <div className="absolute top-1 left-1">
+        <div className="absolute left-1 top-1">
           <button
             className="flex items-center justify-center rounded-lg p-2"
             onClick={emitClearSelectedVerses}
