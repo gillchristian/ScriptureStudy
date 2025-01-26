@@ -26,7 +26,7 @@ export const Chapter = ({books, reference, html}: Props) => {
   if (showSingleColumn && showEditor) {
     return (
       <div className="relative min-h-screen w-full max-w-prose p-4">
-        <ChapterNotes title={t} reference={reference} />
+        <ChapterNotes title={t} reference={reference} books={books} />
       </div>
     )
   }
@@ -60,7 +60,7 @@ export const Chapter = ({books, reference, html}: Props) => {
       </div>
 
       <div className="relative min-h-screen w-full max-w-prose p-4">
-        <ChapterNotes title="Notes" reference={reference} />
+        <ChapterNotes title="Notes" reference={reference} books={books} />
       </div>
     </div>
   )

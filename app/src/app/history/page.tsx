@@ -12,7 +12,7 @@ export default function History() {
   const [now, _setNow] = useState(() => Date.now())
 
   return (
-    <div className="flex h-screen w-screen justify-center p-4 pt-4 sm:pt-10">
+    <div className="flex w-screen justify-center px-4 pb-10 pt-4 sm:pt-10">
       <div className="container space-y-8">
         <div className="mr-12 flex justify-between border-b-2 border-gray-200">
           <p className="font-bold text-gray-600 dark:text-gray-400">History</p>

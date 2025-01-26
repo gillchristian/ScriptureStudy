@@ -17,7 +17,7 @@ export default async function Highlights() {
   const highlights = await getAllHighlights(books)
 
   return (
-    <div className="flex h-screen w-screen justify-center px-4 pb-10 pt-4 sm:pt-10">
+    <div className="flex w-screen justify-center px-4 pb-10 pt-4 sm:pt-10">
       <div className="container space-y-8">
         <div className="mr-12 flex justify-between border-b-2 border-gray-200">
           <p className="font-bold text-gray-600 dark:text-gray-400">Highlights</p>
@@ -28,10 +28,7 @@ export default async function Highlights() {
             const time = new Date(created_at)
             return (
               <div className="grid grid-cols-2" key={`/${version}/${book}/${chapter}`}>
-                <Link
-                  className="my-2 flex items-center space-x-2 text-blue-600 dark:text-blue-400"
-                  href={`/${version}/${book}/${chapter}`}
-                >
+                <div className="my-2 flex items-center space-x-2">
                   <div
                     className={clsxm([
                       "h-4 w-4 rounded-md",
@@ -40,11 +37,24 @@ export default async function Highlights() {
                       color === "yellow" && "bg-yellow-200"
                     ])}
                   />
-                  <span>
+                  <span className="text-gray-600 dark:text-gray-400">
                     {version} {books.names[book]} {chapter}:{formatVerses(verses)}
                   </span>
-                </Link>
-                <time dateTime={iso} title={iso} className="my-2 dark:text-gray-500">
+                  <Link
+                    className="text-blue-600 dark:text-blue-400"
+                    href={`/notes/${version}/${book}/${chapter}`}
+                  >
+                    View
+                  </Link>
+                  <span className="text-gray-600 dark:text-gray-400"> / </span>
+                  <Link
+                    className="text-blue-600 dark:text-blue-400"
+                    href={`/${version}/${book}/${chapter}`}
+                  >
+                    Edit
+                  </Link>
+                </div>
+                <time dateTime={iso} title={iso} className="my-2 text-gray-600 dark:text-gray-400">
                   {formatRelative(time, now)}
                 </time>
               </div>

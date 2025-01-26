@@ -21,6 +21,7 @@ import {atomWithStorage} from "jotai/utils"
 import {matchSorter} from "match-sorter"
 import {not} from "fp-ts/Predicate"
 import {identity} from "fp-ts/function"
+import Cookies from "js-cookie"
 
 import {CONFIG} from "@/config"
 import {Books, eqReference, findNext, findPrev, NamedReference, Reference} from "@/models/reference"
@@ -438,6 +439,7 @@ export const CommandPalette = ({books, chapters}: Props) => {
 
       const secret = prompt("Plese enter the secret")
       setToken(secret ?? "")
+      Cookies.set("token", secret ?? "")
 
       return
     }

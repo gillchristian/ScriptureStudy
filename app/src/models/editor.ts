@@ -6,6 +6,6 @@ type EditorOutput<Block, V> = {
   blocks: Block[]
 }
 
-type Block = BN.Block<BN.DefaultBlockSchema>
+export type Block = BN.Block<BN.DefaultBlockSchema>
 
 export type Output = EditorOutput<Block, "v1">

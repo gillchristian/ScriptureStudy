@@ -37,7 +37,7 @@ const DEFAULTS = {
   x: 0,
   y: 0,
 
-  position: "normal" as Position,
+  position: "floating" as Position,
 
   sideWidth: 500,
   rightPadding: 65

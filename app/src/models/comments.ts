@@ -37,7 +37,7 @@ const getCommentEq = <C extends SimpleComment>(): Eq<C> => ({
     A.getEq(Num.Eq).equals(a.verses, b.verses)
 })
 
-const getCommentOrd = <C extends SimpleComment>(books: Books): Ord<C> => {
+export const getCommentOrd = <C extends SimpleComment>(books: Books): Ord<C> => {
   const booksOrder = books.ordered.reduce((acc, book, i) => {
     acc[book] = i
     return acc
@@ -75,7 +75,6 @@ export const listComments = async (
     ].filter((kv): kv is [string, string] => kv[1] !== undefined)
   )
 
-  // TODO: proper stringify (ie. skip undefined)
   return fetch(`${CONFIG.API_URL}/comments?${qs}`, {
     headers: {Authorization: `Bearer ${token}`}
   })
@@ -104,13 +103,7 @@ export const getChapterComments = async (
     .then((res: Comment[]) => ({
       comments: res,
       table: res.reduce((acc, cur) => {
-        cur.verses.forEach((verse) => {
-          acc[`${cur.version}-${cur.book}-${cur.chapter}-${verse}`] = cur
-        })
-
-        if (cur.verses.length === 0) {
-          acc[`${cur.version}-${cur.book}-${cur.chapter}`] = cur
-        }
+        acc[`${cur.version}-${cur.book}-${cur.chapter}-${cur.verses.join("-")}`] = cur
 
         return acc
       }, {} as Record<string, Comment>)

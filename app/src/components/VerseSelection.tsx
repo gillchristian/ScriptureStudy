@@ -96,7 +96,7 @@ const has = S.elem<Verse>(verseEq)
 const remove = S.remove<Verse>(verseEq)
 const insert = S.insert<Verse>(verseEq)
 
-const useSelectedVerses = () => {
+export const useSelectedVerses = () => {
   // TODO: store `number` instead of `Verse`
   const [selectedVerses, setSelectedVerses] = useState(new Set<Verse>())
 

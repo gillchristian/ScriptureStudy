@@ -3,7 +3,7 @@ import {BlockNoteEditor} from "@blocknote/core"
 import {BlockNoteView} from "@blocknote/mantine"
 import {useCreateBlockNote} from "@blocknote/react"
 
-import {Output as OutputData} from "@/models/editor"
+import {Output as OutputData, Block} from "@/models/editor"
 
 import {CONFIG} from "@/config"
 import {clsxm} from "@/lib/clsxm"
@@ -18,7 +18,7 @@ type Props = {
 }
 
 export default function Editor({editable = true, initialData, onChange, onReady, onFocus}: Props) {
-  const editor: BlockNoteEditor | null = useCreateBlockNote(
+  const editor = useCreateBlockNote(
     {
       initialContent: initialData?.blocks
     },
@@ -28,6 +28,8 @@ export default function Editor({editable = true, initialData, onChange, onReady,
   useEffect(() => {
     onReady?.(editor)
   }, [])
+
+  const newDocument = (blocks: Block[]) => editor.replaceBlocks(editor.document, blocks)
 
   return (
     <div className={clsxm(CONFIG.DEBUG_EDITOR && "debug-editor")} onFocus={onFocus}>
