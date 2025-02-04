@@ -28,7 +28,8 @@ export default function Editor({
 }: Props) {
   const editor = useCreateBlockNote(
     {
-      initialContent: initialData?.blocks
+      initialContent: initialData?.blocks,
+      trailingBlock: false
     },
     []
   )
@@ -47,6 +48,7 @@ export default function Editor({
         editable={editable}
         onBlur={onBlur}
         onFocus={onFocus}
+        autoFocus
         onChange={() => {
           onChange({
             version: "v1",

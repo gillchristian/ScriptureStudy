@@ -196,18 +196,16 @@ const Editor_ = ({notes: persistedNotes, reference, verses, onSaved}: EditorProp
   }, [note])
 
   return (
-    <div className="m-2 border border-red-200 p-2">
-      <Editor
-        onChange={(v) => setNote(v)}
-        initialData={persistedNotes}
-        readOnly={false}
-        onReady={(editor) => {
-          setReady(true)
-          editorRef.current = editor
-        }}
-        onBlur={onSaved}
-      />
-    </div>
+    <Editor
+      onChange={(v) => setNote(v)}
+      initialData={persistedNotes}
+      readOnly={false}
+      onReady={(editor) => {
+        setReady(true)
+        editorRef.current = editor
+      }}
+      onBlur={onSaved}
+    />
   )
 }
 
