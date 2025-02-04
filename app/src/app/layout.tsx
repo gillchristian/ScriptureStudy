@@ -21,7 +21,7 @@ export default async function RootLayout({children}: {children: React.ReactNode}
   return (
     <html lang="en">
       <head />
-      <body className="bg-stone-100 p-4 dark:bg-gray-800">
+      <body className="bg-stone-100 dark:bg-gray-800">
         <RootLayoutClient />
         <Controls />
         <CommandPalette books={books} chapters={chapters} />

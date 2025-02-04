@@ -1,5 +1,3 @@
-"use client"
-
 import format from "date-fns/format"
 
 import {Comment} from "@/models/comments"
@@ -35,19 +33,19 @@ const ChapterNote = ({comment}: {comment: Comment}) => {
   )
 
   return (
-    <div className="space-y-2">
-      <time
-        dateTime={comment.created_at}
-        title={comment.created_at}
-        className="text-sm leading-none text-gray-500"
-      >
-        {format(date, "yyyy-MM-dd HH:mm")}
-        {comment.created_at !== comment.updated_at && " (edited)"}
-      </time>
+    <div>
       <div
         className="text-gray-800 dark:text-gray-100"
         dangerouslySetInnerHTML={{__html: comment.comment.html}}
       />
+
+      <time
+        dateTime={comment.created_at}
+        title={comment.created_at}
+        className="text-xs leading-none text-gray-500"
+      >
+        {format(date, "yyyy-MM-dd HH:mm")}
+      </time>
     </div>
   )
 }
@@ -58,24 +56,25 @@ const VerseNote = ({comment}: {comment: Comment}) => {
   )
 
   return (
-    <div className="space-y-2">
-      <h2 className="text-lg text-gray-800 dark:text-gray-100">
-        Verses {formatVerses(comment.verses)}
-      </h2>
-
-      <time
-        dateTime={comment.created_at}
-        title={comment.created_at}
-        className="text-sm leading-none text-gray-500"
-      >
-        {format(date, "yyyy-MM-dd HH:mm")}
-        {comment.created_at !== comment.updated_at && " (edited)"}
-      </time>
-
+    <div>
       <div
         className="text-gray-800 dark:text-gray-100"
         dangerouslySetInnerHTML={{__html: comment.comment.html}}
       />
+
+      <div className="flex items-end gap-2">
+        <h2 className="text-sm font-bold leading-none text-gray-600 dark:text-gray-100">
+          Verses {formatVerses(comment.verses)}
+        </h2>
+
+        <time
+          dateTime={comment.created_at}
+          title={comment.created_at}
+          className="text-xs leading-none text-gray-600 dark:text-gray-100"
+        >
+          {format(date, "yyyy-MM-dd HH:mm")}
+        </time>
+      </div>
     </div>
   )
 }

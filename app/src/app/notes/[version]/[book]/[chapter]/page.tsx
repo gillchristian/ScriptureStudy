@@ -43,7 +43,7 @@ export default async function ChapterNotes({params}: Props) {
   return (
     <div className="flex w-screen justify-center px-4 pb-10 pt-4 sm:pt-10">
       <div className="container space-y-4">
-        <div className="mr-12 flex justify-between border-b-2 border-gray-600 dark:border-gray-400">
+        <div className="flex justify-between border-b-2 border-gray-600 dark:border-gray-400">
           <Link
             className="my-2 flex items-center space-x-2 text-blue-600 dark:text-blue-400"
             href={`/${reference.version}/${reference.book}/${reference.chapter}`}

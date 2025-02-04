@@ -103,7 +103,7 @@ export const getChapterComments = async (
     .then((res: Comment[]) => ({
       comments: res,
       table: res.reduce((acc, cur) => {
-        acc[`${cur.version}-${cur.book}-${cur.chapter}-${cur.verses.join("-")}`] = cur
+        acc[`${cur.version}.${cur.book}.${cur.chapter}.${cur.verses.join("-")}`] = cur
 
         return acc
       }, {} as Record<string, Comment>)
@@ -125,7 +125,7 @@ export const addComment = async (
     },
     body: JSON.stringify(comment)
   })
-    .then((res) => (res.ok ? res.json() : Promise.reject(res)))
+    .then((res) => (res.status === 204 ? null : res.ok ? res.json() : Promise.reject(res)))
     .catch((err) => {
       console.error(err)
       return null

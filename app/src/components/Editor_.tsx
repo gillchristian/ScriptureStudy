@@ -15,9 +15,17 @@ type Props = {
   onChange: (data: OutputData) => void
   onReady?: (editor: BlockNoteEditor) => void
   onFocus?: FocusEventHandler<HTMLDivElement>
+  onBlur?: FocusEventHandler<HTMLDivElement>
 }
 
-export default function Editor({editable = true, initialData, onChange, onReady, onFocus}: Props) {
+export default function Editor({
+  editable = true,
+  initialData,
+  onChange,
+  onReady,
+  onFocus,
+  onBlur
+}: Props) {
   const editor = useCreateBlockNote(
     {
       initialContent: initialData?.blocks
@@ -29,13 +37,16 @@ export default function Editor({editable = true, initialData, onChange, onReady,
     onReady?.(editor)
   }, [])
 
+  // TODO: ???
   const newDocument = (blocks: Block[]) => editor.replaceBlocks(editor.document, blocks)
 
   return (
-    <div className={clsxm(CONFIG.DEBUG_EDITOR && "debug-editor")} onFocus={onFocus}>
+    <div className={clsxm(CONFIG.DEBUG_EDITOR && "debug-editor")}>
       <BlockNoteView
         editor={editor}
         editable={editable}
+        onBlur={onBlur}
+        onFocus={onFocus}
         onChange={() => {
           onChange({
             version: "v1",
