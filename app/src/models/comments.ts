@@ -113,7 +113,7 @@ export const getChapterComments = async (
       return {comments: [], table: {}}
     })
 
-export const addComment = async (
+export const upsertComment = async (
   token: string,
   {version, book, chapter, ...comment}: AddComment
 ): Promise<Comment | null> =>

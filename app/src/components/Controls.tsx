@@ -31,10 +31,10 @@ export const Controls = () => {
         </Link>
       )}
 
-      {route.tag === "chapter" && (
+      {(route.tag === "chapter" || route.tag === "next") && (
         <button
           onClick={() => setShowEditor(not(identity))}
-          className="rounded-md p-1 hover:bg-gray-200 dark:hover:bg-gray-500"
+          className="block rounded-md p-1 hover:bg-gray-200 md:hidden dark:hover:bg-gray-500"
         >
           {showEditor ? (
             <XMarkIcon className="h-6 w-6 text-gray-700 dark:text-stone-100" />

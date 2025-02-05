@@ -19,7 +19,7 @@ export const Chapter = ({books, reference, html}: Props) => {
   const {width} = useWindowSize()
   const [showEditor, _setShowEditor] = useAtom(EditorAtom)
 
-  const showSingleColumn = (width ?? 0) <= 840
+  const showSingleColumn = (width ?? 0) <= 768
 
   const t = `${reference.version} | ${books.names[reference.book]} ${reference.chapter}`
 

@@ -1,4 +1,4 @@
-import {useState, useRef, useEffect, useMemo} from "react"
+import {useState, useRef, useEffect, useMemo, useCallback} from "react"
 import {BlockNoteEditor} from "@blocknote/core"
 import {useAtom} from "jotai"
 import useSWR from "swr"
@@ -9,11 +9,25 @@ import {Editor} from "@/components/Editor"
 import {Output} from "@/models/editor"
 import {Books, Reference, formatVerses} from "@/models/reference"
 import {TokenAtom} from "@/models/token"
-import {AddComment, Comment, addComment, getChapterComments, getCommentOrd} from "@/models/comments"
-import {useOnClearSelectedVerses, useOnVerseSelected} from "@/models/selection"
+import {
+  AddComment,
+  Comment,
+  upsertComment,
+  getChapterComments,
+  getCommentOrd
+} from "@/models/comments"
+import {
+  emitClearSelectedVerses,
+  emitVerseSelected,
+  useOnClearSelectedVerses,
+  useOnVerseSelected
+} from "@/models/selection"
 
 import {EditorAtom} from "./FloatingEditor"
 import {useSelectedVerses} from "./VerseSelection"
+import {p} from "@/lib/language"
+import {clsxm} from "@/lib/clsxm"
+import {CheckIcon} from "@heroicons/react/20/solid"
 
 type Props = {
   books: Books
@@ -65,11 +79,10 @@ export const ChapterNotes = ({title, reference, books}: Props) => {
     mkFetcher(token, reference, books)
   )
 
-  // TODO: is this caching working correctly?
   const verses = useMemo(() => verses_.map((v) => v.verse).sort((a, b) => a - b), [verses_])
 
   // The trailing `-` is fine, it's handled in the same way by `@/models/comments`
-  const key = `${reference.version}.${reference.book}.${reference.chapter}.${verses.join("-")}`
+  const key = useMemo(() => mkKey(reference, verses), [reference, verses])
 
   const hasNote = Boolean(data?.table[key])
 
@@ -77,12 +90,20 @@ export const ChapterNotes = ({title, reference, books}: Props) => {
   const verseNotes = data?.verseNotes ?? []
 
   const onEdit = (c: Comment) => {
-    setEditingKey(mkKey(c, verses))
+    clear()
+    emitClearSelectedVerses()
+    setEditingKey(mkKey(c, c.verses))
     setShowEditor(true)
+    c.verses
+      .map((v) => ({book: c.book, chapter: c.chapter, verse: v}))
+      .forEach((v) => {
+        toggle(v)
+        emitVerseSelected(v)
+      })
   }
 
   const onNew = () => {
-    setEditingKey(mkKey(reference, verses))
+    setEditingKey(key)
     setShowEditor(true)
   }
 
@@ -90,6 +111,8 @@ export const ChapterNotes = ({title, reference, books}: Props) => {
     setEditingKey(undefined)
     setShowEditor(false)
     mutate()
+    clear()
+    emitClearSelectedVerses()
   }
 
   return (
@@ -105,17 +128,19 @@ export const ChapterNotes = ({title, reference, books}: Props) => {
         <>
           <div className="flex-1 overflow-y-auto">
             <div className="space-y-8">
-              {hasNote ? null : editingKey ? (
+              {hasNote ? null : editingKey === key ? (
                 <Editor_ reference={reference} verses={verses} onSaved={onSave} />
-              ) : (
+              ) : !editingKey ? (
                 <button
                   className="my-2 text-gray-400 dark:text-gray-600"
                   type="button"
                   onClick={onNew}
                 >
-                  Add a note ...
+                  {verses.length > 0
+                    ? `Add ${p(verses.length, "verse")} ${formatVerses(verses)} note ...`
+                    : "Add chapter note ..."}
                 </button>
-              )}
+              ) : null}
 
               {chapterNotes.map((c) => (
                 <ChapterNote
@@ -153,14 +178,19 @@ type EditorProps = {
   onSaved: () => void
 }
 
+type Action = () => Promise<void>
+
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+const noOp = () => Promise.resolve()
+
 const Editor_ = ({notes: persistedNotes, reference, verses, onSaved}: EditorProps) => {
   const [note, setNote] = useState<Output>()
-  const [_ready, setReady] = useState(false)
   const editorRef = useRef<BlockNoteEditor>(null)
+  const actionRef = useRef<Action | null>(null)
 
   const [token, _] = useAtom(TokenAtom)
 
-  // TODO: throttle or debounce this
   const save = async () => {
     if (!editorRef.current || !note || !token) {
       return
@@ -182,11 +212,7 @@ const Editor_ = ({notes: persistedNotes, reference, verses, onSaved}: EditorProp
       public: false
     }
 
-    try {
-      await addComment(token, comment)
-    } catch (e) {
-      console.error(e)
-    }
+    actionRef.current = () => upsertComment(token, comment).then(noOp)
   }
 
   useEffect(() => {
@@ -195,21 +221,36 @@ const Editor_ = ({notes: persistedNotes, reference, verses, onSaved}: EditorProp
     }
   }, [note])
 
+  useEffect(() => {
+    const loop = async () => {
+      const action = actionRef.current ?? noOp
+      actionRef.current = null
+      await action()
+      await wait(200)
+      await loop()
+    }
+
+    loop()
+  }, [])
+
   return (
-    <Editor
-      onChange={(v) => setNote(v)}
-      initialData={persistedNotes}
-      readOnly={false}
-      onReady={(editor) => {
-        setReady(true)
-        editorRef.current = editor
-      }}
-      onBlur={onSaved}
-    />
+    <div className="relative -ml-12">
+      <button className="absolute right-20 top-0 z-50" type="button" onClick={onSaved}>
+        <CheckIcon className="h-6 w-6 text-gray-500 dark:text-gray-600" />
+      </button>
+      <Editor
+        onChange={setNote}
+        initialData={persistedNotes}
+        readOnly={false}
+        onReady={(editor) => {
+          editorRef.current = editor
+        }}
+      />
+    </div>
   )
 }
 
-type ChapterNoteProps = {
+type NoteProps = {
   reference: Reference
   comment: Comment
   isEditing: boolean
@@ -217,7 +258,7 @@ type ChapterNoteProps = {
   onSave: () => void
 }
 
-const ChapterNote = ({reference, comment, isEditing, onEdit, onSave}: ChapterNoteProps) => {
+const ChapterNote = ({reference, comment, isEditing, onEdit, onSave}: NoteProps) => {
   const date = new Date(
     comment.created_at === comment.updated_at ? comment.created_at : comment.updated_at
   )
@@ -245,15 +286,7 @@ const ChapterNote = ({reference, comment, isEditing, onEdit, onSave}: ChapterNot
   )
 }
 
-type VerseNoteProps = {
-  reference: Reference
-  comment: Comment
-  isEditing: boolean
-  onEdit: () => void
-  onSave: () => void
-}
-
-const VerseNote = ({reference, comment, isEditing, onEdit, onSave}: VerseNoteProps) => {
+const VerseNote = ({reference, comment, isEditing, onEdit, onSave}: NoteProps) => {
   const date = new Date(
     comment.created_at === comment.updated_at ? comment.created_at : comment.updated_at
   )
@@ -277,7 +310,7 @@ const VerseNote = ({reference, comment, isEditing, onEdit, onSave}: VerseNotePro
 
       <div className="flex items-end gap-2">
         <h2 className="text-sm font-bold leading-none text-gray-600 dark:text-gray-100">
-          Verses {formatVerses(comment.verses)}
+          {p(comment.verses.length, "Verse")} {formatVerses(comment.verses)}
         </h2>
 
         <time

@@ -8,11 +8,13 @@ export type Route =
   | {tag: "home"}
   | {tag: "not_found"}
   | ({tag: "chapter"} & Reference)
+  | ({tag: "notes"} & Reference)
+  | ({tag: "next"} & Reference)
 
 export type RouteTag = Route["tag"]
 
 export const useRoute = (): Route => {
-  const [a, b, c] = useSelectedLayoutSegments()
+  const [a, b, c, d] = useSelectedLayoutSegments()
 
   if (!a) {
     return {tag: "home"}
@@ -26,12 +28,22 @@ export const useRoute = (): Route => {
     return {tag: "highlights"}
   }
 
-  if (!b || !c) {
-    return {tag: "not_found"}
+  if (a === "notes" && b && c && d) {
+    return {tag: "notes", version: b, book: c, chapter: chapter(d)}
   }
 
-  const chapter_ = parseInt(c, 10)
-  const chapter = Number.isNaN(chapter_) ? 1 : chapter_
+  if (a === "next" && b && c && d) {
+    return {tag: "next", version: b, book: c, chapter: chapter(d)}
+  }
 
-  return {tag: "chapter", version: a, book: b, chapter}
+  if (b && c) {
+    return {tag: "chapter", version: a, book: b, chapter: chapter(c)}
+  }
+
+  return {tag: "not_found"}
+}
+
+const chapter = (c: string) => {
+  const chapter_ = parseInt(c, 10)
+  return Number.isNaN(chapter_) ? 1 : chapter_
 }

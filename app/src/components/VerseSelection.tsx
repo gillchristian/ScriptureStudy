@@ -1,22 +1,12 @@
 "use client"
 
 import * as S from "fp-ts/Set"
-import * as A from "fp-ts/Array"
-import {pipe} from "fp-ts/function"
-import {useCallback, useEffect, useMemo, useState} from "react"
+import {useCallback, useMemo, useState} from "react"
 import {useAtom} from "jotai"
 import useSWR from "swr"
 import {XMarkIcon} from "@heroicons/react/24/outline"
 
-import {
-  Books,
-  formatVerses,
-  Reference,
-  Verse,
-  verseEq,
-  verseOrd,
-  VerseWithVersion
-} from "@/models/reference"
+import {Books, formatVerses, Reference, Verse, verseEq, VerseWithVersion} from "@/models/reference"
 import {createHighlight, deleteHighlight, getHighlights, Highlight} from "@/models/highlight"
 import {TokenAtom} from "@/models/token"
 import {

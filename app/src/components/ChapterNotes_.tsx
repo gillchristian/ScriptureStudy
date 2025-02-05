@@ -2,6 +2,7 @@ import format from "date-fns/format"
 
 import {Comment} from "@/models/comments"
 import {formatVerses, Reference} from "@/models/reference"
+import {p} from "@/lib/language"
 
 type Props = {
   reference: Reference
@@ -64,7 +65,7 @@ const VerseNote = ({comment}: {comment: Comment}) => {
 
       <div className="flex items-end gap-2">
         <h2 className="text-sm font-bold leading-none text-gray-600 dark:text-gray-100">
-          Verses {formatVerses(comment.verses)}
+          {p(comment.verses.length, "Verse")} {formatVerses(comment.verses)}
         </h2>
 
         <time

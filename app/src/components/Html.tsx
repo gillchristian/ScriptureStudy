@@ -1,6 +1,6 @@
 "use client"
 
-import {FC, useMemo, useState} from "react"
+import {FC, useMemo, useState, useRef} from "react"
 import {useAtom} from "jotai"
 
 import {clsxm} from "@/lib/clsxm"
@@ -9,7 +9,7 @@ import {TokenAtom} from "@/models/token"
 import {Node, Element} from "@/models/html"
 
 import {useHighlights} from "./VerseSelection"
-import {emitVerseSelected, useOnClearSelectedVerses} from "@/models/selection"
+import {emitVerseSelected, useOnClearSelectedVerses, useOnVerseSelected} from "@/models/selection"
 
 type Props = {
   node: Node
@@ -88,6 +88,7 @@ type VerseProps = {
 const Verse_: FC<VerseProps> = ({element, version, books, reference}) => {
   const [token, _] = useAtom(TokenAtom)
   const [isSelected, setIsSelected] = useState(false)
+  const selectedRef = useRef(false)
 
   const {verse} = element
 
@@ -106,9 +107,16 @@ const Verse_: FC<VerseProps> = ({element, version, books, reference}) => {
 
     emitVerseSelected(verse)
     setIsSelected(!isSelected)
+    selectedRef.current = !isSelected
   }
 
   useOnClearSelectedVerses(() => setIsSelected(false))
+  useOnVerseSelected((selected) => {
+    if (selected.verse === verse.verse) {
+      setIsSelected(!selectedRef.current)
+      selectedRef.current = !selectedRef.current
+    }
+  })
 
   return (
     // We don't really care about the types here, we trust that the parser did
