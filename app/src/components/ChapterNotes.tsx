@@ -31,7 +31,6 @@ import {CheckIcon} from "@heroicons/react/20/solid"
 
 type Props = {
   books: Books
-  title: string
   reference: Reference
 }
 
@@ -62,7 +61,7 @@ const mkFetcher =
 const mkKey = (reference: Reference, verses: number[]) =>
   `${reference.version}.${reference.book}.${reference.chapter}.${verses.join("-")}`
 
-export const ChapterNotes = ({title, reference, books}: Props) => {
+export const ChapterNotes = ({reference, books}: Props) => {
   // TODO: this should be some form of global state instead
   const {verses_, clear, toggle} = useSelectedVerses()
   useOnClearSelectedVerses(clear)
@@ -116,58 +115,45 @@ export const ChapterNotes = ({title, reference, books}: Props) => {
   }
 
   return (
-    // many notes
-    <div className="sticky top-4 flex max-h-screen flex-col space-y-6">
-      <div className="prose dark:prose-invert">
-        <h2>{title}</h2>
-      </div>
-
+    <>
       {isLoading ? (
         <div className="animate-pulse text-gray-500">...</div>
       ) : (
-        <>
-          <div className="flex-1 overflow-y-auto">
-            <div className="space-y-8">
-              {hasNote ? null : editingKey === key ? (
-                <Editor_ reference={reference} verses={verses} onSaved={onSave} />
-              ) : !editingKey ? (
-                <button
-                  className="my-2 text-gray-400 dark:text-gray-600"
-                  type="button"
-                  onClick={onNew}
-                >
-                  {verses.length > 0
-                    ? `Add ${p(verses.length, "verse")} ${formatVerses(verses)} note ...`
-                    : "Add chapter note ..."}
-                </button>
-              ) : null}
+        <div className="space-y-8 pt-12">
+          {hasNote ? null : editingKey === key ? (
+            <Editor_ reference={reference} verses={verses} onSaved={onSave} />
+          ) : !editingKey ? (
+            <button className="my-2 text-gray-400 dark:text-gray-600" type="button" onClick={onNew}>
+              {verses.length > 0
+                ? `Add ${p(verses.length, "verse")} ${formatVerses(verses)} note ...`
+                : "Add chapter note ..."}
+            </button>
+          ) : null}
 
-              {chapterNotes.map((c) => (
-                <ChapterNote
-                  key={c.id}
-                  reference={reference}
-                  comment={c}
-                  isEditing={editingKey === mkKey(c, c.verses)}
-                  onEdit={() => onEdit(c)}
-                  onSave={onSave}
-                />
-              ))}
+          {chapterNotes.map((c) => (
+            <ChapterNote
+              key={c.id}
+              reference={reference}
+              comment={c}
+              isEditing={editingKey === mkKey(c, c.verses)}
+              onEdit={() => onEdit(c)}
+              onSave={onSave}
+            />
+          ))}
 
-              {verseNotes.map((c) => (
-                <VerseNote
-                  key={c.id}
-                  reference={reference}
-                  comment={c}
-                  isEditing={editingKey === mkKey(c, c.verses)}
-                  onEdit={() => onEdit(c)}
-                  onSave={onSave}
-                />
-              ))}
-            </div>
-          </div>
-        </>
+          {verseNotes.map((c) => (
+            <VerseNote
+              key={c.id}
+              reference={reference}
+              comment={c}
+              isEditing={editingKey === mkKey(c, c.verses)}
+              onEdit={() => onEdit(c)}
+              onSave={onSave}
+            />
+          ))}
+        </div>
       )}
-    </div>
+    </>
   )
 }
 
