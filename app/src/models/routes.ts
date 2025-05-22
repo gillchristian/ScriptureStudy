@@ -9,7 +9,6 @@ export type Route =
   | {tag: "not_found"}
   | ({tag: "chapter"} & Reference)
   | ({tag: "notes"} & Reference)
-  | ({tag: "next"} & Reference)
 
 export type RouteTag = Route["tag"]
 
@@ -30,10 +29,6 @@ export const useRoute = (): Route => {
 
   if (a === "notes" && b && c && d) {
     return {tag: "notes", version: b, book: c, chapter: chapter(d)}
-  }
-
-  if (a === "next" && b && c && d) {
-    return {tag: "next", version: b, book: c, chapter: chapter(d)}
   }
 
   if (b && c) {
